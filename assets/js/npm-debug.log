@@ -1,0 +1,44 @@
+0 info it worked if it ends with ok
+1 verbose cli [ 'C:\\Program Files\\nodejs\\node.exe',
+1 verbose cli   'C:\\Program Files\\nodejs\\node_modules\\npm\\bin\\npm-cli.js',
+1 verbose cli   'install',
+1 verbose cli   'Chart.js',
+1 verbose cli   '--save' ]
+2 info using npm@2.14.12
+3 info using node@v4.2.6
+4 verbose install initial load of C:\wamp\www\SICBAF\assets\js\package.json
+5 verbose readDependencies loading dependencies from C:\wamp\www\SICBAF\assets\js\package.json
+6 silly cache add args [ 'Chart.js', null ]
+7 verbose cache add spec Chart.js
+8 silly cache add parsed spec Result {
+8 silly cache add   raw: 'Chart.js',
+8 silly cache add   scope: null,
+8 silly cache add   name: null,
+8 silly cache add   rawSpec: 'Chart.js',
+8 silly cache add   spec: 'C:\\wamp\\www\\SICBAF\\assets\\js\\Chart.js',
+8 silly cache add   type: 'local' }
+9 silly addLocalTarball shasum (computed) 8c5046f16156867eb32df5b8c0aa15da17f967ec
+10 verbose addTmpTarball C:\wamp\www\SICBAF\assets\js\Chart.js not in flight; adding
+11 verbose addTmpTarball validating metadata from C:\wamp\www\SICBAF\assets\js\Chart.js
+12 verbose tar unpack C:\wamp\www\SICBAF\assets\js\Chart.js
+13 verbose tar unpacking to C:\Users\FAMILY\AppData\Local\Temp\npm-3724-22342522\unpack-ff33c1047a09
+14 silly gentlyRm C:\Users\FAMILY\AppData\Local\Temp\npm-3724-22342522\unpack-ff33c1047a09 is being purged
+15 verbose gentlyRm don't care about contents; nuking C:\Users\FAMILY\AppData\Local\Temp\npm-3724-22342522\unpack-ff33c1047a09
+16 silly gunzTarPerm modes [ '777', '666' ]
+17 error not a package C:\wamp\www\SICBAF\assets\js\Chart.js
+18 error addLocal Could not install C:\wamp\www\SICBAF\assets\js\Chart.js
+19 verbose stack Error: ENOENT: no such file or directory, open 'C:\Users\FAMILY\AppData\Local\Temp\npm-3724-22342522\unpack-ff33c1047a09\package.json'
+19 verbose stack     at Error (native)
+20 verbose cwd C:\wamp\www\SICBAF\assets\js
+21 error Windows_NT 10.0.14393
+22 error argv "C:\\Program Files\\nodejs\\node.exe" "C:\\Program Files\\nodejs\\node_modules\\npm\\bin\\npm-cli.js" "install" "Chart.js" "--save"
+23 error node v4.2.6
+24 error npm  v2.14.12
+25 error path C:\Users\FAMILY\AppData\Local\Temp\npm-3724-22342522\unpack-ff33c1047a09\package.json
+26 error code ENOENT
+27 error errno -4058
+28 error syscall open
+29 error enoent ENOENT: no such file or directory, open 'C:\Users\FAMILY\AppData\Local\Temp\npm-3724-22342522\unpack-ff33c1047a09\package.json'
+29 error enoent This is most likely not a problem with npm itself
+29 error enoent and is related to npm not being able to find a file.
+30 verbose exit [ -4058, true ]
