@@ -24,3 +24,14 @@ var reglas = {
     },
   },
 };
+
+$(document).ready(function() {
+  //categoria
+  $.autocomplete({
+    elemet: $('input[name=autocomplete]'),
+    url: 'index.php/Bodega/Categoria_proveedor/Autocomplete',
+    name: 'categoria',
+    siguiente: 'nombreProveedor',
+    content: 'suggestions'
+  });
+});

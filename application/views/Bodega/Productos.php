@@ -23,21 +23,9 @@
       $um = array(
           'name' => 'autocomplete',
           'placeholder' => 'Escribe Unidad Medida',
-          'class' => "form-control autocomplete",
+          'class' => "form-control",
           'autocomplete' => 'off',
-          'uri' => 'index.php/Bodega/Unidadmedidas/Autocomplete',
-          'name_op' => 'unidadMedida',
-          'siguiente' => 'descripcion',
-          'content' => 'suggestions'
       );
-
-      // $um = array(
-      //     'default' => 'SELECCIONE UNIDAD MEDIDA'
-      // );
-      //
-      // foreach ($unidades as $unidad) {
-      //   $um[$unidad->id_unidadmedida] = $unidad->nombre;
-      // }
 
       $des = array(
           'name' => 'descripcion',
@@ -118,8 +106,7 @@
 
       echo form_submit('','Guardar', $button);
 
-      echo "<a class=\"btn btn-warning\" onclick=\"limpiar(['id', 'nombre', 'unidadMedida', 'autocomplete','descripcion',
-            'estado', 'fecha', 'stok'], ['estado'])\">Limpiar</a>";
+      echo "<button class='btn btn-warning' type='reset' value='Reset'>Limpiar</button>";
 
       echo form_close();
     echo "</div>";

@@ -10,8 +10,6 @@
     public $matricula;
     public $id_condicion_bien;
     public $observacion;
-    public $id_oficina;
-    public $id_empleado;
     public $correlativo;
 
 
@@ -29,15 +27,13 @@
         $this->matricula = $data['matricula'];
         $this->id_condicion_bien = $data['id_condicion_bien'];
         $this->observacion = $data['observacion'];
-        $this->id_oficina = $data['id_oficina'];
-        $this->id_empleado = $data['id_empleado'];
         $this->correlativo = $data['correlativo'];
         $this->codigo = $data['codigo'];
         $this->db->insert('sic_bien', $this);
         $this->id_bien = $this->db->insert_id();
 
         $data_movimiento = array(
-            'id_oficina_entrega' => "",
+            'id_oficina_entrega' => 3,
             'id_oficina_recibe' => $data['id_oficina'],
             'id_empleado' => $data['id_empleado'],
             'id_tipo_movimiento' => 1,
@@ -63,16 +59,24 @@
     }
 
     public function obtenerBienes_muebles(){
-      $this->db->select('b.id_bien,b.codigo_anterior,b.codigo,b.serie,b.numero_motor,b.numero_placa,b.matricula,b.observacion,
-      b.id_dato_comun,d.descripcion,b.id_condicion_bien,c.nombre_condicion_bien,b.id_oficina,o.nombre_oficina,
-      b.id_empleado,e.primer_nombre,e.primer_apellido,d.precio_unitario,m.nombre_marca,b.correlativo')
-              ->from('sic_bien b')
-              ->join('sic_datos_comunes d','d.id_dato_comun = b.id_dato_comun')
-              ->join('sic_condicion_bien c','c.id_condicion_bien = b.id_condicion_bien')
-              ->join('org_oficina o','o.id_oficina = b.id_oficina')
-              ->join('sir_empleado e','e.id_empleado = b.id_empleado')
-              ->join('sic_marcas m','m.id_marca = d.id_marca')
-              ->order_by('b.id_bien');
+      $this->db->select('a.id_bien, e.codigo_anterior, e.codigo, e.serie, f.descripcion, c.id_oficina, c.nombre_oficina,
+  		d.primer_nombre, d.primer_apellido, d.id_empleado, f.precio_unitario, g.nombre_marca, f.modelo, f.id_dato_comun,
+      e.numero_motor, e.numero_placa, e.matricula, e.observacion')
+              ->from('(
+                	select max(id_detalle_movimiento) as id_detalle_movimiento, max(id_movimiento) as id_movimiento, id_bien
+                	from sic_detalle_movimiento
+                	group by id_bien
+                	order by id_detalle_movimiento
+                	) as a')
+              ->join('sic_movimiento b', 'a.id_movimiento = b.id_movimiento')
+              ->join('org_oficina c', 'b.id_oficina_recibe = c.id_oficina')
+              ->join('sir_empleado d', 'd.id_empleado = b.id_empleado')
+              ->join('sic_bien e', 'e.id_bien = a.id_bien')
+              ->join('sic_datos_comunes f', 'f.id_dato_comun = e.id_dato_comun')
+              ->join('sic_marcas g', 'g.id_marca = f.id_marca')
+              ->order_by('e.id_bien','desc')
+              ->where('e.terreno_zona=',NULL)
+              ->where('e.tipo_inmueble=',NULL);
       $query = $this->db->get();
       if ($query->num_rows() > 0) {
           return  $query->result();
@@ -83,18 +87,26 @@
     }
 
     public function buscarBienes_muebles($busca){
-      $this->db->select('b.id_bien,b.codigo_anterior,b.codigo,b.serie,b.numero_motor,b.numero_placa,b.matricula,b.observacion,
-      b.id_dato_comun,d.descripcion,b.id_condicion_bien,c.nombre_condicion_bien,b.id_oficina,o.nombre_oficina,
-      b.id_empleado,e.primer_nombre,e.primer_apellido,d.precio_unitario,m.nombre_marca,b.correlativo,d.modelo')
-              ->from('sic_bien b')
-              ->join('sic_datos_comunes d','d.id_dato_comun = b.id_dato_comun')
-              ->join('sic_condicion_bien c','c.id_condicion_bien = b.id_condicion_bien')
-              ->join('org_oficina o','o.id_oficina = b.id_oficina')
-              ->join('sir_empleado e','e.id_empleado = b.id_empleado')
-              ->join('sic_marcas m','m.id_marca = d.id_marca')
-              ->order_by('b.id_bien','desc')
-              ->like('codigo', $busca)
-              ->or_like('codigo_anterior', $busca);
+      $this->db->select('a.id_bien, e.codigo_anterior, e.codigo, e.serie, f.descripcion, c.id_oficina, c.nombre_oficina,
+  		d.primer_nombre, d.primer_apellido, d.id_empleado, f.precio_unitario, g.nombre_marca, f.modelo, f.id_dato_comun,
+      e.numero_motor, e.numero_placa, e.matricula, e.observacion')
+              ->from('(
+                	select max(id_detalle_movimiento) as id_detalle_movimiento, max(id_movimiento) as id_movimiento, id_bien
+                	from sic_detalle_movimiento
+                	group by id_bien
+                	order by id_detalle_movimiento
+                	) as a')
+              ->join('sic_movimiento b', 'a.id_movimiento = b.id_movimiento')
+              ->join('org_oficina c', 'b.id_oficina_recibe = c.id_oficina')
+              ->join('sir_empleado d', 'd.id_empleado = b.id_empleado')
+              ->join('sic_bien e', 'e.id_bien = a.id_bien')
+              ->join('sic_datos_comunes f', 'f.id_dato_comun = e.id_dato_comun')
+              ->join('sic_marcas g', 'g.id_marca = f.id_marca')
+              ->order_by('e.id_bien','desc')
+              ->where('e.terreno_zona=',NULL)
+              ->where('e.tipo_inmueble=',NULL)
+              ->like('e.codigo', $busca)
+              ->or_like('e.codigo_anterior', $busca);
       $query = $this->db->get();
       if ($query->num_rows() > 0) {
           return  $query->result();
@@ -129,19 +141,25 @@
     }
 
     public function obtenerBienes_mueblesLimit($porpagina, $segmento){
-      $this->db->select('b.id_bien,b.codigo_anterior,b.codigo,b.serie,b.numero_motor,b.numero_placa,b.matricula,b.observacion,
-      b.id_dato_comun,d.descripcion,b.id_condicion_bien,c.nombre_condicion_bien,b.id_oficina,o.nombre_oficina,
-      b.id_empleado,e.primer_nombre,e.primer_apellido,d.precio_unitario,m.nombre_marca,b.correlativo,d.modelo')
-              ->from('sic_bien b')
-              ->join('sic_datos_comunes d','d.id_dato_comun = b.id_dato_comun')
-              ->join('sic_condicion_bien c','c.id_condicion_bien = b.id_condicion_bien')
-              ->join('org_oficina o','o.id_oficina = b.id_oficina')
-              ->join('sir_empleado e','e.id_empleado = b.id_empleado')
-              ->join('sic_marcas m','m.id_marca = d.id_marca')
-              ->order_by('b.id_bien','desc')
+      $this->db->select('a.id_bien, e.codigo_anterior, e.codigo, e.serie, f.descripcion, c.id_oficina, c.nombre_oficina,
+  		d.primer_nombre, d.primer_apellido, d.id_empleado, f.precio_unitario, g.nombre_marca, f.modelo, f.id_dato_comun,
+      e.numero_motor, e.numero_placa, e.matricula, e.observacion')
+              ->from('(
+                	select max(id_detalle_movimiento) as id_detalle_movimiento, max(id_movimiento) as id_movimiento, id_bien
+                	from sic_detalle_movimiento
+                	group by id_bien
+                	order by id_detalle_movimiento
+                	) as a')
+              ->join('sic_movimiento b', 'a.id_movimiento = b.id_movimiento')
+              ->join('org_oficina c', 'b.id_oficina_recibe = c.id_oficina')
+              ->join('sir_empleado d', 'd.id_empleado = b.id_empleado')
+              ->join('sic_bien e', 'e.id_bien = a.id_bien')
+              ->join('sic_datos_comunes f', 'f.id_dato_comun = e.id_dato_comun')
+              ->join('sic_marcas g', 'g.id_marca = f.id_marca')
+              ->order_by('e.id_bien','desc')
               ->limit($porpagina,$segmento)
-              ->where('b.terreno_zona=',NULL)
-              ->where('b.tipo_inmueble=',NULL);
+              ->where('e.terreno_zona=',NULL)
+              ->where('e.tipo_inmueble=',NULL);
       $query = $this->db->get();
       if ($query->num_rows() > 0) {
           return  $query->result();
@@ -152,16 +170,16 @@
     }
 
     public function totalBienes_muebles(){
-      $this->db->select('count(b.id_bien) as total')
-              ->from('sic_bien b')
-              ->join('sic_datos_comunes d','d.id_dato_comun = b.id_dato_comun')
-              ->join('sic_condicion_bien c','c.id_condicion_bien = b.id_condicion_bien')
-              ->join('org_oficina o','o.id_oficina = b.id_oficina')
-              ->join('sir_empleado e','e.id_empleado = b.id_empleado')
-              ->join('sic_marcas m','m.id_marca = d.id_marca')
-              ->order_by('b.id_bien')
-              ->where('b.terreno_zona=',NULL)
-              ->where('b.tipo_inmueble=',NULL);
+      $this->db->select('count(e.id_bien) as total')
+              ->from('(
+                	select max(id_detalle_movimiento) as id_detalle_movimiento, max(id_movimiento) as id_movimiento, id_bien
+                	from sic_detalle_movimiento
+                	group by id_bien
+                	order by id_detalle_movimiento
+                	) as a')
+              ->join('sic_bien e', 'e.id_bien = a.id_bien')
+              ->where('e.terreno_zona=',NULL)
+              ->where('e.tipo_inmueble=',NULL);
       $query = $this->db->get();
       if ($query->num_rows() > 0) {
           return  $query->row();

@@ -11,12 +11,8 @@ echo "</div>";
 $conteo = array(
     'name' => 'conteo',
     'placeholder' => 'Escribe Conteo',
-    'class' => "form-control autocomplete",
+    'class' => "form-control",
     'autocomplete' => 'off',
-    'uri' => 'index.php/Bodega/ConteoFisico/Autocomplete',
-    'name_op' => 'nada',
-    'siguiente' => 'button',
-    'content' => 'suggestions'
 );
 
 $button = array('class' => 'btn btn-success',);

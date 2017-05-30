@@ -69,73 +69,78 @@ class Detalle_solicitud_compra extends CI_Controller {
      foreach($registros as $det) {
        $datos=$this->Detalle_solicitud_producto_model->obtenerDatos($det->id_detalleproducto);
        $nivel = $this->Solicitud_Compra_Model->obtenerNivelSolicitud($det->id_solicitud_compra);
-       foreach ($datos as $detsol) {
-         $estado=$this->Solicitud_Compra_Model->obtenerSolicitudCompleta($det->id_solicitud_compra);
-         $estado=$estado->estado_solicitud_compra;
-         $onClick = "llenarFormulario('solicitud', ['id_detalle_solicitud_compra', 'producto', 'autocomplete1', 'cantidad'],
-                     [$det->id_detalle_solicitud_compra, '$det->id_detalleproducto', '$detsol->producto','$det->cantidad'],
-                     false,false,false,'especificaciones','$det->especificaciones')";
-                     $USER = $this->session->userdata('logged_in');
-                     $roles = $this->User_model->obtenerRolesSistema();
-                     if($this->uri->segment(5) == $this->User_model->obtenerModulo("Compras/Solicitud_Compra")){
-                         if ($nivel == 0 || $nivel == 1){
+       if (!($datos == FALSE)) {
+         foreach ($datos as $detsol) {
+           $estado=$this->Solicitud_Compra_Model->obtenerSolicitudCompleta($det->id_solicitud_compra);
+           $estado=$estado->estado_solicitud_compra;
+           $onClick = "llenarFormulario('solicitud', ['id_detalle_solicitud_compra', 'producto', 'autocomplete1', 'cantidad'],
+                       [$det->id_detalle_solicitud_compra, '$det->id_detalleproducto', '$detsol->producto','$det->cantidad'],
+                       false,false,false,'especificaciones','$det->especificaciones')";
+                       $USER = $this->session->userdata('logged_in');
+                       $roles = $this->User_model->obtenerRolesSistema();
+                       if($this->uri->segment(5) == $this->User_model->obtenerModulo("Compras/Solicitud_Compra")){
+                           if ($nivel == 0 || $nivel == 1){
+                             $eliminar='<a class="icono icon-eliminar" uri='.base_url('index.php/Compras/Detalle_Solicitud_Compra/EliminarDato/'
+                             .$det->id_detalle_solicitud_compra.'/'.$det->id_solicitud_compra.'/'.$this->uri->segment(5)).'></a>';
+                             $editar='<a class="icono icon-pencil" onClick="'.$onClick.'"></a>';
+                           }
+                           if ($nivel == 2 || $nivel == 3 || $nivel == 4 || $nivel == 5 || $nivel == 6 || $nivel == 7 || $nivel == 8 ||$nivel== 9){
+
+                             $editar = '<a class="icono icon-denegar"></a>';
+                             $eliminar = '<a class="icono icon-denegar"></a>';
+                           }
+
+                       } elseif($this->uri->segment(5) == $this->User_model->obtenerModulo("Compras/Aprobar_Solicitud")){
+                         if ($USER['rol'] == 'ADMINISTRADOR SICBAF' || $USER['rol'] == 'JEFE BODEGA' || $USER['rol'] == 'COLABORADOR BODEGA' ||
+                            $USER['rol'] == 'JEFE UNIDAD' || $USER['rol'] == 'JEFE COMPRAS' || $USER['rol'] == 'JEFE UACI' || $USER['rol'] == 'JEFE AF' ||
+                            $USER['rol'] == 'COLABORADOR COMPRAS' || $USER['rol'] == 'COLABORADOR UACI' || $USER['rol'] == 'COLABORADOR AF'){
+                           if ($nivel == 1 || $nivel == 2){
+                             $eliminar='<a class="icono icon-eliminar" uri='.base_url('index.php/Compras/Detalle_Solicitud_Compra/EliminarDato/'
+                             .$det->id_detalle_solicitud_compra.'/'.$det->id_solicitud_compra.'/'.$this->uri->segment(5)).'></a>';
+                             $editar='<a class="icono icon-pencil" onClick="'.$onClick.'"></a>';
+                           }
+                           if ($nivel == 3 || $nivel == 4 || $nivel == 5 || $nivel == 6 || $nivel == 7 || $nivel == 8 ||$nivel== 9){
+                             $editar = '<a class="icono icon-denegar"></a>';
+                             $eliminar = '<a class="icono icon-denegar"></a>';
+                           }
+                         }
+
+                       } elseif($this->uri->segment(5) == $this->User_model->obtenerModulo('Compras/Gestionar_Solicitud')){
+                         if ($USER['rol'] == 'ADMINISTRADOR SICBAF' || $USER['rol'] == 'JEFE COMPRAS' || $USER['rol'] == 'JEFE UACI' ||
+                            $USER['rol'] == 'COLABORADOR COMPRAS' || $USER['rol'] == 'COLABORADOR UACI'){
+                           if ($nivel == 3 || $nivel == 4){
+                             $eliminar='<a class="icono icon-eliminar" uri='.base_url('index.php/Compras/Detalle_Solicitud_Compra/EliminarDato/'
+                             .$det->id_detalle_solicitud_compra.'/'.$det->id_solicitud_compra.'/'.$this->uri->segment(5)).'></a>';
+                             $editar='<a class="icono icon-pencil" onClick="'.$onClick.'"></a>';
+                           }
+                           if ($nivel == 5 || $nivel == 6 || $nivel == 7 || $nivel == 8 ||$nivel== 9){
+                             $editar = '<a class="icono icon-denegar"></a>';
+                             $eliminar = '<a class="icono icon-denegar"></a>';
+                           }
+                         }
+
+                       }
+                       if ($this->uri->segment(6) == 111){
+                         if ($nivel == 2 || $nivel == 3){
                            $eliminar='<a class="icono icon-eliminar" uri='.base_url('index.php/Compras/Detalle_Solicitud_Compra/EliminarDato/'
                            .$det->id_detalle_solicitud_compra.'/'.$det->id_solicitud_compra.'/'.$this->uri->segment(5)).'></a>';
                            $editar='<a class="icono icon-pencil" onClick="'.$onClick.'"></a>';
                          }
-                         if ($nivel == 2 || $nivel == 3 || $nivel == 4 || $nivel == 5 || $nivel == 6 || $nivel == 7 || $nivel == 8 ||$nivel== 9){
-
+                         if ($nivel == 4 || $nivel == 5 ||$nivel == 6 ||$nivel == 7 ||$nivel == 8 || $nivel== 9){
                            $editar = '<a class="icono icon-denegar"></a>';
                            $eliminar = '<a class="icono icon-denegar"></a>';
                          }
-
-                     } elseif($this->uri->segment(5) == $this->User_model->obtenerModulo("Compras/Aprobar_Solicitud")){
-                       if ($USER['rol'] == 'ADMINISTRADOR SICBAF' || $USER['rol'] == 'JEFE BODEGA' || $USER['rol'] == 'COLABORADOR BODEGA' ||
-                          $USER['rol'] == 'JEFE UNIDAD' || $USER['rol'] == 'JEFE COMPRAS' || $USER['rol'] == 'JEFE UACI' || $USER['rol'] == 'JEFE AF' ||
-                          $USER['rol'] == 'COLABORADOR COMPRAS' || $USER['rol'] == 'COLABORADOR UACI' || $USER['rol'] == 'COLABORADOR AF'){
-                         if ($nivel == 1 || $nivel == 2){
-                           $eliminar='<a class="icono icon-eliminar" uri='.base_url('index.php/Compras/Detalle_Solicitud_Compra/EliminarDato/'
-                           .$det->id_detalle_solicitud_compra.'/'.$det->id_solicitud_compra.'/'.$this->uri->segment(5)).'></a>';
-                           $editar='<a class="icono icon-pencil" onClick="'.$onClick.'"></a>';
-                         }
-                         if ($nivel == 3 || $nivel == 4 || $nivel == 5 || $nivel == 6 || $nivel == 7 || $nivel == 8 ||$nivel== 9){
-                           $editar = '<a class="icono icon-denegar"></a>';
-                           $eliminar = '<a class="icono icon-denegar"></a>';
-                         }
-                       }
-
-                     } elseif($this->uri->segment(5) == $this->User_model->obtenerModulo('Compras/Gestionar_Solicitud')){
-                       if ($USER['rol'] == 'ADMINISTRADOR SICBAF' || $USER['rol'] == 'JEFE COMPRAS' || $USER['rol'] == 'JEFE UACI' ||
-                          $USER['rol'] == 'COLABORADOR COMPRAS' || $USER['rol'] == 'COLABORADOR UACI'){
-                         if ($nivel == 3 || $nivel == 4){
-                           $eliminar='<a class="icono icon-eliminar" uri='.base_url('index.php/Compras/Detalle_Solicitud_Compra/EliminarDato/'
-                           .$det->id_detalle_solicitud_compra.'/'.$det->id_solicitud_compra.'/'.$this->uri->segment(5)).'></a>';
-                           $editar='<a class="icono icon-pencil" onClick="'.$onClick.'"></a>';
-                         }
-                         if ($nivel == 5 || $nivel == 6 || $nivel == 7 || $nivel == 8 ||$nivel== 9){
-                           $editar = '<a class="icono icon-denegar"></a>';
-                           $eliminar = '<a class="icono icon-denegar"></a>';
-                         }
-                       }
-
-                     }
-                     if ($this->uri->segment(6) == 111){
-                       if ($nivel == 2 || $nivel == 3){
-                         $eliminar='<a class="icono icon-eliminar" uri='.base_url('index.php/Compras/Detalle_Solicitud_Compra/EliminarDato/'
-                         .$det->id_detalle_solicitud_compra.'/'.$det->id_solicitud_compra.'/'.$this->uri->segment(5)).'></a>';
-                         $editar='<a class="icono icon-pencil" onClick="'.$onClick.'"></a>';
-                       }
-                       if ($nivel == 4 || $nivel == 5 ||$nivel == 6 ||$nivel == 7 ||$nivel == 8 || $nivel== 9){
+                       } /*else {
                          $editar = '<a class="icono icon-denegar"></a>';
                          $eliminar = '<a class="icono icon-denegar"></a>';
-                       }
-                     } /*else {
-                       $editar = '<a class="icono icon-denegar"></a>';
-                       $eliminar = '<a class="icono icon-denegar"></a>';
-                     }*/
+                       }*/
 
-           $this->table->add_row($i,$detsol->producto,$detsol->unidad,$det->cantidad,$det->especificaciones,$eliminar,$editar);
-         $i++;
+             $this->table->add_row($i,$detsol->producto,$detsol->unidad,$det->cantidad,$det->especificaciones,$eliminar,$editar);
+           $i++;
+         }
+       } else {
+         $msg = array('data' => "Error al recuperar informacion del producto. ID: ".$det->id_detalle_solicitud_compra, 'colspan' => "7");
+         $this->table->add_row($msg);
        }
      }
    } else {

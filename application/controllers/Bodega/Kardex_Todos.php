@@ -38,6 +38,7 @@ class Kardex_Todos extends CI_Controller {
 
       $data['title'] = "Reporte Generación del Kardex";
       $data['menu'] = $this->menu_dinamico->menus($this->session->userdata('logged_in'),$this->uri->segment(1));
+      $data['js'] = 'assets/js/validate/reporte/bodega/kardex_todos.js';
       $table = '';
       if (($this->uri->segment(4)) != '' ) {
         $template = array(
@@ -312,7 +313,7 @@ class Kardex_Todos extends CI_Controller {
     if($USER){
       $this->load->model(array('Bodega/Especifico', 'Bodega/Fuentefondos_model'));
       $data1['title'] = "kardex Resumido";
-      $data1['js'] = "assets/js/validate/reporte.js";
+      $data1['js'] = "assets/js/validate/reporte/bodega/kardex_resumen.js";
       $data1['menu'] = $this->menu_dinamico->menus($this->session->userdata('logged_in'),$this->uri->segment(1));
       $table = '';
 

@@ -12,7 +12,7 @@ class Reporte_ingreso extends CI_Controller {
     $this->load->helper(array('url', 'form', 'paginacion'));
     $this->load->library('table');
     $this->load->model(array('ActivoFijo/Reporte_Ingreso_Model'));
-    $this->load->model(array('ActivoFijo/Datos_comunes_model'));
+    $this->load->model(array('ActivoFijo/Datos_Comunes_Model'));
   }
 
   public function Recibirfechas(){

@@ -30,31 +30,6 @@
       'readonly'=>"readonly",
   );
 
-  $entx = array(
-      'name' => 'entregado_por',
-      'placeholder' => 'Ingrese el nombre de la persona que entrega',
-      'class' => "form-control"
-  );
-
-  $recx = array(
-      'name' => 'recibido_por',
-      'placeholder' => 'Ingrese el nombre de la persona que recibe',
-      'class' => "form-control"
-  );
-
-  $autx = array(
-      'name' => 'autorizado_por',
-      'placeholder' => 'Ingrese el nombre de la persona que autoriza',
-      'class' => "form-control",
-  );
-
-  $visx = array(
-      'name' => 'visto_bueno_por',
-      'placeholder' => 'Ingrese el nombre de la persona que da visto bueno',
-      'class' => "form-control"
-  );
-
-
   $obs = array(
     'name' => 'observacion',
     'placeholder' => 'INGRESE OBSERVACIONES A LA SOLICITUD',
@@ -77,34 +52,6 @@
     echo form_label('Tipo Movimiento:', 'ti', $atriLabel);
     echo "<div class='col-lg-10'>";
       echo form_input($ti);
-    echo "</div>";
-  echo "</div>";
-
-  echo "<div class='form-group'>";
-    echo form_label('Entregado:', 'entx', $atriLabel);
-    echo "<div class='col-lg-10'>";
-      echo form_input($entx);
-    echo "</div>";
-  echo "</div>";
-
-  echo "<div class='form-group'>";
-    echo form_label('Recibido:', 'recx', $atriLabel);
-    echo "<div class='col-lg-10'>";
-      echo form_input($recx);
-    echo "</div>";
-  echo "</div>";
-
-  echo "<div class='form-group'>";
-    echo form_label('Autorizado:', 'autx', $atriLabel);
-    echo "<div class='col-lg-10'>";
-      echo form_input($autx);
-    echo "</div>";
-  echo "</div>";
-
-  echo "<div class='form-group'>";
-    echo form_label('Visto:', 'visx', $atriLabel);
-    echo "<div class='col-lg-10'>";
-      echo form_input($visx);
     echo "</div>";
   echo "</div>";
 

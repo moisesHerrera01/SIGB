@@ -45,7 +45,7 @@ class Gestionar_movimiento extends CI_Controller {
           'table_open' => '<table class="table table-striped table-bordered">'
       );
       $this->table->set_template($template);
-      $this->table->set_heading('Id', 'Oficina Recibe', 'Oficina Entrega', 'Empleado', 'Tipo Movimiento', 'Fecha','Aprobar','Denegar','Cerrar','Imprimir','Detalle','Editar','Eliminar');
+      $this->table->set_heading('Id', 'Oficina Entrega', 'Oficina Recibe', 'Empleado', 'Tipo Movimiento', 'Fecha','Aprobar','Denegar','Cerrar','Imprimir','Detalle','Editar','Eliminar');
 
       /*
       * Filtro a la BD
@@ -72,10 +72,13 @@ class Gestionar_movimiento extends CI_Controller {
 
       if (!($registros == FALSE)) {
         foreach($registros as $sol) {
+          $emp=$this->Movimiento_Model->obtenerNombreEmpleado($sol->id_empleado);
+          $ent=$this->Movimiento_Model->obtenerNombreOficinas($sol->id_oficina_entrega);
+          $rec=$this->Movimiento_Model->obtenerNombreOficinas($sol->id_oficina_recibe);
             //$fuente = $this->Fuentefondos_model->obtenerFuente($sol->id_fuentes);
             //$seccion = $this->Solicitud_Model->obtenerSeccion($sol->id_seccion);
-            $onClick = "llenarFormulario('solicitud', ['id', 'fecha_solicitud','tipo','entregado_por','recibido_por','autorizado_por','visto_bueno_por'],
-                        [$sol->id_movimiento, '$sol->fecha_guarda','$sol->nombre_movimiento','$sol->recibido_por','$sol->entregado_por','$sol->autorizado_por','$sol->visto_bueno_por'],false,false,false,'observacion','$sol->observacion')";
+            $onClick = "llenarFormulario('solicitud', ['id', 'fecha_solicitud','tipo'],
+                        [$sol->id_movimiento, '$sol->fecha_guarda','$sol->nombre_movimiento'],false,false,false,'observacion','$sol->observacion')";
 
             $botones='<a class="icono icon-detalle" href="'.base_url('index.php/ActivoFijo/Detalle_gestionar_movimiento/index/'.$sol->id_movimiento.'/').'"></a>';
 
@@ -86,17 +89,26 @@ class Gestionar_movimiento extends CI_Controller {
                 $denegar = '<a class="icono icon-cross" href="'.base_url('index.php/ActivoFijo/Gestionar_movimiento/Denegar/'.$sol->id_movimiento.'/').'"></a>';
                 $cerrar='<a class="icono icon-denegar"></a>';
                 $imprimir = '<a class="icono icon-denegar"></a>';
-                $this->table->add_row($sol->id_movimiento, $sol->id_oficina_recibe,$sol->id_oficina_entrega, $sol->primer_nombre.$sol->primer_apellido,
-                                      $sol->nombre_movimiento, $sol->fecha_guarda,$aprobar,$denegar,$cerrar,$botones,$actualizar,$eliminar);
-            }elseif ($sol->nivel_solicitud==3){
+                $this->table->add_row($sol->id_movimiento, $ent->nombre_oficina.', '.$ent->nombre_seccion.', '.$ent->nombre_almacen,$rec->nombre_oficina.', '.$rec->nombre_seccion.', '.$rec->nombre_almacen,
+                $emp->nombre_completo,$sol->nombre_movimiento, $sol->fecha_guarda,$aprobar,$denegar,$cerrar,$imprimir,$botones,$actualizar,$eliminar);
+            }elseif ($sol->nivel_solicitud==3 && $sol->estado_solicitud=='APROBADA'){
               $actualizar ='<a class="icono icon-denegar"></a>';
               $eliminar='<a class="icono icon-denegar"></a>';
               $aprobar = '<a class="icono icon-denegar"></a>';
               $denegar = '<a class="icono icon-denegar"></a>';
               $imprimir = '<a class="icono icon-acta" target="_blank" href="'.base_url('index.php/ActivoFijo/Movimiento_imp/index/'.$sol->id_movimiento.'/').'"></a>';
               $cerrar='<a class="icono icon-lock" href="'.base_url('index.php/ActivoFijo/Gestionar_movimiento/cerrar/'.$sol->id_movimiento.'/').'"></a>';
-              $this->table->add_row($sol->id_movimiento, $sol->id_oficina_recibe,$sol->id_oficina_entrega, $sol->primer_nombre.$sol->primer_apellido,
-                                    $sol->nombre_movimiento, $sol->fecha_guarda,$aprobar,$denegar,$cerrar,$imprimir,$botones,$actualizar,$eliminar);
+              $this->table->add_row($sol->id_movimiento, $ent->nombre_oficina.', '.$ent->nombre_seccion.', '.$ent->nombre_almacen,$rec->nombre_oficina.', '.$rec->nombre_seccion.', '.$rec->nombre_almacen,
+              $emp->nombre_completo,$sol->nombre_movimiento, $sol->fecha_guarda,$aprobar,$denegar,$cerrar,$imprimir,$botones,$actualizar,$eliminar);
+            } elseif ($sol->nivel_solicitud==3 && $sol->estado_solicitud=='CERRADO'){
+              $actualizar ='<a class="icono icon-denegar"></a>';
+              $eliminar='<a class="icono icon-denegar"></a>';
+              $aprobar = '<a class="icono icon-denegar"></a>';
+              $denegar = '<a class="icono icon-denegar"></a>';
+              $imprimir = '<a class="icono icon-acta" target="_blank" href="'.base_url('index.php/ActivoFijo/Movimiento_imp/index/'.$sol->id_movimiento.'/').'"></a>';
+              $cerrar='<a class="icono icon-denegar"></a>';
+              $this->table->add_row($sol->id_movimiento, $ent->nombre_oficina.', '.$ent->nombre_seccion.', '.$ent->nombre_almacen,$rec->nombre_oficina.', '.$rec->nombre_seccion.', '.$rec->nombre_almacen,
+              $emp->nombre_completo,$sol->nombre_movimiento, $sol->fecha_guarda,$aprobar,$denegar,$cerrar,$imprimir,$botones,$actualizar,$eliminar);
             }
 
 
@@ -187,12 +199,7 @@ class Gestionar_movimiento extends CI_Controller {
     }*/
     if($USER){
       $data = array(
-          'entregado_por' => $this->input->post('entregado_por'),
-          'recibido_por' => $this->input->post('recibido_por'),
-          'autorizado_por' => $this->input->post('autorizado_por'),
-          'visto_bueno_por' => $this->input->post('visto_bueno_por'),
           'observacion' => $this->input->post('observacion')
-
       );
 
       if (!($this->input->post('id') == '')){

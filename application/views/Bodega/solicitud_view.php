@@ -33,13 +33,9 @@
       $sec = array(
           'name' => 'autocomplete3',
           'placeholder' => 'Ingrese el nombre de la sección',
-          'class' => "form-control autocomplete",
+          'class' => "form-control",
           'value'=> $seccion,
           'autocomplete' => 'off',
-          'uri' => 'index.php/ActivoFijo/almacenes/AutocompleteSeccion',
-          'name_op' => 'seccion',
-          'siguiente' => 'button',
-          'content' => 'suggestions3'
       );
 
       $sol = array(
@@ -53,12 +49,8 @@
       $fun = array(
           'name' => 'autocomplete2',
           'placeholder' => 'Escribe Fuente de Fondos',
-          'class' => "form-control autocomplete",
+          'class' => "form-control",
           'autocomplete' => 'off',
-          'uri' => 'index.php/Bodega/Fuentefondos/Autocomplete',
-          'name_op' => 'fuente',
-          'siguiente' => 'button',
-          'content' => 'suggestions2'
       );
 
       $com = array(
@@ -124,8 +116,7 @@
       echo form_hidden('id');
       echo form_submit('','Siguiente', $button);
 
-      echo "<a class=\"btn btn-warning\" onclick=\"limpiar(['autocomplete3','seccion',
-      'autocomplete'],false,['comentario'])\">Limpiar</a>";
+      echo "<button class='btn btn-warning' type='reset' value='Reset'>Limpiar</button>";
 
       echo "</fieldset>";
       echo form_close();

@@ -45,7 +45,7 @@ class Aprobar_movimiento extends CI_Controller {
           'table_open' => '<table class="table table-striped table-bordered">'
       );
       $this->table->set_template($template);
-      $this->table->set_heading('Id', 'Oficina Recibe', 'Oficina Entrega', 'Empleado', 'Tipo Movimiento', 'Fecha','Aprobar','Denegar','Detalle','Editar','Eliminar');
+      $this->table->set_heading('Id', 'Oficina Entrega', 'Oficina Recibe', 'Empleado', 'Tipo Movimiento', 'Fecha','Aprobar','Denegar','Detalle','Editar','Eliminar');
 
       /*
       * Filtro a la BD
@@ -72,12 +72,15 @@ class Aprobar_movimiento extends CI_Controller {
 
       if (!($registros == FALSE)) {
         foreach($registros as $sol) {
+          $emp=$this->Movimiento_Model->obtenerNombreEmpleado($sol->id_empleado);
+          $ent=$this->Movimiento_Model->obtenerNombreOficinas($sol->id_oficina_entrega);
+          $rec=$this->Movimiento_Model->obtenerNombreOficinas($sol->id_oficina_recibe);
             //$fuente = $this->Fuentefondos_model->obtenerFuente($sol->id_fuentes);
             //$seccion = $this->Solicitud_Model->obtenerSeccion($sol->id_seccion);
             $onClick = "llenarFormulario('solicitud', ['id', 'fecha_solicitud', 'entrega', 'recibe',
                         'emplead','tipo','usuario'],
-                        [$sol->id_movimiento, '$sol->fecha_guarda', '$sol->nombre_oficina','$sol->nombre_oficina',
-                        '$sol->primer_nombre', '$sol->nombre_movimiento','$sol->usuario_externo'],false,false,false,'observacion','$sol->observacion')";
+                        [$sol->id_movimiento, '$sol->fecha_guarda', '$ent->nombre_oficina,$ent->nombre_seccion,$ent->nombre_almacen','$rec->nombre_oficina,$rec->nombre_seccion,$rec->nombre_almacen',
+                        '$emp->nombre_completo', '$sol->nombre_movimiento','$sol->usuario_externo'],false,false,false,'observacion','$sol->observacion')";
 
             $botones='<a class="icono icon-detalle" href="'.base_url('index.php/ActivoFijo/Detalle_aprobar_movimiento/index/'.$sol->id_movimiento.'/').'"></a>';
 
@@ -86,15 +89,15 @@ class Aprobar_movimiento extends CI_Controller {
                 $eliminar='<a class="icono icon-eliminar" uri='.base_url('index.php/ActivoFijo/Aprobar_movimiento/EliminarDato/'.$sol->id_movimiento).'></a>';
                 $aprobar = '<a class="icono icon-liquidar" href="'.base_url('index.php/ActivoFijo/Aprobar_movimiento/Aprobar/'.$sol->id_movimiento.'/').'"></a>';
                 $denegar = '<a class="icono icon-cross" href="'.base_url('index.php/ActivoFijo/Aprobar_movimiento/Denegar/'.$sol->id_movimiento.'/').'"></a>';
-                $this->table->add_row($sol->id_movimiento, $sol->id_oficina_recibe,$sol->id_oficina_entrega, $sol->primer_nombre.$sol->primer_apellido,
-                                      $sol->nombre_movimiento, $sol->fecha_guarda,$aprobar,$denegar,$botones,$actualizar,$eliminar);
+                $this->table->add_row($sol->id_movimiento, $ent->nombre_oficina.', '.$ent->nombre_seccion.', '.$ent->nombre_almacen,$rec->nombre_oficina.', '.$rec->nombre_seccion.', '.$rec->nombre_almacen,
+                $emp->nombre_completo,$sol->nombre_movimiento, $sol->fecha_guarda,$aprobar,$denegar,$botones,$actualizar,$eliminar);
             }elseif ($sol->nivel_solicitud==2){
               $actualizar ='<a class="icono icon-denegar"></a>';
               $eliminar='<a class="icono icon-denegar"></a>';
               $aprobar = '<a class="icono icon-denegar"></a>';
               $denegar = '<a class="icono icon-denegar"></a>';
-              $this->table->add_row($sol->id_movimiento, $sol->id_oficina_recibe,$sol->id_oficina_entrega, $sol->primer_nombre.$sol->primer_apellido,
-                                    $sol->nombre_movimiento, $sol->fecha_guarda,$aprobar,$denegar,$botones,$actualizar,$eliminar);
+              $this->table->add_row($sol->id_movimiento, $ent->nombre_oficina.', '.$ent->nombre_seccion.', '.$ent->nombre_almacen,$rec->nombre_oficina.', '.$rec->nombre_seccion.', '.$rec->nombre_almacen,
+              $emp->nombre_completo,$sol->nombre_movimiento, $sol->fecha_guarda,$aprobar,$denegar,$botones,$actualizar,$eliminar);
             }
 
 

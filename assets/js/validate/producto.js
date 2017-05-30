@@ -30,3 +30,13 @@ var reglas = {
     }
   },
 };
+
+$(document).ready(function() {
+  $.autocomplete({
+    elemet: $('input[name=autocomplete]'),
+    url: 'index.php/Bodega/Unidadmedidas/Autocomplete',
+    name: 'unidadMedida',
+    siguiente: 'descripcion',
+    content: 'suggestions'
+  });
+});

@@ -11,12 +11,8 @@ echo "</div>";
 $fun = array(
     'name' => 'autocomplete2',
     'placeholder' => 'Escribe Fuente de Fondos',
-    'class' => "form-control autocomplete",
-    'autocomplete' => 'off',
-    'uri' => 'index.php/Bodega/Fuentefondos/Autocomplete',
-    'name_op' => 'fuente',
-    'siguiente' => 'button',
-    'content' => 'suggestions'
+    'class' => "form-control",
+    'autocomplete' => 'off'
 );
 
 $button = array('class' => 'btn btn-success',);

@@ -11,12 +11,8 @@ echo "</div>";
 $emp = array(
     'name' => 'autocomplete',
     'placeholder' => 'NOMBRE DEL EMPLEADO',
-    'class' => "form-control autocomplete",
-    'autocomplete' => 'off',
-    'uri' => 'index.php/ActivoFijo/Reportes/Bienes_por_usuario/AutocompleteEmpleado',
-    'name_op' => 'empleado',
-    'siguiente' => 'button',
-    'content' => 'suggestions'
+    'class' => "form-control",
+    'autocomplete' => 'off'
 );
 
 $button = array('class' => 'btn btn-success',);

@@ -31,6 +31,7 @@ class Bienes_por_proyecto extends CI_Controller {
     if($USER){
       $data['title'] = "Bienes Proyecto";
       $data['menu'] = $this->menu_dinamico->menus($this->session->userdata('logged_in'),$this->uri->segment(1));
+      $data['js'] = 'assets/js/validate/reporte/activofijo/bproyecto.js';
       $table = '';
       if ($this->uri->segment(5) != NULL) {
         $template = array(
@@ -38,7 +39,7 @@ class Bienes_por_proyecto extends CI_Controller {
         );
         $this->table->set_template($template);
         $this->table->set_heading('#','Descripción', 'Modelo','Codigo','Codigo anterior','Categoría',
-          'Sub Categoría','Num Doc Ampara','Fecha adquisición','Precio','Sección','Empleado');
+          'Sub Categoría','Num Doc Ampara','Fecha adquisición','Precio','Oficina','Empleado');
         $num = '10';
         $registros = $this->Datos_Comunes_Model->obtenerBienesProyecto($this->uri->segment(5),$num, $this->uri->segment(6));
         $total = $this->Datos_Comunes_Model->totalBienesProyecto($this->uri->segment(5));
@@ -93,10 +94,9 @@ class Bienes_por_proyecto extends CI_Controller {
         if (!($registros == FALSE)) {
           $i = 1;
           foreach($registros as $pro) {
-            $nombre = $this->Seccion_model->nombreEmpleado($pro->id_empleado);
             $this->table->add_row($i,$pro->descripcion,$pro->modelo,$pro->codigo,$pro->codigo_anterior,
               $pro->nombre_categoria,$pro->nombre_subcategoria,$pro->id_doc_ampara,$pro->fecha_adquisicion,
-              $pro->precio_unitario,$pro->nombre_oficina,$nombre);
+              $pro->precio_unitario,$pro->nombre_oficina,$pro->nombre_empleado);
             $i++;
           }
         } else {
@@ -189,7 +189,6 @@ class Bienes_por_proyecto extends CI_Controller {
       if (!($registros == FALSE)) {
         $i = 2;
         foreach($registros as $pro) {
-          $nombre = $this->Seccion_model->nombreEmpleado($pro->id_empleado);
           $objPHPExcel->setActiveSheetIndex(0)
                       ->setCellValue('A'.$i, $pro->nombre_categoria)
                       ->setCellValue('B'.$i, $pro->nombre_subcategoria)
@@ -201,7 +200,7 @@ class Bienes_por_proyecto extends CI_Controller {
                       ->setCellValue('H'.$i, $pro->codigo)
                       ->setCellValue('I'.$i, $pro->codigo_anterior)
                       ->setCellValue('J'.$i, $pro->nombre_oficina)
-                      ->setCellValue('K'.$i, $nombre);
+                      ->setCellValue('K'.$i, $pro->nombre_empleado);
 
           $objPHPExcel->getActiveSheet()->getStyle('A'.$i.':K'.$i)->applyFromArray($estilo_contenido);
           $i++;

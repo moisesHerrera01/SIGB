@@ -67,7 +67,7 @@
 
       echo form_submit('','Guardar', $button);
 
-      echo "<a class=\"btn btn-warning\" onclick=\"limpiar(['id_especifico', 'nombre'],['proces'])\">Limpiar</a>";
+      echo "<button class='btn btn-warning' type='reset' value='Reset'>Limpiar</button>";
 
       echo form_close();
     echo "</div>";

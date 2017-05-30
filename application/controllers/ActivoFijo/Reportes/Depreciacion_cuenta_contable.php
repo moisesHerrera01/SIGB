@@ -31,6 +31,7 @@ class Depreciacion_cuenta_contable extends CI_Controller {
     if($USER){
       $data['title'] = "8- Reporte Depreciacion por Cuenta Contable";
       $data['menu'] = $this->menu_dinamico->menus($this->session->userdata('logged_in'),$this->uri->segment(1));
+      $data['js'] = 'assets/js/validate/reporte/activofijo/dep_cuenta.js';
       $table = '';
       if ($this->uri->segment(5) != '' && $this->uri->segment(6) != '' && $this->uri->segment(7) != '') {
         $template = array(

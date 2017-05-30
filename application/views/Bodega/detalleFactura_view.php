@@ -17,13 +17,9 @@
       $det = array(
           'name' => 'autocomplete',
           'placeholder' => 'Escribe Producto',
-          'class' => "form-control autocomplete_asoc",
+          'class' => "form-control",
           'autocomplete' => 'off',
           'uri' => 'index.php/Bodega/Detallefactura/AutocompleteEspecificoProducto/'.$id_factura,
-          'name_op' => 'producto',
-          'siguiente' => 'cantidad',
-          'asociacion' => 'cantidad',
-          'content' => 'suggestions'
       );
 
       $cant = array(
@@ -70,7 +66,7 @@
       echo form_hidden('id_detalle_factura');
       echo form_submit('guardar','Guardar', $button);
 
-      echo "<a class=\"btn btn-warning\" onclick=\"limpiar(['id', 'producto','autocomplete','cantidad','precio'])\">Limpiar</a>";
+      echo "<button class='btn btn-warning' type='reset' value='Reset'>Limpiar</button>";
       echo form_close();
     echo "</div>";
   echo "</div>";

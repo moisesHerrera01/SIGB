@@ -31,6 +31,7 @@ class Bienes_por_usuario extends CI_Controller {
     if($USER){
       $data['title'] = "Bienes Usuario";
       $data['menu'] = $this->menu_dinamico->menus($this->session->userdata('logged_in'),$this->uri->segment(1));
+      $data['js'] = 'assets/js/validate/reporte/activofijo/busuario.js';
       $table = '';
       if ($this->uri->segment(5) != NULL) {
         $template = array(
@@ -47,8 +48,8 @@ class Bienes_por_usuario extends CI_Controller {
         if (!($registros == FALSE)) {
           $i = 1;
           foreach($registros as $pro) {
-            $this->table->add_row($i,$pro->descripcion,$pro->nombre_marca,$pro->serie,
-              $pro->codigo,$pro->codigo_anterior,$pro->modelo,$pro->color,$pro->precio_unitario);
+            $this->table->add_row($i,$pro->descripcion,$pro->nombre_marca,$pro->modelo,$pro->serie,
+              $pro->codigo,$pro->codigo_anterior,$pro->color,$pro->precio_unitario);
             $i++;
           }
         } else {
@@ -92,8 +93,8 @@ class Bienes_por_usuario extends CI_Controller {
         if (!($registros == FALSE)) {
           $i = 1;
           foreach($registros as $pro) {
-            $this->table->add_row($i,$pro->descripcion,$pro->nombre_marca,$pro->serie,
-              $pro->codigo,$pro->codigo_anterior,$pro->modelo,$pro->color,$pro->precio_unitario);
+            $this->table->add_row($i,$pro->descripcion,$pro->nombre_marca,$pro->modelo,$pro->serie,
+              $pro->codigo,$pro->codigo_anterior,$pro->color,$pro->precio_unitario);
             $i++;
           }
         } else {

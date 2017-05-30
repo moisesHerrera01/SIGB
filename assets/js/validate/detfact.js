@@ -33,3 +33,16 @@ var reglas = {
     },
   },
 };
+
+$(document).ready(function() {
+  //producto
+  $.autocomplete({
+    elemet: $('input[name=autocomplete]'),
+    url: $('input[name=autocomplete]').attr('uri'),
+    name: 'producto',
+    asociacion1: 'cantidad',
+    siguiente: 'cantidad',
+    content: 'suggestions'
+  });
+
+});

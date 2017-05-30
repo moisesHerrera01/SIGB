@@ -30,14 +30,9 @@
       $id_prod = array(
           'name' => 'autocomplete',
           'placeholder' => 'Escribe producto',
-          'class' => "form-control autocomplete",
-          'autocomplete' => 'off',
-          'uri' => 'index.php/Bodega/Productos/Autocomplete',
-          'name_op' => 'id_producto',
-          'siguiente' => 'guardar',
-          'content' => 'suggestions'
+          'class' => "form-control",
+          'autocomplete' => 'off'
       );
-
 
       $atriLabel = array('class' => 'col-lg-2 control-label');
 
@@ -66,7 +61,7 @@
 
       echo form_submit('guardar','Guardar', $button);
 
-      echo "<a class=\"btn btn-warning\" onclick=\"limpiar(['autocomplete'])\">Limpiar</a>";
+      echo "<button class='btn btn-warning' type='reset' value='Reset'>Limpiar</button>";
 
       echo form_close();
     echo "</div>";

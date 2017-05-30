@@ -239,6 +239,7 @@ class Detalle_solicitud_producto extends CI_Controller {
       $this->load->model(array('mtps/Seccion_model'));
       $data['title'] = "Gasto Global";
       $data['menu'] = $this->menu_dinamico->menus($this->session->userdata('logged_in'),$this->uri->segment(1));
+      $data['js'] = 'assets/js/validate/reporte/bodega/gasto_seccion.js';
       $table = '';
       if (($this->uri->segment(4))!=NULL) {
         $template = array(

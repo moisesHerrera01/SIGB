@@ -68,8 +68,10 @@ class Proveedores extends CI_Controller {
     */
     if (!($registros == FALSE)) {
       foreach($registros as $prov) {
-          $onClick = "llenarFormulario('Proveedores', ['id', 'categoria','autocomplete','nombre_contacto','nit','correo','telefono','fax','direccion'], [$prov->id_proveedores,'$prov->id_categoria_proveedor', '$prov->nombre_categoria - $prov->rubro - $prov->tipo_empresa', '$prov->nombre_contacto','$prov->nit','$prov->correo','$prov->telefono','$prov->fax','$prov->direccion'],false, false,
-           false,'nombreProveedor','$prov->nombre_proveedor')";
+          $onClick = "llenarFormulario('Proveedores', ['id', 'categoria','autocomplete','nombre_contacto','nit','correo','telefono','fax','direccion'],
+          [$prov->id_proveedores,'$prov->id_categoria_proveedor', '$prov->nombre_categoria - $prov->rubro - $prov->tipo_empresa', '$prov->nombre_contacto',
+          '$prov->nit','$prov->telefono','$prov->fax'],
+          false, false,false,['nombreProveedor','correo','direccion'],['$prov->nombre_proveedor','$prov->correo','$prov->direccion'])";
           $this->table->add_row($prov->id_proveedores, $prov->nombre_proveedor, $prov->nit, $prov->telefono,
                           //form_button($btn_act), $form_el,
                           '<a class="icono icon-detalle" href="'.base_url('index.php/Bodega/DetalleProveedor/index/'.$prov->id_proveedores.'/').'"></a>',
@@ -222,6 +224,7 @@ class Proveedores extends CI_Controller {
 
       $data['title'] = "4-Reporte por Proveedor, Factura y Especifico";
       $data['menu'] = $this->menu_dinamico->menus($this->session->userdata('logged_in'),$this->uri->segment(1));
+      $data['js'] = 'assets/js/validate/reporte/bodega/general.js';
 
       $template = array(
           'table_open' => '<table class="table table-striped table-bordered">'

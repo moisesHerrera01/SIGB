@@ -11,24 +11,16 @@ echo "</div>";
 $secc = array(
     'name' => 'autocomplete',
     'placeholder' => 'INGRESE UNA SECCIÓN:',
-    'class' => "form-control autocomplete",
+    'class' => "form-control",
     'autocomplete' => 'off',
-    'uri' => 'index.php/Bodega/Solicitud/Autocomplete',
-    'name_op' => 'seccion',
-    'siguiente' => 'autocomplete3',
-    'content' => 'suggestions1',
     'num_uri' => '5' //lugar en la url que se debe colocar el dato a pasar
 );
 
 $ofc = array(
   'name' => 'autocomplete3',
   'placeholder' => 'INGRESE UNA OFICINA:',
-  'class' => "form-control autocomplete",
-  'autocomplete' => 'off',
-  'uri' => 'index.php/ActivoFijo/Reportes/Bienes_por_unidad/autocompleteOficina/',
-  'name_op' => 'oficina',
-  'siguiente' => 'button',
-  'content' => 'suggestions2'
+  'class' => "form-control",
+  'autocomplete' => 'off'
 );
 
 $button = array('class' => 'btn btn-success',);

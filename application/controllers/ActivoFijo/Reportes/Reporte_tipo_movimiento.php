@@ -38,7 +38,7 @@ class Reporte_tipo_movimiento extends CI_Controller {
             'table_open' => '<table class="table table-striped table-bordered">'
         );
         $this->table->set_template($template);
-        $this->table->set_heading('Id','Oficina entrega','Oficina recibe','Estado','Observaciones','Detalle');
+        $this->table->set_heading('Id','Oficina entrega','Entrega','Oficina recibe','Recibe','Estado','Observaciones','Detalle');
         $num = '10';
         $registros = $this->Tipo_movimiento_model->obtenerMovimientosPorTipoLimit($this->uri->segment(5), $this->uri->segment(6), $this->uri->segment(7), $num, $this->uri->segment(8));
         $total = $this->Tipo_movimiento_model->totalMovimientosPorTipo($this->uri->segment(5), $this->uri->segment(6), $this->uri->segment(7));
@@ -47,13 +47,18 @@ class Reporte_tipo_movimiento extends CI_Controller {
         $tipo_movimiento='';
         if (!($registros == FALSE)) {
           foreach($registros as $tip) {
-            $nom_ofi_recibe = $this->Bienes_Muebles_Model->obtenerOficina($tip->id_oficina_recibe);
-            $this->table->add_row($tip->id_movimiento,$tip->nombre_oficina,$nom_ofi_recibe,$tip->estado_movimiento,$tip->observacion,
-            '<a class="icono icon-detalle" href="'.base_url('index.php/ActivoFijo/Reportes/Detalle_Movimiento/index/'.$tip->id_movimiento.'/').'"></a>');
+            $entrega = $this->Tipo_movimiento_model->obtenerOficinaEmpleadoEntrega($tip->id_oficina_entrega,$tip->id_movimiento,$tip->id_bien);
+            if ($entrega != FALSE) {
+                $this->table->add_row($tip->id_movimiento,$entrega->nombre_oficina,$entrega->nombre_empleado,$tip->nombre_oficina,$tip->nombre_empleado,$tip->estado_movimiento,$tip->observacion,
+                '<a class="icono icon-detalle" href="'.base_url('index.php/ActivoFijo/Reportes/Detalle_Movimiento/index/'.$tip->id_movimiento.'/').'"></a>');
+            }else {
+                $this->table->add_row($tip->id_movimiento,'N/A','N/A',$tip->nombre_oficina,$tip->nombre_empleado,$tip->estado_movimiento,$tip->observacion,
+                '<a class="icono icon-detalle" href="'.base_url('index.php/ActivoFijo/Reportes/Detalle_Movimiento/index/'.$tip->id_movimiento.'/').'"></a>');
+            }
             $tipo_movimiento=$tip->nombre_movimiento;
           }
         } else {
-          $msg = array('data' => "No se encontraron resultados", 'colspan' => "5");
+          $msg = array('data' => "No se encontraron resultados", 'colspan' => "8");
           $this->table->add_row($msg);
         }
         $table =  "<div class='content_table '>" .
@@ -83,15 +88,19 @@ class Reporte_tipo_movimiento extends CI_Controller {
             'table_open' => '<table class="table table-striped table-bordered">'
         );
         $this->table->set_template($template);
-        $this->table->set_heading('Id','Oficina entrega','Oficina recibe','Estado','Observacione');
+        $this->table->set_heading('Id','Oficina entrega','Entrega','Oficina recibe','Recibe','Estado','Observaciones');
         $registros = $this->Tipo_movimiento_model->obtenerMovimientosPorTipo($this->uri->segment(5), $this->uri->segment(6), $this->uri->segment(7));
         if (!($registros == FALSE)) {
           foreach($registros as $tip) {
-            $nom_ofi_recibe = $this->Bienes_Muebles_Model->obtenerOficina($tip->id_oficina_recibe);
-            $this->table->add_row($tip->id_movimiento,$tip->nombre_oficina,$nom_ofi_recibe,$tip->estado_movimiento,$tip->observacion);
+            $entrega = $this->Tipo_movimiento_model->obtenerOficinaEmpleadoEntrega($tip->id_oficina_entrega,$tip->id_movimiento,$tip->id_bien);
+            if ($entrega != FALSE) {
+                $this->table->add_row($tip->id_movimiento,$entrega->nombre_oficina,$entrega->nombre_empleado,$tip->nombre_oficina,$tip->nombre_empleado,$tip->estado_movimiento,$tip->observacion);
+            }else {
+                $this->table->add_row($tip->id_movimiento,'N/A','N/A',$tip->nombre_oficina,$tip->nombre_empleado,$tip->estado_movimiento,$tip->observacion);
+            }
           }
         } else {
-          $msg = array('data' => "No se encontraron resultados", 'colspan' => "6");
+          $msg = array('data' => "No se encontraron resultados", 'colspan' => "8");
           $this->table->add_row($msg);
         }
         $data = array(
@@ -163,25 +172,39 @@ class Reporte_tipo_movimiento extends CI_Controller {
       $objPHPExcel->setActiveSheetIndex(0)
                    ->setCellValue('A1', 'Id')
                    ->setCellValue('B1', 'Oficina entrega')
-                   ->setCellValue('C1', 'Oficina recibe')
-                   ->setCellValue('D1', 'Estado')
-                   ->setCellValue('E1', 'Observaciones');
+                   ->setCellValue('C1', 'Entrega')
+                   ->setCellValue('D1', 'Oficina recibe')
+                   ->setCellValue('E1', 'Recibe')
+                   ->setCellValue('F1', 'Estado')
+                   ->setCellValue('G1', 'Observaciones');
 
-      $objPHPExcel->getActiveSheet()->getStyle('A1:E1')->applyFromArray($estilo_titulo);
+      $objPHPExcel->getActiveSheet()->getStyle('A1:G1')->applyFromArray($estilo_titulo);
 
       $registros = $this->Tipo_movimiento_model->obtenerMovimientosPorTipo($this->uri->segment(5), $this->uri->segment(6), $this->uri->segment(7));
       if (!($registros == FALSE)) {
         $i = 2;
         foreach($registros as $tip) {
-        $nom_ofi_recibe = $this->Bienes_Muebles_Model->obtenerOficina($tip->id_oficina_recibe);
-          $objPHPExcel->setActiveSheetIndex(0)
-                      ->setCellValue('A'.$i, $tip->id_movimiento)
-                      ->setCellValue('B'.$i, $tip->nombre_oficina)
-                      ->setCellValue('C'.$i, $nom_ofi_recibe)
-                      ->setCellValue('D'.$i, $tip->estado_movimiento)
-                      ->setCellValue('E'.$i, $tip->observacion);
-
-          $objPHPExcel->getActiveSheet()->getStyle('A'.$i.':E'.$i)->applyFromArray($estilo_contenido);
+          $entrega = $this->Tipo_movimiento_model->obtenerOficinaEmpleadoEntrega($tip->id_oficina_entrega,$tip->id_movimiento,$tip->id_bien);
+          if ($entrega!=FALSE) {
+            $objPHPExcel->setActiveSheetIndex(0)
+                        ->setCellValue('A'.$i, $tip->id_movimiento)
+                        ->setCellValue('B'.$i, $entrega->nombre_oficina)
+                        ->setCellValue('C'.$i, $entrega->nombre_empleado)
+                        ->setCellValue('D'.$i, $tip->nombre_oficina)
+                        ->setCellValue('E'.$i, $tip->nombre_empleado)
+                        ->setCellValue('F'.$i, $tip->estado_movimiento)
+                        ->setCellValue('G'.$i, $tip->observacion);
+          }else {
+            $objPHPExcel->setActiveSheetIndex(0)
+                        ->setCellValue('A'.$i, $tip->id_movimiento)
+                        ->setCellValue('B'.$i, 'N/A')
+                        ->setCellValue('C'.$i, 'N/A')
+                        ->setCellValue('D'.$i, $tip->nombre_oficina)
+                        ->setCellValue('E'.$i, $tip->nombre_empleado)
+                        ->setCellValue('F'.$i, $tip->estado_movimiento)
+                        ->setCellValue('G'.$i, $tip->observacion);
+          }
+          $objPHPExcel->getActiveSheet()->getStyle('A'.$i.':G'.$i)->applyFromArray($estilo_contenido);
           $i++;
         }
 

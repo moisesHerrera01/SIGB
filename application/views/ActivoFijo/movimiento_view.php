@@ -50,7 +50,7 @@
   $tip = array(
       'name' => 'autocomplete5',
       'placeholder' => 'Ingrese tipo movimiento',
-      'class' => "form-control autocomplete",
+      'class' => "form-control autocomplete_func",
       'autocomplete' => 'off',
       'uri' => 'index.php/ActivoFijo/Movimiento/AutocompleteTipo_movimiento',
       'name_op' => 'tipo_movimiento',
@@ -103,7 +103,17 @@
 
 echo "<fieldset>";
         echo "<legend>Paso 1:</legend>";
+
   echo "<div class='form-group'>";
+    echo form_label('Tipo mov:', 'tip', $atriLabel);
+    echo "<div class='col-lg-10'>";
+      echo form_input($tip);
+      echo form_hidden('tipo_movimiento');
+      echo '<div id="suggestions4" class="suggestions"></div>';
+    echo "</div>";
+  echo "</div>";
+
+  echo "<div class='form-group' id='entrega'>";
     echo form_label('Entrega:', 'ent', $atriLabel);
     echo "<div class='col-lg-10'>";
       echo form_input($ent);
@@ -112,7 +122,7 @@ echo "<fieldset>";
     echo "</div>";
   echo "</div>";
 
-  echo "<div class='form-group'>";
+  echo "<div class='form-group' id='recibe'>";
     echo form_label('Recibe:', 'rec', $atriLabel);
     echo "<div class='col-lg-10'>";
       echo form_input($rec);
@@ -127,15 +137,6 @@ echo "<fieldset>";
       echo form_input($emp);
       echo form_hidden('empleado');
       echo '<div id="suggestions3" class="suggestions"></div>';
-    echo "</div>";
-  echo "</div>";
-
-  echo "<div class='form-group'>";
-    echo form_label('Tipo mov:', 'tip', $atriLabel);
-    echo "<div class='col-lg-10'>";
-      echo form_input($tip);
-      echo form_hidden('tipo_movimiento');
-      echo '<div id="suggestions4" class="suggestions"></div>';
     echo "</div>";
   echo "</div>";
 

@@ -71,7 +71,7 @@ class Movimiento extends CI_Controller {
 
         if (!($registros == FALSE)) {
           foreach($registros as $mov) {
-              $nom_ofi_recibe = $this->Bienes_Muebles_Model->obtenerOficina($mov->id_oficina_recibe);
+             $nom_ofi_recibe = $this->Bienes_Muebles_Model->obtenerOficina($mov->id_oficina_recibe);
               $onClick = "llenarFormulario('movimiento', ['id','oficina_entrega', 'autocomplete3','oficina_recibe',
               'autocomplete','empleado','autocomplete4','tipo_movimiento','autocomplete5','usuario_externo',
               'entregado_por','recibido_por','autorizado_por','visto_bueno_por'],
@@ -81,12 +81,18 @@ class Movimiento extends CI_Controller {
               '$mov->entregado_por','$mov->recibido_por','$mov->autorizado_por','$mov->visto_bueno_por'],
               false,false,false, 'observacion', '$mov->observacion')";
 
+              if ($mov->estado_movimiento=='CERRADO') {
+                $eliminar='<a class="icono icon-denegar"></a>';
+                $cerrar='<a class="icono icon-denegar"></a>';
+                $editar='<a class="icono icon-denegar"></a>';
+              }else {
+                $editar='<a class="icono icon-actualizar" onClick="'.$onClick.'"></a>';
+                $cerrar='<a class="icono icon-lock" href="'.base_url('index.php/ActivoFijo/Movimiento/cerrar/'.$mov->id_movimiento.'/').'"></a>';
+                $eliminar='<a class="icono icon-eliminar" uri='.base_url('index.php/ActivoFijo/Movimiento/EliminarDato/'.$mov->id_movimiento).'></a>';
+              }
               $this->table->add_row($mov->id_movimiento,$nom_ofi_recibe,$mov->primer_nombre.' '.$mov->primer_apellido,$mov->nr,$mov->nombre_completo,
-              '<a class="icono icon-actualizar" onClick="'.$onClick.'"></a>',
-              '<a class="icono icon-eliminar" uri='.base_url('index.php/ActivoFijo/Movimiento/EliminarDato/'.$mov->id_movimiento).'></a>',
-              '<a class="icono icon-detalle" href="'.base_url('index.php/ActivoFijo/Detalle_Movimiento/index/'.$mov->id_movimiento.'/').'"></a>',
-              '<a class="icono icon-acta" target="_blank" href="'.base_url('index.php/ActivoFijo/Movimiento_imp/index/'.$mov->id_movimiento.'/').'"></a>',
-              '<a class="icono icon-lock" href="'.base_url('index.php/ActivoFijo/Movimiento/cerrar/'.$mov->id_movimiento.'/').'"></a>');
+              $editar,$eliminar,'<a class="icono icon-detalle" href="'.base_url('index.php/ActivoFijo/Detalle_Movimiento/index/'.$mov->id_movimiento.'/').'"></a>',
+              '<a class="icono icon-acta" target="_blank" href="'.base_url('index.php/ActivoFijo/Movimiento_imp/index/'.$mov->id_movimiento.'/').'"></a>',$cerrar);
           }
         } else {
           $msg = array('data' => "Texto no encontrado", 'colspan' => "10");

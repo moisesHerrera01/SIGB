@@ -31,6 +31,10 @@ if (isset($alert)) {
         $mensaje = "Ud. no posee los permisos necesarios";
         $tipo = 'danger';
         break;
+      case 'no_delete':
+        $mensaje = "No se ha podido eliminar.";
+        $tipo = 'warning';
+        break;
       default:
         break;
     }

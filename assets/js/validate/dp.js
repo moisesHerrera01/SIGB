@@ -17,3 +17,14 @@ var reglas = {
     },
   },
 };
+
+$(document).ready(function() {
+  //producto
+  $.autocomplete({
+    elemet: $('input[name=autocomplete]'),
+    url: 'index.php/Bodega/Productos/Autocomplete',
+    name: 'id_producto',
+    siguiente: 'guardar',
+    content: 'suggestions'
+  });
+});

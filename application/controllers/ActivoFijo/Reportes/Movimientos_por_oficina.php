@@ -60,7 +60,7 @@ class Movimientos_por_oficina extends CI_Controller {
                   "<div class='exportar'>
                   <a href='".base_url('/index.php/ActivoFijo/Reportes/Movimientos_por_oficina/ReporteExcel/'.$this->uri->segment(5).'/'.$this->uri->segment(6).'/'.$this->uri->segment(7))."' class='icono icon-file-excel'>
                   Exportar Excel</a> &nbsp;
-                  <a href='".base_url('/index.php/ActivoFijo/Reportes/Movimientos_por_oficina/ImprimirReporte/'.$this->uri->segment(5))."' class='icono icon-printer' target='_blank'>
+                  <a href='".base_url('/index.php/ActivoFijo/Reportes/Movimientos_por_oficina/ImprimirReporte/'.$this->uri->segment(5).'/'.$this->uri->segment(6).'/'.$this->uri->segment(7))."' class='icono icon-printer' target='_blank'>
                   Imprimir</a></div>" . "<div class='table-responsive'>" . $this->table->generate() . "</div>" . $pagination . "</div></div>";
 
       }

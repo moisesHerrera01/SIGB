@@ -19,12 +19,18 @@ class Detalle_Movimiento extends CI_Controller {
     $data['js'] = "assets/js/validate/detalle_movimiento.js";
     $id_mov = $this->uri->segment(4);
     $nombre = $this->Detalle_movimiento_model->obtenerMovimiento($id_mov);
-    $msg = array('alert' => $this->uri->segment(5),'nombre'=> $nombre->observacion,'id_mov' => $id_mov,'controller'=>'detalle_movimiento');
+    if ($nombre->estado_movimiento=='ABIERTO') {
+      $eliminar="<a href='".base_url('index.php/ActivoFijo/Detalle_Movimiento/EliminarTodos/'.$this->uri->segment(4))."' class='btn btn-danger'>Eliminar Todos</a> <br/><br/>";
+    }else {
+      $eliminar='';
+    }
+    $msg = array('alert' => $this->uri->segment(5),'nombre'=>'Id:'.$nombre->id_movimiento.', Tipo:'.$nombre->nombre_movimiento.
+    ', Fecha:'.$nombre->fecha_guarda,'id_mov' => $id_mov,'controller'=>'detalle_movimiento','estado'=>$nombre->estado_movimiento);
 		$data['body'] = $this->load->view('mensajes', $msg, TRUE) . $this->load->view('ActivoFijo/detalle_movimiento_view',$msg,TRUE) .
                     $this->load->view('modals/bienes_movimiento',"",TRUE) .
                     "<br><div class='content_table table-responsive'>" .
                     "<div class='limit-content-title'><span class='icono icon-table icon-title'> Detalle Movimientos</span></div>".
-                    "<div class='limit-content'>" . $this->mostrarTabla()."</div>";
+                    "<div class='limit-content'>" .$eliminar.$this->mostrarTabla()."</div>";
     $data['menu'] = $this->menu_dinamico->menus($this->session->userdata('logged_in'),$this->uri->segment(1));
     $this->load->view('base', $data);
 	}
@@ -68,11 +74,16 @@ class Detalle_Movimiento extends CI_Controller {
 
     if (!($registros == FALSE)) {
       foreach($registros as $det) {
+          if ($det->estado_movimiento=='ABIERTO') {
+            $eliminar='<a class="icono icon-eliminar" uri="'.base_url('index.php/ActivoFijo/Detalle_Movimiento/EliminarDato/'.
+            $det->id_movimiento.'/'.$det->id_detalle_movimiento.'/').'"></a>';
+          }else {
+            $eliminar='<a class="icono icon-denegar"></a>';
+          }
           $onClick = "llenarFormulario('detalle', ['id_detalle_movimiento','autocomplete','bien'],
           ['$det->id_detalle_movimiento','$det->codigo','$det->id_bien'])";
           $this->table->add_row($det->id_detalle_movimiento, $det->descripcion,$det->nombre_marca,$det->modelo,$det->color,
-          $det->serie,$det->codigo,$det->codigo_anterior,
-          '<a class="icono icon-eliminar" uri="'.base_url('index.php/ActivoFijo/Detalle_Movimiento/EliminarDato/'.$det->id_movimiento.'/'.$det->id_detalle_movimiento.'/').'"></a>');
+          $det->serie,$det->codigo,$det->codigo_anterior,$eliminar);
       }
     } else {
       $msg = array('data' => "Texto no encontrado", 'colspan' => "9");
@@ -171,6 +182,22 @@ class Detalle_Movimiento extends CI_Controller {
       'id_empleado'=>'0'
     );
     $this->Bienes_inmuebles_model->actualizarBienesInmuebles($detmov->id_bien,$data2);
+    redirect('/ActivoFijo/Detalle_Movimiento/index/'.$id_mov.'/delete');
+  }
+
+  public function EliminarTodos() {
+    $id_mov = $this->uri->segment(4);
+    $registros = $this->Detalle_movimiento_model->obtenerDetalleMovimientos($id_mov);
+    if ($registros) {
+
+      foreach ($registros as $bien) {
+        $this->Detalle_movimiento_model->eliminarDetalleMovimiento($bien->id_detalle_movimiento);
+      }
+
+    } else {
+      redirect('/ActivoFijo/Detalle_Movimiento/index/'.$id_mov.'/no_delete');
+    }
+
     redirect('/ActivoFijo/Detalle_Movimiento/index/'.$id_mov.'/delete');
   }
 

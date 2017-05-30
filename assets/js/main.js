@@ -1060,110 +1060,114 @@ var autocomplete_func = function (elemet, func) {
   //variable que controla los autocomplete para teclados
   var mark = 0;
   var content = elemet.attr('content');
-  $.ajax({
-    type: 'post',
-    url: baseurl + elemet.attr('uri'),
-    data: { autocomplete: elemet.val() },
-    beforeSend: function(){
-      $("#"+content).html("<p id='cargando' align='center' class='icono icon-spinner'></p>");
-      var angulo = 0;
-      setInterval(function(){
-            angulo += 3;
-           $("#cargando").rotate(angulo);
-      },10);
-    },
-    success: function(result) {
-      $('#'+content).fadeIn(300).html(result);
 
-      $('.suggest-element').click(function(){
-        //Obtenemos la id unica de la sugerencia pulsada
-        var id = $(this).attr('ida');
-        //Editamos el valor del input con data de la sugerencia pulsada
-        elemet.val($('#'+id).attr("data1"));
-        $('input[name='+elemet.attr('name_op')+']').val($('#'+id).attr("data"));
-        //Hacemos desaparecer el resto de sugerencias
-        $('#'+content).fadeOut(300);
-        //Ejecutamos funcion obtenida
-        func();
-      });
+  elemet.focus(function() {
+    $.ajax({
+      type: 'post',
+      url: baseurl + elemet.attr('uri'),
+      data: { autocomplete: elemet.val() },
+      beforeSend: function(){
+        $("#"+content).html("<p id='cargando' align='center' class='icono icon-spinner'></p>");
+        var angulo = 0;
+        setInterval(function(){
+              angulo += 3;
+             $("#cargando").rotate(angulo);
+        },10);
+      },
+      success: function(result) {
+        $('#'+content).fadeIn(300).html(result);
 
-      elemet.keyup( function(event) {
-          var code = event.keyCode;
+        $('.suggest-element').click(function(){
+          //Obtenemos la id unica de la sugerencia pulsada
+          var id = $(this).attr('ida');
+          //Editamos el valor del input con data de la sugerencia pulsada
+          elemet.val($('#'+id).attr("data1"));
+          $('input[name='+elemet.attr('name_op')+']').val($('#'+id).attr("data"));
+          //Hacemos desaparecer el resto de sugerencias
+          $('#'+content).fadeOut(300);
+          //Ejecutamos funcion obtenida
+          func();
+        });
+      },
+    });
+  });
 
-          if((code>47 && code<91)||(code>96 && code<123) || code == 8 ) {
-            $.ajax({
-              type: 'post',
-              url: baseurl + elemet.attr('uri'),
-              data: { autocomplete: elemet.val() },
-              beforeSend: function(){
-                $("#"+content).html("<p id='cargando' align='center' class='icono icon-spinner'></p>");
-                var angulo = 0;
-                setInterval(function(){
-                      angulo += 3;
-                     $("#cargando").rotate(angulo);
-                },10);
-              },
-              success: function(result) {
-                $('#'+content).fadeIn(300).html(result);
+  elemet.keyup( function(event) {
+      var code = event.keyCode;
 
-                $('.suggest-element').click(function(){
-                  //Obtenemos la id unica de la sugerencia pulsada
-                  var id = $(this).attr('ida');
-                  //Editamos el valor del input con data de la sugerencia pulsada
-                  elemet.val($('#'+id).attr("data1"));
-                  $('input[name='+elemet.attr('name_op')+']').val($('#'+id).attr("data"));
-                  //Hacemos desaparecer el resto de sugerencias
-                  $('#'+content).fadeOut(300);
-                  //Ejecutamos funcion obtenida
-                  func();
-                });
-              },
+      if((code>47 && code<91)||(code>96 && code<123) || code == 8 ) {
+        $.ajax({
+          type: 'post',
+          url: baseurl + elemet.attr('uri'),
+          data: { autocomplete: elemet.val() },
+          beforeSend: function(){
+            $("#"+content).html("<p id='cargando' align='center' class='icono icon-spinner'></p>");
+            var angulo = 0;
+            setInterval(function(){
+                  angulo += 3;
+                 $("#cargando").rotate(angulo);
+            },10);
+          },
+          success: function(result) {
+            $('#'+content).fadeIn(300).html(result);
+
+            $('.suggest-element').click(function(){
+              //Obtenemos la id unica de la sugerencia pulsada
+              var id = $(this).attr('ida');
+              //Editamos el valor del input con data de la sugerencia pulsada
+              elemet.val($('#'+id).attr("data1"));
+              $('input[name='+elemet.attr('name_op')+']').val($('#'+id).attr("data"));
+              //Hacemos desaparecer el resto de sugerencias
+              $('#'+content).fadeOut(300);
+              //Ejecutamos funcion obtenida
+              func();
             });
-          } else if(code==40 || code ==38 ) {
-              var elements = $('#'+content+' .suggest-element');
-              elements.removeClass('suggest-element-select');
-              if (elements.size() > 0) {
-                if (code==38){
-                    mark --;
-                }else{
-                    mark ++;
-                }
+          },
+        });
+      } else if(code==40 || code ==38 ) {
+          var elements = $('#'+content+' .suggest-element');
+          elements.removeClass('suggest-element-select');
+          if (elements.size() > 0) {
+            if (code==38){
+                mark --;
+            }else{
+                mark ++;
+            }
 
-                if (mark > elements.size()){
-                    mark=0;
-                }else if (mark < 0){
-                    mark=elements.size();
-                }
+            if (mark > elements.size()){
+                mark=0;
+            }else if (mark < 0){
+                mark=elements.size();
+            }
 
-                elements.each(function(){
-                    if ($(this).attr('id') == mark)
-                    {
-                        $(this).addClass('suggest-element-select');
-                    }
-                });
-              }
-          } else if (code == 13) {
-            var elements = $('#'+content+' .suggest-element');
             elements.each(function(){
                 if ($(this).attr('id') == mark)
                 {
-                  //Obtenemos la id unica de la sugerencia pulsada
-                  var id = $(this).attr('ida');
-                  //Editamos el valor del input con data de la sugerencia pulsada
-                  elemet.val($('#'+id).attr("data1"));
-                  $('input[name='+elemet.attr('name_op')+']').val($('#'+id).attr("data"));
-                  //Hacemos desaparecer el resto de sugerencias
-                  $('#'+content).fadeOut(300);
-                  //Ejecutamos funcion obtenida
-                  func();
-                  return false;
+                    $(this).addClass('suggest-element-select');
                 }
             });
           }
-        }
-      );
-    },
-  });
+      } else if (code == 13) {
+        var elements = $('#'+content+' .suggest-element');
+        elements.each(function(){
+            if ($(this).attr('id') == mark)
+            {
+              //Obtenemos la id unica de la sugerencia pulsada
+              var id = $(this).attr('ida');
+              //Editamos el valor del input con data de la sugerencia pulsada
+              elemet.val($('#'+id).attr("data1"));
+              $('input[name='+elemet.attr('name_op')+']').val($('#'+id).attr("data"));
+              //Hacemos desaparecer el resto de sugerencias
+              $('#'+content).fadeOut(300);
+              //Ejecutamos funcion obtenida
+              func();
+              return false;
+            }
+        });
+      }
+    }
+  );
+
   //$('body').click(function(){ $('#'+content).fadeOut(300); });
   elemet.focusout(function () {
     $('#'+content).fadeOut(300);
@@ -1201,5 +1205,163 @@ jQuery.extend({
 			    }
 			    $(el).attr("id", "x_" + x);
 	    });
+    },
+    
+    /*
+     * ajaxdata: es el data que recibe el controlador desde el data del ajax
+     */
+    autocomplete : function ( param ) {
+      //variable que controla los autocomplete para teclados
+      var mark = 0;
+
+      var elemet = param['elemet'];
+      var content = param['content'];
+      var uri = param['url'];
+      var ajaxdata = {autocomplete: ''}
+
+      if (param.hasOwnProperty('addfunction')) {
+        var func = param['addfunction'];
+      }
+
+      if (param.hasOwnProperty('asociacion1')) {
+        var asociacion1 = param['asociacion1'];
+      }
+
+      if (param.hasOwnProperty('ajaxdata')) {
+        ajaxdata = param['ajaxdata'];
+      }
+
+      elemet.focus(function() {
+        ajaxdata['autocomplete'] = elemet.val();
+        $.ajax({
+          type: 'post',
+          url: baseurl + uri,
+          data: ajaxdata,
+          beforeSend: function(){
+            $("#"+content).html("<p id='cargando' align='center' class='icono icon-spinner'></p>");
+            var angulo = 0;
+            setInterval(function(){
+                  angulo += 3;
+                 $("#cargando").rotate(angulo);
+            },10);
+          },
+          success: function(result) {
+            $('#'+content).fadeIn(300).html(result);
+
+            $('.suggest-element').click(function(){
+              //Obtenemos la id unica de la sugerencia pulsada
+              var id = $(this).attr('ida');
+              //Editamos el valor del input con data de la sugerencia pulsada
+              elemet.val($('#'+id).attr("data1"));
+              $('input[name='+param['name']+']').val($('#'+id).attr("data"));
+              //Hacemos desaparecer el resto de sugerencias
+              $('#'+content).fadeOut(300);
+              //Ejecutamos funcion obtenida
+              if (param.hasOwnProperty('addfunction')) {
+                func();
+              }
+
+              if (param.hasOwnProperty('asociacion1')) {
+                $('input[name='+asociacion1+']').val($('#'+id).attr("data2"));
+              }
+            });
+          },
+        });
+      });
+
+      elemet.keyup( function(event) {
+          var code = event.keyCode;
+
+          if((code>47 && code<91)||(code>96 && code<123) || code == 8 ) {
+            ajaxdata['autocomplete'] = elemet.val();
+            $.ajax({
+              type: 'post',
+              url: baseurl + uri,
+              data: ajaxdata,
+              beforeSend: function(){
+                $("#"+content).html("<p id='cargando' align='center' class='icono icon-spinner'></p>");
+                var angulo = 0;
+                setInterval(function(){
+                      angulo += 3;
+                     $("#cargando").rotate(angulo);
+                },10);
+              },
+              success: function(result) {
+                $('#'+content).fadeIn(300).html(result);
+
+                $('.suggest-element').click(function(){
+                  //Obtenemos la id unica de la sugerencia pulsada
+                  var id = $(this).attr('ida');
+                  //Editamos el valor del input con data de la sugerencia pulsada
+                  elemet.val($('#'+id).attr("data1"));
+                  $('input[name='+param['name']+']').val($('#'+id).attr("data"));
+                  //Hacemos desaparecer el resto de sugerencias
+                  $('#'+content).fadeOut(300);
+                  //Ejecutamos funcion obtenida
+                  if (param.hasOwnProperty('addfunction')) {
+                    func();
+                  }
+
+                  if (param.hasOwnProperty('asociacion1')) {
+                    $('input[name='+asociacion1+']').val($('#'+id).attr("data2"));
+                  }
+                });
+              },
+            });
+          } else if(code==40 || code ==38 ) {
+              var elements = $('#'+content+' .suggest-element');
+              elements.removeClass('suggest-element-select');
+              if (elements.size() > 0) {
+                if (code==38){
+                    mark --;
+                }else{
+                    mark ++;
+                }
+
+                if (mark > elements.size()){
+                    mark=0;
+                }else if (mark < 0){
+                    mark=elements.size();
+                }
+
+                elements.each(function(){
+                    if ($(this).attr('id') == mark)
+                    {
+                        $(this).addClass('suggest-element-select');
+                    }
+                });
+              }
+          } else if (code == 13) {
+            var elements = $('#'+content+' .suggest-element');
+            elements.each(function(){
+                if ($(this).attr('id') == mark)
+                {
+                  //Obtenemos la id unica de la sugerencia pulsada
+                  var id = $(this).attr('ida');
+                  //Editamos el valor del input con data de la sugerencia pulsada
+                  elemet.val($('#'+id).attr("data1"));
+                  $('input[name='+param['name']+']').val($('#'+id).attr("data"));
+                  //Hacemos desaparecer el resto de sugerencias
+                  $('#'+content).fadeOut(300);
+                  //Ejecutamos funcion obtenida
+                  if (param.hasOwnProperty('addfunction')) {
+                    func();
+                  }
+
+                  if (param.hasOwnProperty('asociacion1')) {
+                    $('input[name='+asociacion1+']').val($('#'+id).attr("data2"));
+                  }
+                  return false;
+                }
+            });
+          }
+        }
+      );
+
+      //$('body').click(function(){ $('#'+content).fadeOut(300); });
+      elemet.focusout(function () {
+        $('#'+content).fadeOut(300);
+      });
+      $('input[name='+param['siguiente']+']').focus(function(){ $('#'+content).fadeOut(300); });
     }
 });

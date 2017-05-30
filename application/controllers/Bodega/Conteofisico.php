@@ -192,6 +192,7 @@ class ConteoFisico extends CI_Controller {
     if($USER){
       $data['title'] = "Reporte Conteo Fisico";
       $data['menu'] = $this->menu_dinamico->menus($this->session->userdata('logged_in'),$this->uri->segment(1));
+      $data['js'] = 'assets/js/validate/reporte/bodega/comp_conteo.js';
       $table = '';
       if (($nom_conteo) != '') {
         $template = array(

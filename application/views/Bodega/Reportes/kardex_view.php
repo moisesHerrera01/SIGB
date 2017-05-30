@@ -23,25 +23,17 @@ $fin= array(
 );
 
 $det = array(
-    'name' => 'autocomplete1',
+    'name' => 'autocomplete',
     'placeholder' => 'Escribe Producto',
-    'class' => "form-control autocomplete",
+    'class' => "form-control ",
     'autocomplete' => 'off',
-    'uri' => 'index.php/Bodega/Productos/Autocomplete',
-    'name_op' => 'producto',
-    'siguiente' => 'button',
-    'content' => 'suggestions'
 );
 
 $fuente = array(
     'name' => 'autocomplete1',
     'placeholder' => 'Escribe Fuente de Fondos',
-    'class' => "form-control autocomplete",
-    'autocomplete' => 'off',
-    'uri' => 'index.php/Bodega/Fuentefondos/Autocomplete',
-    'name_op' => 'fuente',
-    'siguiente' => 'btn',
-    'content' => 'suggestions1'
+    'class' => "form-control",
+    'autocomplete' => 'off'
 );
 
 $button = array('class' => 'btn btn-success',);

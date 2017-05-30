@@ -45,7 +45,7 @@ class Solicitud_movimiento extends CI_Controller {
           'table_open' => '<table class="table table-striped table-bordered">'
       );
       $this->table->set_template($template);
-      $this->table->set_heading('Id', 'Oficina Recibe', 'Oficina Entrega', 'Empleado', 'Tipo Movimiento', 'Fecha','Enviar','Detalle','Eliminar');
+      $this->table->set_heading('Id', 'Oficina Entrega', 'Oficina Recibe', 'Empleado', 'Tipo Movimiento', 'Fecha','Enviar','Detalle','Eliminar');
 
       /*
       * Filtro a la BD
@@ -72,6 +72,9 @@ class Solicitud_movimiento extends CI_Controller {
 
       if (!($registros == FALSE)) {
         foreach($registros as $sol) {
+          $emp=$this->Movimiento_Model->obtenerNombreEmpleado($sol->id_empleado);
+          $ent=$this->Movimiento_Model->obtenerNombreOficinas($sol->id_oficina_entrega);
+          $rec=$this->Movimiento_Model->obtenerNombreOficinas($sol->id_oficina_recibe);
             //$fuente = $this->Fuentefondos_model->obtenerFuente($sol->id_fuentes);
             //$seccion = $this->Solicitud_Model->obtenerSeccion($sol->id_seccion);
             if($sol->estado_solicitud=='INGRESADA' || $sol->estado_solicitud=='ENVIADA'){
@@ -88,12 +91,12 @@ class Solicitud_movimiento extends CI_Controller {
             }
 
             $onClick = "llenarFormulario('solicitud', ['id', 'fecha_solicitud', 'autocomplete3', 'oficina_entrega',
-            'autocomplete4','empleado','autocomplete5','tipo_movimiento','usuario_externo','observacion','comentario'],
+            'autocomplete4','empleado','autocomplete5','tipo_movimiento','usuario_externo','entregado_por','recibido_por','autorizado_por','visto_bueno_por','observacion','comentario'],
                         [$sol->id_movimiento, '$sol->fecha_guarda', '$sol->id_oficina_entrega','$sol->id_empleado',
-                        $sol->primer_nombre, $sol->id_tipo_movimiento,$sol->nombre_movimiento,$sol->usuario_externo,$sol->observacion])";
+                        $sol->primer_nombre, $sol->id_tipo_movimiento,$sol->nombre_movimiento,$sol->usuario_externo,'$sol->recibido_por','$sol->entregado_por','$sol->autorizado_por','$sol->visto_bueno_por',$sol->observacion])";
 
-            $this->table->add_row($sol->id_movimiento, $sol->id_oficina_recibe,$sol->id_oficina_entrega, $sol->primer_nombre.$sol->primer_apellido,
-                                  $sol->nombre_movimiento, $sol->fecha_guarda, $enviar,$botones,$eliminar);
+            $this->table->add_row($sol->id_movimiento, $ent->nombre_oficina.', '.$ent->nombre_seccion.', '.$ent->nombre_almacen,$rec->nombre_oficina.', '.$rec->nombre_seccion.', '.$rec->nombre_almacen,
+            $emp->nombre_completo,$sol->nombre_movimiento, $sol->fecha_guarda, $enviar,$botones,$eliminar);
               }
         }
       } else {
@@ -129,6 +132,10 @@ class Solicitud_movimiento extends CI_Controller {
           'id_empleado' => $this->input->post('empleado'),
           'id_tipo_movimiento' => $this->input->post('tipo_movimiento'),
           'usuario_externo' => $this->input->post('usuario_externo'),
+          'entregado_por' => $this->input->post('entregado_por'),
+          'recibido_por' => $this->input->post('recibido_por'),
+          'autorizado_por' => $this->input->post('autorizado_por'),
+          'visto_bueno_por' => $this->input->post('visto_bueno_por'),
           'fecha_guarda' => $this->input->post('fecha_solicitud'),
           'nivel_solicitud' => 0,
           'estado_solicitud' => 'INGRESADA',

@@ -31,6 +31,7 @@ class Datos_del_bien extends CI_Controller {
     if($USER){
       $data['title'] = "4-Datos del bien";
       $data['menu'] = $this->menu_dinamico->menus($this->session->userdata('logged_in'),$this->uri->segment(1));
+      $data['js'] = 'assets/js/validate/reporte/activofijo/datos_bien.js';
       $table = '';
       if ($this->uri->segment(5) != NULL) {
         $template = array(
@@ -39,7 +40,7 @@ class Datos_del_bien extends CI_Controller {
         $this->table->set_template($template);
         $this->table->set_heading('#','Dato Común','Valor','#','Dato especifico','Valor');
         $registros = $this->Datos_Comunes_Model->obtenerBien($this->uri->segment(5));
-
+        $descripcion='NO ENCONTRADO';
         if (!($registros == FALSE)) {
             $this->table->add_row(1,'<strong>Categoría',$registros->nombre_categoria,1,'<strong>Serie/Chasis',$registros->serie);
             $this->table->add_row(2,'<strong>Sub Categoría',$registros->nombre_subcategoria,2,'<strong>Número de motor',$registros->numero_motor);
@@ -56,12 +57,13 @@ class Datos_del_bien extends CI_Controller {
             $this->table->add_row(12,'<strong>Proyecto',$registros->nombre_fuente,'','','');
             $this->table->add_row(13,'<strong>Garantía en meses',$registros->garantia_mes,'','','');
             $this->table->add_row(14,'<strong>Cuenta Contable',$registros->nombre_cuenta,'','','');
+            $descripcion=$registros->descripcion;
         } else {
           $msg = array('data' => "No se encontraron resultados", 'colspan' => "6");
           $this->table->add_row($msg);
         }
         $table = "<div class='content_table'>".
-                "<div class='limit-content-title'><span class='icono icon-table icon-title'> ". $registros->descripcion."</span></div>".
+                "<div class='limit-content-title'><span class='icono icon-table icon-title'> ". $descripcion."</span></div>".
                 "<div class='limit-content'>" . "<div class='exportar'><a href='".
                 base_url('/index.php/ActivoFijo/Reportes/Historial_movimientos/index/'.$this->uri->segment(5))."' class='icono icon-share'>
                 Historial de movimientos</a> &nbsp;

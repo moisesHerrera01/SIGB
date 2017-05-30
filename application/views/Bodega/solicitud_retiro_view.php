@@ -23,12 +23,8 @@
       $sec = array(
           'name' => 'autocomplete3',
           'placeholder' => 'Ingrese el nombre de la sección',
-          'class' => "form-control autocomplete",
+          'class' => "form-control",
           'autocomplete' => 'off',
-          'uri' => 'index.php/ActivoFijo/Almacenes/AutocompleteSeccion',
-          'name_op' => 'seccion',
-          'siguiente' => 'id_usuario',
-          'content' => 'suggestions3'
       );
 
       $us = array(
@@ -53,12 +49,8 @@
       $fun = array(
           'name' => 'autocomplete2',
           'placeholder' => 'Escribe Fuente de Fondos',
-          'class' => "form-control autocomplete",
+          'class' => "form-control",
           'autocomplete' => 'off',
-          'uri' => 'index.php/Bodega/Fuentefondos/Autocomplete',
-          'name_op' => 'id_fuentes',
-          'siguiente' => 'button',
-          'content' => 'suggestions2'
       );
 
       $atriLabel = array('class' => 'col-lg-2 control-label');
@@ -111,8 +103,8 @@
       echo form_hidden('seccion');
       echo form_submit('','Siguiente', $button);
 
-      echo "<a class=\"btn btn-warning\" onclick=\"limpiar(['fecha_solicitud','id_usuario','autocomplete','numero_solicitud',
-      'id_seccion','autocomplete3','fuente','autocomplete2'],['prioridad'])\">Limpiar</a>";
+      echo "<button class='btn btn-warning' type='reset' value='Reset'>Limpiar</button>";
+
       echo form_close();
       echo "</div>";
       echo "<div class='barra_carga'>";

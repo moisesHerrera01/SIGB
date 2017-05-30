@@ -25,23 +25,15 @@ $fin= array(
 $fuente = array(
     'name' => 'autocomplete1',
     'placeholder' => 'Escribe Fuente de Fondos',
-    'class' => "form-control autocomplete",
-    'autocomplete' => 'off',
-    'uri' => 'index.php/Bodega/Fuentefondos/Autocomplete',
-    'name_op' => 'fuente',
-    'siguiente' => 'autocomplete2',
-    'content' => 'suggestions'
+    'class' => "form-control",
+    'autocomplete' => 'off'
 );
 
 $oe = array(
     'name' => 'autocomplete2',
     'placeholder' => 'Escribe el Objeto especifico',
-    'class' => "form-control autocomplete",
-    'autocomplete' => 'off',
-    'uri' => 'index.php/Bodega/Especificos/Autocomplete',
-    'name_op' => 'especifico',
-    'siguiente' => 'hola',
-    'content' => 'suggestions1'
+    'class' => "form-control",
+    'autocomplete' => 'off'
 );
 
 $button = array('class' => 'btn btn-success',);

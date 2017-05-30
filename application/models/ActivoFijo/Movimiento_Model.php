@@ -23,6 +23,9 @@
     }
 
     public function insertarMovimiento($data){
+        $anyo=20;
+        date_default_timezone_set('America/El_Salvador');
+        $fecha_actual=date($anyo."y-m-d");
         $USER = $this->session->userdata('logged_in');
         $this->id_movimiento = $data['id_movimiento'];
         $this->id_oficina_entrega = $data['id_oficina_entrega'];
@@ -39,6 +42,7 @@
         $this->id_actualiza = $data['id_actualiza'];
         $this->estado_movimiento="ABIERTO";
         $this->id_guarda=$USER['id'];
+        $this->fecha_guarda=$fecha_actual;
         $this->db->insert('sic_movimiento', $this);
         return $this->db->insert_id();
     }
@@ -51,6 +55,10 @@
         $this->id_empleado = $data['id_empleado'];
         $this->id_tipo_movimiento = $data['id_tipo_movimiento'];
         $this->usuario_externo = $data['usuario_externo'];
+        $this->entregado_por = $data['entregado_por'];
+        $this->recibido_por = $data['recibido_por'];
+        $this->autorizado_por = $data['autorizado_por'];
+        $this->visto_bueno_por = $data['visto_bueno_por'];
         $this->observacion = $data['observacion'];
         $this->nivel_solicitud = $data['nivel_solicitud'];
         $this->estado_solicitud = $data['estado_solicitud'];
@@ -143,7 +151,8 @@
     }
 
     public function cerrar($id){
-    $data = array('estado_movimiento' =>"CERRADO");
+    $data = array('estado_movimiento' =>"CERRADO",
+                  'estado_solicitud'=>"CERRADO");
     $this->db->where('id_movimiento',$id);
     $this->db->update('sic_movimiento',$data);
     }
@@ -198,7 +207,7 @@
               ->join('sic_tipo_movimiento t','t.id_tipo_movimiento = m.id_tipo_movimiento')
               ->join('org_oficina o','o.id_oficina = m.id_oficina_entrega')
               ->join('sir_empleado e','e.id_empleado = m.id_empleado')
-              ->order_by('m.id_movimiento')
+              ->order_by('m.id_movimiento','desc')
               ->limit($porpagina,$segmento);
       $query = $this->db->get();
       if ($query->num_rows() > 0) {
@@ -270,6 +279,7 @@
                ->join("org_seccion d", "d.id_seccion = c.id_seccion")
                ->join("sic_tipo_movimiento e", "a.id_tipo_movimiento = e.id_tipo_movimiento")
                ->where("d.id_seccion", $seccion)
+               ->where('a.estado_movimiento','CERRADO')
                ->where("a.fecha_guarda BETWEEN '$fecha_inicio' AND '$fecha_fin'")
                ->group_by("a.id_movimiento");
 
@@ -291,6 +301,37 @@
           return FALSE;
       }
 
+    }
+
+    public function obtenerNombreOficinas($id){
+      $this->db->select('o.id_oficina,o.nombre_oficina,s.nombre_seccion,a.nombre_almacen')
+               ->from('org_oficina o')
+               ->join('org_seccion_has_almacen sha','o.id_seccion_has_almacen=sha.id_seccion_has_almacen')
+               ->join('org_seccion s','s.id_seccion=sha.id_seccion')
+               ->join('org_almacen a','a.id_almacen=sha.id_almacen')
+               ->where('o.id_oficina',$id);
+      $query=$this->db->get();
+      if ($query->num_rows()>0) {
+        return $query->row();
+      }else{
+        return FALSE;
+      }
+    }
+
+    public function obtenerNombreEmpleado($id){
+      $this->db->select('e.id_empleado,u.nombre_completo')
+               ->from('sir_empleado e')
+               ->join('org_usuario u','e.nr=u.nr')
+               ->order_by('e.id_empleado','asc')
+               ->where('e.id_empleado',$id)
+               ->where('e.id_estado',1);
+      $query=$this->db->get();
+      if ($query->num_rows() > 0) {
+          return  $query->row();
+      }
+      else {
+          return FALSE;
+      }
     }
 
     public function totalMovimientosOficina($seccion, $fecha_inicio, $fecha_fin) {

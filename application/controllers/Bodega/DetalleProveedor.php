@@ -33,8 +33,8 @@ class DetalleProveedor extends CI_Controller {
             $this->table->add_row(4,'<strong>Correo',$registros->correo);
             $this->table->add_row(5,'<strong>Dirección',$registros->direccion);
             $this->table->add_row(6,'<strong>Categoria',$registros->nombre_categoria);
-            $this->table->add_row(7,'<strong>Tipo de Empresa',$registros->tipo_empresa);
-            $this->table->add_row(8,'<strong>Tipo de servicio',$registros->rubro);
+            $this->table->add_row(7,'<strong>Empresa',$registros->tipo_empresa);
+            $this->table->add_row(8,'<strong>Tipo de obra',$registros->rubro);
             $this->table->add_row(9,'<strong>Nombre de contacto',$registros->nombre_contacto);
             $this->table->add_row(10,'<strong>Descripción',$registros->descripcion);
         } else {

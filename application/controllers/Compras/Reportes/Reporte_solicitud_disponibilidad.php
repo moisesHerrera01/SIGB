@@ -37,6 +37,7 @@ class Reporte_solicitud_disponibilidad extends CI_Controller {
     if($USER){
       $data['title'] = "2- Reporte Disponibilidad Financiera";
       $data['menu'] = $this->menu_dinamico->menus($this->session->userdata('logged_in'),$this->uri->segment(1));
+      $data['js'] = 'assets/js/validate/reporte/compra/solicitud_disponibilidad.js';
       $table = '';
       if ($this->uri->segment(5)!=NULL) {
         $template = array(

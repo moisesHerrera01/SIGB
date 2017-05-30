@@ -19,6 +19,7 @@ class Bienes_por_unidad extends CI_Controller {
   public function RecibirBienesUnidad() {
     $USER = $this->session->userdata('logged_in');
     if($USER){
+      //var_dump($this->Datos_Comunes_Model->obtenerBienesOficina(32));
       var_dump($this->input->post('seccion'));
       if ($this->input->post('seccion')!=NULL && $this->input->post('oficina')!=NULL) {
           redirect('ActivoFijo/Reportes/Bienes_por_unidad/reporte/'.$this->input->post('seccion').'/'.$this->input->post('oficina'));
@@ -37,6 +38,7 @@ class Bienes_por_unidad extends CI_Controller {
     if($USER){
       $data['title'] = "3- Bienes por Unidad";
       $data['menu'] = $this->menu_dinamico->menus($this->session->userdata('logged_in'),$this->uri->segment(1));
+      $data['js'] = 'assets/js/validate/reporte/activofijo/bunidad.js';
       $table = '';
       if ($this->uri->segment(5) != NULL) {
         $template = array(
@@ -179,7 +181,7 @@ class Bienes_por_unidad extends CI_Controller {
   public function autocompleteOficina() {
     $registros = '';
     if ($this->input->is_ajax_request()) {
-      $id_seccion = $this->uri->segment(5);
+      $id_seccion = $this->input->post('seccion');
       if (!($this->input->post('autocomplete') == "")) {
           $registros = $this->Seccion_model->buscarOficinasSeccion($id_seccion, $this->input->post('autocomplete'));
       } else {
@@ -275,7 +277,7 @@ class Bienes_por_unidad extends CI_Controller {
     if ($total_registros > 0) {
 
       $registros;
-      if ($this->uri->segment(6) != NULL) {
+      if ($this->uri->segment(6) != 0) {
         $registros = $this->Datos_Comunes_Model->obtenerBienesOficina($this->uri->segment(6));
       } else {
         // solo recibe unidad o seccion
@@ -297,7 +299,7 @@ class Bienes_por_unidad extends CI_Controller {
                     ->setCellValue('I'.$i, $registro->codigo)
                     ->setCellValue('J'.$i, $registro->codificar)
                     ->setCellValue('K'.$i, $registro->precio_unitario);
-        $objPHPExcel->getActiveSheet()->getStyle('A'.$i.':f'.$i)->applyFromArray($estilo_contenido);
+        $objPHPExcel->getActiveSheet()->getStyle('A'.$i.':K'.$i)->applyFromArray($estilo_contenido);
 
         $next = next($registros);
         $i++;

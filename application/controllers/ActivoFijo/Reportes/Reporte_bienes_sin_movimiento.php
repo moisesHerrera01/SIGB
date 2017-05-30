@@ -37,23 +37,29 @@ class Reporte_bienes_sin_movimiento extends CI_Controller {
             'table_open' => '<table class="table table-striped table-bordered">'
         );
         $this->table->set_template($template);
-        $this->table->set_heading('#','Descripcion','Marca','Modelo','Serie/Chasis','Codigo','Codigo Anterior');
+        $this->table->set_heading('Id bien','Descripcion','Marca','Modelo','Serie/Chasis','Codigo','Codigo Anterior','Oficina','Empleado');
 
         $num = '10';
         $registros = $this->Detalle_movimiento_model->bienes_sin_movimiento($this->uri->segment(6), $this->uri->segment(5),
                             $num, $this->uri->segment(7));
-
         $total = $this->Detalle_movimiento_model->total_bienes_sin_movimiento($this->uri->segment(6), $this->uri->segment(5));
 
         $pagination = paginacion('index.php/ActivoFijo/Reportes/Reporte_bienes_sin_movimiento/reporte/'.$this->uri->segment(5).'/'.$this->uri->segment(6),
                             $total, $num, '7');
-
         if (!($registros == FALSE)) {
           foreach($registros as $bien) {
-            $this->table->add_row($bien->id_bien, $bien->descripcion, $bien->nombre_marca, $bien->modelo, $bien->serie, $bien->codigo, $bien->codigo_anterior);
+            $recibe=$this->Detalle_movimiento_model->obtenerOficinaEmpleado($bien->id_bien);
+            if ($recibe != FALSE) {
+              $this->table->add_row($bien->id_bien, $bien->descripcion, $bien->nombre_marca, $bien->modelo, $bien->serie, $bien->codigo, $bien->codigo_anterior,$recibe->nombre_oficina,
+            $recibe->nombre_empleado);
+            }else {
+              $this->table->add_row($bien->id_bien, $bien->descripcion, $bien->nombre_marca, $bien->modelo, $bien->serie, $bien->codigo, $bien->codigo_anterior,"NO ASIGNADO",
+            "NO ASIGNADO");
+            }
+
           }
         } else {
-          $msg = array('data' => "No se encontraron resultados", 'colspan' => "7");
+          $msg = array('data' => "No se encontraron resultados", 'colspan' => "9");
           $this->table->add_row($msg);
         }
         $table = "<div class='content_table'>".
@@ -80,7 +86,7 @@ class Reporte_bienes_sin_movimiento extends CI_Controller {
             'table_open' => '<table class="table table-striped table-bordered">'
         );
         $this->table->set_template($template);
-        $this->table->set_heading('#','Descripcion','Marca','Modelo','Serie/Chasis','Codigo','Codigo Anterior');
+        $this->table->set_heading('#','Descripcion','Marca','Modelo','Serie/Chasis','Codigo','Codigo Anterior','Oficina','Empleado');
 
         $num = $this->Detalle_movimiento_model->total_bienes_sin_movimiento($this->uri->segment(6), $this->uri->segment(5));
         $registros = $this->Detalle_movimiento_model->bienes_sin_movimiento($this->uri->segment(6), $this->uri->segment(5),
@@ -88,7 +94,14 @@ class Reporte_bienes_sin_movimiento extends CI_Controller {
 
         if (!($registros == FALSE)) {
           foreach($registros as $bien) {
-            $this->table->add_row($bien->id_bien, $bien->descripcion, $bien->nombre_marca, $bien->modelo, $bien->serie, $bien->codigo, $bien->codigo_anterior);
+            $recibe=$this->Detalle_movimiento_model->obtenerOficinaEmpleado($bien->id_bien);
+            if ($recibe != FALSE) {
+              $this->table->add_row($bien->id_bien, $bien->descripcion, $bien->nombre_marca, $bien->modelo, $bien->serie, $bien->codigo, $bien->codigo_anterior,$recibe->nombre_oficina,
+            $recibe->nombre_empleado);
+            }else {
+              $this->table->add_row($bien->id_bien, $bien->descripcion, $bien->nombre_marca, $bien->modelo, $bien->serie, $bien->codigo, $bien->codigo_anterior,"NO ASIGNADO",
+            "NO ASIGNADO");
+            }
           }
         } else {
           $msg = array('data' => "No se encontraron resultados", 'colspan' => "7");
@@ -168,25 +181,55 @@ class Reporte_bienes_sin_movimiento extends CI_Controller {
                    ->setCellValue('D1', 'Modelo')
                    ->setCellValue('E1', 'Serie/Chasis')
                    ->setCellValue('F1', 'Código')
-                   ->setCellValue('G1', 'Código anterior');
-      $objPHPExcel->getActiveSheet()->getStyle('A1:G1')->applyFromArray($estilo_titulo);
+                   ->setCellValue('G1', 'Código anterior')
+                   ->setCellValue('H1', 'Oficina')
+                   ->setCellValue('I1', 'Empleado');
+      $objPHPExcel->getActiveSheet()->getStyle('A1:I1')->applyFromArray($estilo_titulo);
 
       $total = $this->Detalle_movimiento_model->total_bienes_sin_movimiento($this->uri->segment(6), $this->uri->segment(5));
       $registros = $this->Detalle_movimiento_model->bienes_sin_movimiento($this->uri->segment(6), $this->uri->segment(5), $total, 1);
 
       if (!($registros == FALSE)) {
         $i = 2;
-        foreach($registros as $bien) {
-          $objPHPExcel->setActiveSheetIndex(0)
-                      ->setCellValue('A'.$i, $bien->id_bien)
-                      ->setCellValue('B'.$i, $bien->descripcion)
-                      ->setCellValue('C'.$i, $bien->nombre_marca)
-                      ->setCellValue('D'.$i, $bien->modelo)
-                      ->setCellValue('E'.$i, $bien->serie)
-                      ->setCellValue('F'.$i, $bien->codigo)
-                      ->setCellValue('G'.$i, $bien->codigo_anterior);
 
-          $objPHPExcel->getActiveSheet()->getStyle('A'.$i.':G'.$i)->applyFromArray($estilo_contenido);
+        foreach($registros as $bien) {
+          $recibe=$this->Detalle_movimiento_model->obtenerOficinaEmpleado($bien->id_bien);
+          if ($recibe != FALSE) {
+            $this->table->add_row($bien->id_bien, $bien->descripcion, $bien->nombre_marca, $bien->modelo, $bien->serie, $bien->codigo, $bien->codigo_anterior,$recibe->nombre_oficina,
+          $recibe->nombre_empleado);
+          }else {
+            $this->table->add_row($bien->id_bien, $bien->descripcion, $bien->nombre_marca, $bien->modelo, $bien->serie, $bien->codigo, $bien->codigo_anterior,"NO ASIGNADO",
+          "NO ASIGNADO");
+          }
+        }
+
+        foreach($registros as $bien) {
+          $recibe=$this->Detalle_movimiento_model->obtenerOficinaEmpleado($bien->id_bien);
+          if ($recibe != FALSE) {
+            $objPHPExcel->setActiveSheetIndex(0)
+                        ->setCellValue('A'.$i, $bien->id_bien)
+                        ->setCellValue('B'.$i, $bien->descripcion)
+                        ->setCellValue('C'.$i, $bien->nombre_marca)
+                        ->setCellValue('D'.$i, $bien->modelo)
+                        ->setCellValue('E'.$i, $bien->serie)
+                        ->setCellValue('F'.$i, $bien->codigo)
+                        ->setCellValue('G'.$i, $bien->codigo_anterior)
+                        ->setCellValue('H'.$i, $recibe->nombre_oficina)
+                        ->setCellValue('I'.$i, $recibe->nombre_empleado);
+          }else {
+            $objPHPExcel->setActiveSheetIndex(0)
+                        ->setCellValue('A'.$i, $bien->id_bien)
+                        ->setCellValue('B'.$i, $bien->descripcion)
+                        ->setCellValue('C'.$i, $bien->nombre_marca)
+                        ->setCellValue('D'.$i, $bien->modelo)
+                        ->setCellValue('E'.$i, $bien->serie)
+                        ->setCellValue('F'.$i, $bien->codigo)
+                        ->setCellValue('G'.$i, $bien->codigo_anterior)
+                        ->setCellValue('H'.$i, 'NO ASIGNADO')
+                        ->setCellValue('I'.$i, 'NO ASIGNADO');
+          }
+
+          $objPHPExcel->getActiveSheet()->getStyle('A'.$i.':I'.$i)->applyFromArray($estilo_contenido);
           $i++;
         }
 

@@ -11,12 +11,8 @@ echo "</div>";
 $pro = array(
     'name' => 'autocomplete',
     'placeholder' => 'NOMBRE DEL PROYECTO',
-    'class' => "form-control autocomplete",
-    'autocomplete' => 'off',
-    'uri' => 'index.php/ActivoFijo/Reportes/Bienes_por_proyecto/AutocompleteProyecto',
-    'name_op' => 'proyecto',
-    'siguiente' => 'button',
-    'content' => 'suggestions'
+    'class' => "form-control",
+    'autocomplete' => 'off'
 );
 
 $button = array('class' => 'btn btn-success',);

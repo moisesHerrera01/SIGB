@@ -34,6 +34,7 @@ class Reporte_solicitudes_denegadas extends CI_Controller {
     if($USER){
       $data['title'] = "4- Reporte Solicitudes Denegadas";
       $data['menu'] = $this->menu_dinamico->menus($this->session->userdata('logged_in'),$this->uri->segment(1));
+      $data['js'] = 'assets/js/validate/reporte/compra/solicitud_disponibilidad.js';
       $table = '';
       if ($this->uri->segment(5)!=NULL) {
         $template = array(

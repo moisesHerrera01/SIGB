@@ -25,12 +25,8 @@ $fin= array(
 $lin = array(
     'name' => 'autocomplete1',
     'placeholder' => 'Ingrese linea presupuestaria',
-    'class' => "form-control autocomplete",
-    'autocomplete' => 'off',
-    'name_op' => 'id_linea',
-    'uri' => 'index.php/Compras/Solicitud_Disponibilidad/AutocompleteLineaTrabajo',
-    'siguiente' => 'Generar',
-    'content' => 'suggestions1'
+    'class' => "form-control",
+    'autocomplete' => 'off'
 );
 
 $button = array('class' => 'btn btn-success',);

@@ -51,6 +51,7 @@ class Reporte_orden_compra extends CI_Controller {
     if($USER){
       $data['title'] = "1- Reporte Orden Compras";
       $data['menu'] = $this->menu_dinamico->menus($this->session->userdata('logged_in'),$this->uri->segment(1));
+      $data['js'] = 'assets/js/validate/reporte/compra/orden_compra.js';
       $table = '';
       if ($this->uri->segment(5)!=NULL) {
         $template = array(

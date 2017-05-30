@@ -275,6 +275,7 @@ class Equipo_informatico extends CI_Controller {
     if ($registros == '') {
       echo '<div id="1" class="suggest-element"><a id="conteo">No se encontraron coincidencias</a></div>';
     } else {
+      $i = 1;
       foreach ($registros as $cat) {
         echo '<div id="'.$i.'" class="suggest-element" ida="memoria'.$cat->id_memoria.'"><a id="memoria'.
         $cat->id_memoria.'" data="'.$cat->id_memoria.'"  data1="'.$cat->tipo_memoria.'" >'

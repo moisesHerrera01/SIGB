@@ -19,8 +19,9 @@
         return $this->db->insert_id();
     }
     public function obtenerMovimiento($id){
-      $this->db->select('m.observacion')
+      $this->db->select('m.id_movimiento,tm.nombre_movimiento,m.fecha_guarda,m.estado_movimiento,m.observacion')
            ->from('sic_movimiento m')
+           ->join('sic_tipo_movimiento tm','tm.id_tipo_movimiento=m.id_tipo_movimiento')
            ->where('m.id_movimiento',$id);
       $query = $this->db->get();
       if($query->num_rows() > 0 )
@@ -40,11 +41,12 @@
       return $cor;
     }
 
-    public function obtenerDetalleMovimientos(){
+    public function obtenerDetalleMovimientos($id){
       $this->db->select('d.id_movimiento,m.observacion,d.id_bien,b.codigo,d.id_detalle_movimiento')
                ->from('sic_detalle_movimiento d')
                ->join('sic_movimiento m','d.id_movimiento=m.id_movimiento')
                ->join('sic_bien b','d.id_bien=b.id_bien')
+               ->where('m.id_movimiento',$id)
                ->order_by('d.id_detalle_movimiento');
       $query=$this->db->get();
       if ($query->num_rows() > 0) {
@@ -56,7 +58,7 @@
     }
 
     public function buscarDetalleMovimiento($busca){
-      $this->db->select('d.id_detalle_movimiento,d.id_movimiento,m.observacion,d.id_bien,b.codigo')
+      $this->db->select('d.id_detalle_movimiento,d.id_movimiento,m.observacion,d.id_bien,b.codigo,m.estado_movimiento')
                ->from('sic_detalle_movimiento d')
                ->join('sic_movimiento m','d.id_movimiento=m.id_movimiento')
                ->join('sic_bien b','d.id_bien=b.id_bien')
@@ -87,7 +89,7 @@
 
     public function obtenerDetalleMovimientosLimit($porpagina, $segmento,$id){
       $this->db->select('d.id_detalle_movimiento,d.id_movimiento,m.observacion,d.id_bien,b.codigo,dc.descripcion,
-      mc.nombre_marca,dc.modelo,dc.color,b.serie,b.codigo,b.codigo_anterior')
+      mc.nombre_marca,dc.modelo,dc.color,b.serie,b.codigo,b.codigo_anterior,m.estado_movimiento')
                ->from('sic_detalle_movimiento d')
                ->join('sic_movimiento m','d.id_movimiento=m.id_movimiento')
                ->join('sic_bien b','d.id_bien=b.id_bien')
@@ -155,7 +157,7 @@
        $query = $this->db->query("SELECT c.id_bien, d.descripcion, e.nombre_marca, d.modelo, c.serie, c.codigo, c.codigo_anterior
         FROM sic_detalle_movimiento a
         INNER JOIN (
-        	SELECT ab.id_detalle_movimiento FROM sic_movimiento aa
+        	SELECT ab.id_detalle_movimiento,aa.id_oficina_recibe,aa.estado_movimiento FROM sic_movimiento aa
         	INNER JOIN sic_detalle_movimiento ab ON aa.id_movimiento = ab.id_movimiento
         	WHERE fecha_guarda BETWEEN '".$minFecha."' AND '".$maxFecha."'
         ) b ON a.id_detalle_movimiento = b.id_detalle_movimiento
@@ -195,5 +197,20 @@
        }
     }
 
+    public function obtenerOficinaEmpleado($id_bien){
+      $this->db->select('o.nombre_oficina,CONCAT_WS(" ",primer_nombre,segundo_nombre,primer_apellido,segundo_apellido) as nombre_empleado')
+               ->from('sic_movimiento m')
+               ->join('sic_detalle_movimiento dm','dm.id_movimiento=m.id_movimiento')
+               ->join('org_oficina o','m.id_oficina_recibe=o.id_oficina')
+               ->join('sir_empleado e','e.id_empleado=m.id_empleado')
+               ->order_by('m.id_movimiento','desc')
+               ->where('dm.id_bien',$id_bien);
+      $query=$this->db->get();
+      if ($query->num_rows()>0) {
+        return $query->row();
+      }else {
+        return FALSE;
+      }
+    }
   }
 ?>

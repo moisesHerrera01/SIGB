@@ -1,8 +1,9 @@
 //Reglas de validacion de detalle solicitud compra
 var reglas = {
   rules: {
-    "producto": {
+    "autocomplete1": {
       required: true,
+      checkautocomplete: 'producto'
     },
     "cantidad": {
       required: true,
@@ -10,7 +11,7 @@ var reglas = {
     },
   },
   messages: {
-    "producto": {
+    "autocomplete1": {
       required: "El producto es obligatorio."
     },
     "cantidad": {

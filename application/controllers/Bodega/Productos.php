@@ -333,6 +333,7 @@ class Productos extends CI_Controller {
     if($USER){
       $data['title'] = "Lento movimiento";
       $data['menu'] = $this->menu_dinamico->menus($this->session->userdata('logged_in'),$this->uri->segment(1));
+      $data['js'] = 'assets/js/validate/reporte/bodega/fuente.js';
       $table = '';
       if (($this->uri->segment(4))!=NULL) {
         $template = array(

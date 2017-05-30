@@ -39,6 +39,7 @@ class Reporte_linea_presupuestaria extends CI_Controller {
     if($USER){
       $data['title'] = "3-Reporte linea";
       $data['menu'] = $this->menu_dinamico->menus($this->session->userdata('logged_in'),$this->uri->segment(1));
+      $data['js'] = 'assets/js/validate/reporte/compra/linea_presupuestaria.js';
       $table = '';
       if ($this->uri->segment(5)!=NULL) {
         $template = array(

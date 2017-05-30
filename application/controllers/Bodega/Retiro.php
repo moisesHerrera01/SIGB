@@ -316,6 +316,7 @@ class Retiro extends CI_Controller {
 
     $data['title'] = "Reporte Salidas";
     $data['menu'] = $this->menu_dinamico->menus($this->session->userdata('logged_in'),$this->uri->segment(1));
+    $data['js'] = 'assets/js/validate/reporte/bodega/salida.js';
     $table = '';
     if (($this->uri->segment(4))!=NULL) {
       $template = array(

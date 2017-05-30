@@ -53,7 +53,7 @@ class Solicitud_compra extends CI_Controller {
           'table_open' => '<table class="table table-striped table-bordered">'
       );
       $this->table->set_template($template);
-      $this->table->set_heading('Id', 'Fecha', 'Estado', 'Enviar','Detalle','Imprimir Solicitud','Eliminar','Estatus');
+      $this->table->set_heading('Id', 'Fecha', 'Estado', 'Enviar','Detalle','Imprimir Solicitud','Eliminar','Editar','Estatus');
 
       /*
       * Filtro a la BD
@@ -81,9 +81,21 @@ class Solicitud_compra extends CI_Controller {
 
       if (!($registros == FALSE)) {
         foreach($registros as $sol) {
+            $soli=$this->Solicitud_Compra_Model->obtenerEmpleadoDatosId($sol->solicitante);
+            $auto=$this->Solicitud_Compra_Model->obtenerEmpleadoDatosId($sol->autorizante);
+            $adm=$this->Solicitud_Compra_Model->obtenerEmpleadoDatosId($sol->propuesta_administrador);
+            //var_dump($solicitante);
             $id_rol = $USER['id_rol'];
             $modulo=$this->User_model->obtenerModulo('Compras/Solicitud_Compra');
             $solicitante=$USER['nombre_empleado'];
+
+            $onClick = "llenarFormulario('solicitud', ['id','fecha','autocomplete1','cargo','linea', 'sol','autocomplete2','cargo_auto','dep_auto','auto','autocomplete3',
+            'cargo_admin','dep_admin','admin','valor','forma','lugar'],
+            [$sol->id_solicitud_compra,'$sol->fecha_solicitud_compra','$soli->nombre_empleado','$soli->cargo_funcional','$soli->seccion_padre','$soli->id_empleado',
+            '$auto->nombre_empleado','$auto->cargo_funcional','$auto->seccion_padre','$auto->id_empleado','$adm->nombre_empleado','$adm->cargo_funcional','$adm->seccion_padre',
+            '$adm->id_empleado','$sol->precio_estimado','$sol->forma_entrega','$sol->lugar_entrega'],
+             false, false, false, ['justificacion','otras'], ['$sol->justificacion','$sol->otras_condiciones'])";
+
             $botones='<a class="icono icon-detalle" href="'.base_url('index.php/Compras/Detalle_Solicitud_Compra/index/'
             .$sol->id_solicitud_compra.'/'.$modulo.'/'.$id_rol.'/').'"></a>';
             $estatus='<a class="icono icon-stats-dots" href="'.base_url('index.php/Compras/Estado_Solicitud/index/'
@@ -91,22 +103,20 @@ class Solicitud_compra extends CI_Controller {
             if($sol->estado_solicitud_compra=='INGRESADA'){
                 $solicitud_imp = '<a class="icono icon-acta" href="'.base_url('index.php/Compras/Solicitud/index/'.$sol->id_solicitud_compra.'/').'" target="_blank"></a>';
                 $eliminar='<a class="icono icon-eliminar" uri='.base_url('index.php/Compras/Solicitud_Compra/EliminarDato/'.$sol->id_solicitud_compra).'></a>';
+                $actualizar = '<a class="icono icon-pencil" title="Actualizar" onClick="'.$onClick.'"></a>';
                 $enviar = '<a class="icono icon-rocket" href='.base_url('index.php/Compras/Solicitud_Compra/EnviarDato/'.$sol->id_solicitud_compra).'></a>';
             }else{
               $solicitud_imp = '<a class="icono icon-acta" href="'.base_url('index.php/Compras/Solicitud/index/'.$sol->id_solicitud_compra.'/').'" target="_blank"></a>';
               $eliminar='<a class="icono icon-denegar"></a>';
+              $actualizar='<a class="icono icon-denegar"></a>';
               $enviar='<a class="icono icon-denegar"></a>';
             }
-
-            $onClick = "llenarFormulario('solicitud', ['id', 'fecha','numero','justificacion','valor'],
-                        [$sol->id_solicitud_compra, '$sol->fecha_solicitud_compra','$sol->numero_solicitud_compra',
-                        '$sol->justificacion','$sol->precio_estimado'])";
             $this->table->add_row($sol->id_solicitud_compra, $sol->fecha_solicitud_compra,
-             $sol->estado_solicitud_compra, $enviar,$botones,$solicitud_imp,$eliminar,$estatus);
+             $sol->estado_solicitud_compra, $enviar,$botones,$solicitud_imp,$eliminar,$actualizar,$estatus);
 
         }
       } else {
-        $msg = array('data' => "Texto no encontrado", 'colspan' => "8");
+        $msg = array('data' => "Texto no encontrado", 'colspan' => "9");
         $this->table->add_row($msg);
       }
 

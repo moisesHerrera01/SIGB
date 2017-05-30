@@ -16,14 +16,9 @@
 
         $det = array(
             'name' => 'autocomplete1',
-            'id' => 'autocomplete1',
             'placeholder' => 'Escribe Producto',
             'class' => "form-control",
             'autocomplete' => 'off',
-            'uri' => 'index.php/Bodega/Productos/AutocompleteExistencia',
-            'name_op' => 'producto',
-            'siguiente' => 'cantidad',
-            'content' => 'suggestions1',
         );
 
         $cant = array(
@@ -92,7 +87,7 @@
         echo form_hidden('id_modulo',$id_modulo);
         echo form_submit('guardar','Guardar', $button);
 
-        echo "<a class=\"btn btn-warning\" onclick=\"limpiar(['id', 'producto','autocomplete1','cantidad','precio','fuente','autocomplete2','producto','autocomplete3'])\">Limpiar</a>";
+        echo "<button class='btn btn-warning' type='reset' value='Reset'>Limpiar</button>";
         echo form_close();
       echo "</div>";
     echo "</div>";

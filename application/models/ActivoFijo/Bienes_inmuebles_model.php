@@ -86,7 +86,7 @@
                ->join('sic_datos_comunes d', 'd.id_dato_comun = b.id_dato_comun')
                ->join('sic_condicion_bien c', 'c.id_condicion_bien = b.id_condicion_bien')
                ->order_by('b.id_bien','desc')
-               ->like('b.id_bien', $busca)
+               ->like('b.codigo', $busca)
                ->or_like('d.descripcion',$busca)
                ->where('b.terreno_zona<>',NULL)
                ->where('b.tipo_inmueble<>',NULL);

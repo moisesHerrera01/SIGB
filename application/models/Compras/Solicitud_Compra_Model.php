@@ -112,24 +112,26 @@
      public function buscarSolicitudesCompraUser($id_seccion ,$busca){
        if ($id_seccion==0){
          $this->db->select('s.id_solicitud_compra,s.fecha_solicitud_compra,s.numero_solicitud_compra,e.primer_nombre,e.segundo_nombre,
-         s.justificacion,s.documento_especificaciones,s.precio_estimado,s.estado_solicitud_compra')
+         s.justificacion,s.documento_especificaciones,s.precio_estimado,s.estado_solicitud_compra,s.propuesta_administrador,
+         s.forma_entrega,s.lugar_entrega,s.otras_condiciones,s.comentario,s.solicitante,s.autorizante')
                   ->from('sic_solicitud_compra s')
                   ->join('sir_empleado e','s.solicitante=e.id_empleado')
                   ->join('org_usuario u','u.nr=e.nr')
-                  ->order_by('id_solicitud_compra desc')
-                  ->like('numero_solicitud_compra',$busca);
+                  ->order_by('s.fecha_solicitud_compra desc')
+                  ->like('s.id_solicitud_compra',$busca);
                   //->where('s.id_seccion', $id_seccion);
          $query = $this->db->get();
 
        } else {
          $this->db->select('s.id_solicitud_compra,s.fecha_solicitud_compra,s.numero_solicitud_compra,e.primer_nombre,e.segundo_nombre,
-         s.justificacion,s.documento_especificaciones,s.precio_estimado,s.estado_solicitud_compra')
+         s.justificacion,s.documento_especificaciones,s.precio_estimado,s.estado_solicitud_compra,s.propuesta_administrador,
+         s.forma_entrega,s.lugar_entrega,s.otras_condiciones,s.comentario,s.solicitante,s.autorizante')
                   ->from('sic_solicitud_compra s')
                   ->join('sir_empleado e','s.solicitante=e.id_empleado')
                   ->join('org_usuario u','u.nr=e.nr')
-                  ->order_by('id_solicitud_compra desc')
+                  ->order_by('s.fecha_solicitud_compra desc')
                   ->like('numero_solicitud_compra',$busca)
-                  ->where('s.id_seccion', $id_seccion);
+                  ->where('s.id_solicitud_compra', $id_seccion);
          $query = $this->db->get();
        }
 
@@ -143,17 +145,23 @@
 
      public function obtenerSolicitudesCompraUserLimit($id_seccion ,$porpagina, $segmento){
        if($id_seccion==0){
-         $this->db->order_by("id_solicitud_compra desc");
-         $query = $this->db->get('sic_solicitud_compra', $porpagina, $segmento);
-
-       } else {
-         $this->db->select('s.id_solicitud_compra,s.fecha_solicitud_compra,s.numero_solicitud_compra,e.primer_nombre,e.segundo_nombre,
-         s.justificacion,s.documento_especificaciones,s.precio_estimado,s.estado_solicitud_compra')
+         $this->db->select('s.id_solicitud_compra,s.fecha_solicitud_compra,s.numero_solicitud_compra, s.justificacion,s.solicitante,s.autorizante,
+         s.documento_especificaciones,s.precio_estimado,s.estado_solicitud_compra,s.propuesta_administrador,s.forma_entrega,s.lugar_entrega,s.otras_condiciones,s.comentario')
                   ->from('sic_solicitud_compra s')
                   ->join('sir_empleado e','s.solicitante=e.id_empleado')
                   ->join('org_usuario u','u.nr=e.nr')
                   ->limit($porpagina,$segmento)
-                  ->order_by('id_solicitud_compra desc')
+                  ->order_by('s.fecha_solicitud_compra desc');
+         $query = $this->db->get();
+
+       } else {
+         $this->db->select('s.id_solicitud_compra,s.fecha_solicitud_compra,s.numero_solicitud_compra, s.justificacion,s.solicitante,s.autorizante,
+         s.documento_especificaciones,s.precio_estimado,s.estado_solicitud_compra,s.propuesta_administrador,s.forma_entrega,s.lugar_entrega,s.otras_condiciones,s.comentario')
+                  ->from('sic_solicitud_compra s')
+                  ->join('sir_empleado e','s.solicitante=e.id_empleado')
+                  ->join('org_usuario u','u.nr=e.nr')
+                  ->limit($porpagina,$segmento)
+                  ->order_by('s.fecha_solicitud_compra desc')
                   ->where('s.id_seccion', $id_seccion);
          $query = $this->db->get();
        }
@@ -720,6 +728,39 @@
       $query = $this->db->get();
       if ($query->num_rows() > 0) {
           return  $query->result();
+      }
+      else {
+          return FALSE;
+      }
+    }
+
+    public function obtenerEmpleadoDatosId($id_empleado){
+      $this->db->select("CONCAT_WS(' ',e.primer_nombre,e.segundo_nombre,e.primer_apellido,e.segundo_apellido) as nombre_empleado,
+      e.id_empleado,f.funcional as cargo_funcional,s.depende as seccion_padre")
+                ->from('sir_empleado e')
+                ->join('org_usuario u','e.nr=u.nr')
+                ->join('sir_empleado_informacion_laboral ei','e.id_empleado=ei.id_empleado')
+                ->join('sir_cargo_funcional f','f.id_cargo_funcional=ei.id_cargo_funcional')
+                ->join('org_seccion s','s.id_seccion=ei.id_seccion')
+                ->join('tcm_empleado_informacion_laboral eil','eil.id_empleado=e.id_empleado')
+                ->join('tcm_empleado_informacion_laboral eil2','eil.fecha_inicio=ei.fecha_inicio')
+                ->where('e.id_estado',1)
+                ->where('e.id_empleado',$id_empleado)
+                ->where("f.id_nivel BETWEEN '1' AND '2'")
+                ->group_by('e.id_empleado')
+                ->limit(10);
+        $query2 = $this->db->get();
+
+        foreach ($query2->result  () as $empleado) {
+          $this->db->select('nombre_seccion')
+                   ->from('org_seccion')
+                   ->where('id_seccion',$empleado->seccion_padre);
+          $query3 = $this->db->get();
+          $seccion =$query3->row();
+          $empleado->seccion_padre=$seccion->nombre_seccion;
+        }
+      if ($query2->num_rows() > 0) {
+          return  $query2->row();
       }
       else {
           return FALSE;

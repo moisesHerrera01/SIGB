@@ -18,19 +18,15 @@
       $cat = array(
           'name' => 'autocomplete',
           'placeholder' => 'Escribe categoría del proveedor',
-          'class' => "form-control autocomplete",
+          'class' => "form-control",
           'autocomplete' => 'off',
-          'uri' => 'index.php/Bodega/Categoria_proveedor/Autocomplete',
-          'name_op' => 'categoria',
-          'siguiente' => 'nombreProveedor',
-          'content' => 'suggestions'
       );
 
       $nom = array(
         'name' => 'nombreProveedor',
         'placeholder' => 'ESCRIBE EL NOMBRE DE PROVEEDOR',
         'class' => "form-control",
-        "rows" => "1"
+        "rows" => "3"
       );
 
       $con = array(
@@ -49,7 +45,7 @@
           'name' => 'correo',
           'placeholder' => 'ESCRIBE EL CORREO ELECTRÓNICO',
           'class' => "form-control",
-          "rows" => "1"
+          "rows" => "3"
       );
 
       $tel = array(
@@ -58,16 +54,17 @@
           'class' => "form-control"
       );
 
-      $fax = array(
+    /*  $fax = array(
           'name' => 'fax',
           'placeholder' => 'Escribe el Fax',
           'class' => "form-control"
-      );
+      );*/
 
       $dir = array(
           'name' => 'direccion',
           'placeholder' => 'Escribe la Dirección',
-          'class' => "form-control"
+          'class' => "form-control",
+          "rows" => "3"
       );
 
       $atriLabel = array('class' => 'col-lg-2 control-label');
@@ -120,24 +117,24 @@
         echo "</div>";
       echo "</div>";
 
-      echo "<div class='form-group'>";
+      /*echo "<div class='form-group'>";
         echo form_label('Fax:', 'fax', $atriLabel);
         echo "<div class='col-lg-10'>";
           echo form_input($fax);
         echo "</div>";
-      echo "</div>";
+      echo "</div>";*/
 
       echo "<div class='form-group'>";
         echo form_label('Dirección:', 'dir', $atriLabel);
         echo "<div class='col-lg-10'>";
-          echo form_input($dir);
+          echo form_textarea($dir);
         echo "</div>";
       echo "</div>";
 
       echo form_hidden('id');
 
       echo form_submit('','Guardar', $button);
-      echo "<a class=\"btn btn-warning\" onclick=\"limpiar([['autocomplete'],'id', 'nombreProveedor','nombre_contacto', 'nit', 'correo', 'telefono','fax', 'direccion'])\">Limpiar</a>";
+      echo "<button class='btn btn-warning' type='reset' value='Reset'>Limpiar</button>";
 
       echo form_close();
     echo "</div>";

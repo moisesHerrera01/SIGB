@@ -84,7 +84,7 @@
       echo form_hidden('nivel');
       echo form_submit('','Guardar', $button);
 
-      echo "<a class=\"btn btn-warning\" onclick=\"limpiar(['autocomplete'],false,['comentario_solicitud'])\">Limpiar</a>";
+      echo "<button class='btn btn-warning' type='reset' value='Reset'>Limpiar</button>";
 
       echo form_close();
     echo "</div>";

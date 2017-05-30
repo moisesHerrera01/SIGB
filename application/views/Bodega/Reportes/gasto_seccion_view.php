@@ -25,12 +25,8 @@ $fin= array(
 $sec= array(
     'name' => 'autocomplete',
     'placeholder' => 'Escribe la seccion o Unidad',
-    'class' => "form-control autocomplete",
-    'autocomplete' => 'off',
-    'uri' => 'index.php/Bodega/Solicitud/Autocomplete',
-    'name_op' => 'seccion',
-    'siguiente' => 'numero_solicitud',
-    'content' => 'suggestions'
+    'class' => "form-control",
+    'autocomplete' => 'off'
 );
 
 $button = array('class' => 'btn btn-success',);

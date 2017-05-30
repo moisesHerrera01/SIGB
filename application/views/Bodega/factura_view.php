@@ -45,12 +45,8 @@
       $numcompromiso = array(
           'name' => 'autocomplete1',
           'placeholder' => 'Escribe Número de Compromiso',
-          'class' => "form-control autocomplete",
+          'class' => "form-control",
           'autocomplete' => 'off',
-          'uri' => 'index.php/Compras/Compromiso_Presupuestario/autocomplete_factura',
-          'name_op' => 'compromiso',
-          'siguiente' => 'guardar',
-          'content' => 'suggestions1'
       );
 
       $coment = array(
@@ -122,9 +118,8 @@
         echo form_hidden('orden');
         echo form_submit('','Guardar', $button);
 
-        echo "<a class=\"btn btn-warning\" onclick=\"limpiar(['id', 'numeroFactura', 'nombreEntrega',
-              'fechaFactura','compromiso', 'autocomplete1', 'fuente', 'proveedor', 'seccion'],false,
-              ['comentario_productos'])\">Limpiar</a>";
+        echo "<button class='btn btn-warning' type='reset' value='Reset'>Limpiar</button>";
+
       echo "</fieldset>";
       echo form_close();
     echo "</div>";

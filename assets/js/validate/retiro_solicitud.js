@@ -36,6 +36,24 @@ var reglas = {
 
 $(document).ready(function() {
   $('#autocomplete').focus(autocomplete_solicitante_seccion);
+
+  //fuente de fondo
+  $.autocomplete({
+    elemet: $('input[name=autocomplete2]'),
+    url: 'index.php/Bodega/Fuentefondos/Autocomplete',
+    name: 'id_fuentes',
+    siguiente: 'button',
+    content: 'suggestions2'
+  });
+
+  //seccion
+  $.autocomplete({
+    elemet: $('input[name=autocomplete3]'),
+    url: 'index.php/ActivoFijo/Almacenes/AutocompleteSeccion',
+    name: 'seccion',
+    siguiente: 'id_usuario',
+    content: 'suggestions3'
+  });
 });
 
 var autocomplete_solicitante_seccion = function() {

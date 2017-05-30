@@ -11,12 +11,8 @@ echo "</div>";
 $bien = array(
     'name' => 'autocomplete',
     'placeholder' => 'DESCRIPCIÓN O CÓDIGO DEL BIEN',
-    'class' => "form-control autocomplete",
-    'autocomplete' => 'off',
-    'uri' => 'index.php/ActivoFijo/Reportes/Datos_del_bien/AutocompleteBien',
-    'name_op' => 'bien',
-    'siguiente' => 'button',
-    'content' => 'suggestions'
+    'class' => "form-control",
+    'autocomplete' => 'off'
 );
 
 $button = array('class' => 'btn btn-success',);

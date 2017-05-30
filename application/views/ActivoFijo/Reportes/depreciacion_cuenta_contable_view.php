@@ -11,23 +11,15 @@ echo "</div>";
 $cuenta = array(
     'name' => 'autocomplete7',
     'placeholder' => 'Ingrese cuenta contable',
-    'class' => "form-control autocomplete",
-    'autocomplete' => 'off',
-    'uri' => 'index.php/ActivoFijo/Datos_comunes/AutocompleteCuentas',
-    'name_op' => 'cuenta',
-    'siguiente' => 'codificar',
-    'content' => 'suggestions1'
+    'class' => "form-control",
+    'autocomplete' => 'off'
 );
 
 $fuente = array(
     'name' => 'autocomplete6',
     'placeholder' => 'Ingrese Fuente de Fondo',
-    'class' => "form-control autocomplete",
-    'autocomplete' => 'off',
-    'uri' => 'index.php/Bodega/Fuentefondos/Autocomplete',
-    'name_op' => 'fuente',
-    'siguiente' => 'fecha',
-    'content' => 'suggestions2'
+    'class' => "form-control",
+    'autocomplete' => 'off'
 );
 
 $fecha = array(

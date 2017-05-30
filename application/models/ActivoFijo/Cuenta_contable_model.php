@@ -146,15 +146,23 @@
       $this->db->select('b.descripcion, d.nombre_marca, b.modelo, c.serie, c.numero_placa, c.codigo_anterior, c.codigo,
               e.nombre_oficina, f.primer_nombre, f.primer_apellido, f.nr, g.nombre_doc_ampara, b.nombre_doc_ampara as documento,
               b.fecha_adquisicion, b.precio_unitario, a.porcentaje_depreciacion, a.vida_util')
-               ->from('sic_cuenta_contable a')
-               ->join('sic_datos_comunes b', 'b.id_cuenta_contable = a.id_cuenta_contable')
-               ->join('sic_bien c', 'c.id_dato_comun = b.id_dato_comun')
+               ->from("(select max(id_detalle_movimiento) as id_detalle_movimiento,max(id_movimiento) as id_movimiento,
+               id_bien from sic_detalle_movimiento group by id_bien order by id_detalle_movimiento) as dm")
+               ->join('sic_movimiento m','dm.id_movimiento=m.id_movimiento')
+               ->join('sic_bien c','c.id_bien=dm.id_bien')
+               ->join('sic_datos_comunes b','b.id_dato_comun=c.id_dato_comun')
+               ->join('sic_cuenta_contable a','a.id_cuenta_contable=b.id_cuenta_contable')
                ->join('sic_marcas d', 'd.id_marca = b.id_marca')
-               ->join('org_oficina e', 'e.id_oficina = c.id_oficina')
-               ->join('sir_empleado f', 'f.id_empleado = c.id_empleado')
+               ->join('org_oficina e', 'e.id_oficina = m.id_oficina_recibe')
+               ->join('sir_empleado f', 'f.id_empleado = m.id_empleado')
                ->join('sic_doc_ampara g', 'g.id_doc_ampara = b.id_doc_ampara')
+               ->join('(SELECT MAX( id_detalle_movimiento ) detalle, id_bien, id_movimiento FROM sic_detalle_movimiento GROUP BY id_bien) h', 'c.id_bien = h.id_bien')
+               ->join('sic_movimiento i', 'h.id_movimiento = i.id_movimiento')
+               ->join('sic_tipo_movimiento j', 'j.id_tipo_movimiento = i.id_tipo_movimiento')
+               ->where('j.id_tipo_movimiento !=', 12)
                ->where('a.id_cuenta_contable', $cuenta)
                ->where('b.id_fuentes', $fuente)
+               ->where('m.estado_movimiento','CERRADO')
                ->limit($porpagina, $segmento);
 
       $query = $this->db->get();
@@ -170,14 +178,18 @@
 
     public function totalDepreciacionCuentaContable($cuenta, $fuente) {
       $this->db->select('count(*) as total')
-               ->from('sic_cuenta_contable a')
-               ->join('sic_datos_comunes b', 'b.id_cuenta_contable = a.id_cuenta_contable')
-               ->join('sic_bien c', 'c.id_dato_comun = b.id_dato_comun')
+              ->from("(select max(id_detalle_movimiento) as id_detalle_movimiento,max(id_movimiento) as id_movimiento,
+              id_bien from sic_detalle_movimiento group by id_bien order by id_detalle_movimiento) as dm")
+              ->join('sic_movimiento m','dm.id_movimiento=m.id_movimiento')
+              ->join('sic_bien c','c.id_bien=dm.id_bien')
+              ->join('sic_datos_comunes b','b.id_dato_comun=c.id_dato_comun')
+              ->join('sic_cuenta_contable a','a.id_cuenta_contable=b.id_cuenta_contable')
                ->join('sic_marcas d', 'd.id_marca = b.id_marca')
-               ->join('org_oficina e', 'e.id_oficina = c.id_oficina')
-               ->join('sir_empleado f', 'f.id_empleado = c.id_empleado')
+               ->join('org_oficina e', 'e.id_oficina = m.id_oficina_recibe')
+               ->join('sir_empleado f', 'f.id_empleado = m.id_empleado')
                ->join('sic_doc_ampara g', 'g.id_doc_ampara = b.id_doc_ampara')
                ->where('a.id_cuenta_contable', $cuenta)
+                ->where('m.estado_movimiento','CERRADO')
                ->where('b.id_fuentes', $fuente);
 
       $query = $this->db->get();
