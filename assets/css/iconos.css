@@ -112,7 +112,7 @@
     content: "\e926";
 }
 
-.icon-price:before {
+.icon-price-tags:before {
     content: "\e936";
 }
 
@@ -406,4 +406,17 @@
 
 .icon-loop:before {
   content: "\ea2d";
+}
+
+
+.icon-user-tie:before {
+ content: "\e976";
+}
+
+.icon-credit-card:before {
+ content: "\e93f";
+}
+
+.icon-magic-wand:before {
+ content: "\e997";
 }
