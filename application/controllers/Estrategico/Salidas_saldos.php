@@ -31,6 +31,7 @@ class Salidas_saldos extends CI_Controller {
 
   public function reporte(){
 
+    $USER = $this->session->userdata('logged_in');
     $data['title'] = "Reporte Salidas y Saldos";
     $data['menu'] = $this->menu_dinamico->menus($this->session->userdata('logged_in'),$this->uri->segment(1));
     $data['js'] = 'assets/js/validate/reporte/bodega/salida.js';
@@ -51,6 +52,8 @@ class Salidas_saldos extends CI_Controller {
 
 
       if (!($registros == FALSE)) {
+        $tsalida = 0;
+        $saldos = 0;
         $fecha_inicio=$this->uri->segment(4);
         $fecha_fin=$this->uri->segment(5);
         $fuente=$this->uri->segment(6);
@@ -79,14 +82,33 @@ class Salidas_saldos extends CI_Controller {
           '<a class="icono icon-detalle" href="'.base_url('index.php/Estrategico/Salidas_saldos/reporteDetalleRetiro/'
             .$salida->id_especifico.'/'.$fecha_inicio.'/'.$fecha_fin.'/'.$fuente.'/').'"></a>');
 
+          $saldos += $saldo;
+          $tsalida += $salidas_rango;
           $i++;
         }
+        $cell = array('data' => 'Total', 'colspan' => 3);
+        $this->table->add_row($cell, '$'.number_format($saldos,3), '$'.number_format($tsalida,3), "");
       } else {
         $msg = array('data' => "No se encontraron resultados", 'colspan' => "6");
         $this->table->add_row($msg);
       }
       $table =  "<div class='content_table '>" .
-                "<div class='limit-content-title'><span class='icono icon-table icon-title'> ".$this->Fuentefondos_model->obtenerFuente($this->uri->segment(6)). " " . $this->uri->segment(4) . " - " . $this->uri->segment(5)."</span></div>".
+                "<div class='limit-content-title'>".
+                  "<div class='title-reporte'>".
+                    "Reporte de salidas y saldos por especifico.".
+                  "</div>".
+                  "<div class='title-header'>
+                    <ul>
+                      <li>Fecha emisión: ".date('d/m/Y')."</li>
+                      <li>Nombre la compañia: MTPS</li>
+                      <li>N° pagina: 1/1</li>
+                      <li>Nombre pantalla:</li>
+                      <li>Usuario: ".$USER['nombre_completo']."</li>
+                      <br />
+                      <li>Parametros: ".$this->Fuentefondos_model->obtenerFuente($this->uri->segment(6)). " " . $this->uri->segment(4) . " - " . $this->uri->segment(5)."</li>
+                    </ul>
+                  </div>".
+                "</div>".
                 "<div class='limit-content'>" .
                 "<div class='exportar'><a href='".base_url('/index.php/Estrategico/Salidas_saldos/RetiroReporteExcel/'.$this->uri->segment(4).'/'
                 .$this->uri->segment(5).'/'.$this->uri->segment(6).'/'.$this->uri->segment(7))."' class='icono icon-file-excel'>
@@ -96,7 +118,7 @@ class Salidas_saldos extends CI_Controller {
 
     } else {
 
-      $data['body'] = $this->load->view('Estrategico/salidas_saldos_view', '',TRUE);
+      $data['body'] = $this->load->view('Estrategico/salidas_saldos_view', array('user' =>  $this->session->userdata('logged_in')), TRUE);
 
     }
 

@@ -247,6 +247,28 @@ input.error:focus{
   background-color: #fbfbfb;
 }
 
+.title-reporte {
+	font-size: 1.2em;
+	font-weight: 900;
+	color: #fbfbfb;
+	margin-bottom: 0.2em;
+}
+
+.title-header {
+	color: #fbfbfb;
+}
+
+.title-header > ul > li {
+	list-style-type: none;
+  display: inline;
+	padding-right: 1em;
+	border-right: 2px solid #fbfbfb;
+}
+
+.title-header > ul > li:last-child {
+	border-right: 0px;
+}
+
 /* dashboard */
 
 .dashboard-panel-izq {
