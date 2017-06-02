@@ -248,24 +248,22 @@
       }
     }
 
-    function totalEspecifico($fecha_inicio,$fecha_fin){
-      $this->db->select('count(id_kardex) as num');
-      $this->db->where('fecha_ingreso <',$fecha_fin);
-      $this->db->where('fecha_ingreso >',$fecha_inicio);
-      $this->db->where('movimiento','SALIDA');
-      $this->db->from('sic_kardex');
-      $this->db->group_by('id_detalleproducto');
+    function totalEspecifico($fecha_inicio,$fecha_fin,$fuente){
+      $this->db->from('sic_kardex a')
+               ->join('sic_detalle_producto b', 'a.id_detalleproducto = b.id_detalleproducto')
+               ->where("a.fecha_ingreso BETWEEN '$fecha_inicio' AND '$fecha_fin'")
+               ->where('a.movimiento','SALIDA')
+               ->where('a.id_fuentes', $fuente)
+               ->group_by('b.id_especifico');
+
       $query = $this->db->get();
       if($query->num_rows()>0){
-        $num;
-        foreach ($query->result() as $tot) {
-          $num=$tot->num;
-        }
-        return $num;
+        return $query->num_rows();
       }else{
         return FALSE;
       }
     }
+
     public function obtenerKardex(){
       $this->db->order_by("id_kardex", "asc");
       $this->db->select('k.cantidad,k.precio,d.id_especifico,k.movimiento,k.fecha_ingreso,k.id_fuentes');

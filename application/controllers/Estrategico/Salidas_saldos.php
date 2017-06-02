@@ -43,13 +43,13 @@ class Salidas_saldos extends CI_Controller {
       $this->table->set_template($template);
       $this->table->set_heading('#','Número Especifico', 'Nombre Especifico', 'Saldo','Salida', 'Detalle');
 
-      $num = '10';
+      $num = 10;
+      $segmento = 7;
+      $count = $this->Detalle_solicitud_producto_model->totalEspecifico($this->uri->segment(4),$this->uri->segment(5),$this->uri->segment(6));
       $registros = $this->Detalle_solicitud_producto_model->obtenerEspecificosLimit($this->uri->segment(4),
       $this->uri->segment(5),$this->uri->segment(6),$num, $this->uri->segment(7));
       $pagination = paginacion('index.php/Estrategico/Salidas_saldos/reporte/'.$this->uri->segment(4).'/'.$this->uri->segment(5).'/'.$this->uri->segment(6),
-                    $this->Detalle_solicitud_producto_model->totalEspecifico($this->uri->segment(4),
-                    $this->uri->segment(5)),$num, '7');
-
+                    $count, $num, $segmento);
 
       if (!($registros == FALSE)) {
         $tsalida = 0;
@@ -92,6 +92,28 @@ class Salidas_saldos extends CI_Controller {
         $msg = array('data' => "No se encontraron resultados", 'colspan' => "6");
         $this->table->add_row($msg);
       }
+
+
+      // paginacion del header
+      $pagaux = $count / $num;
+
+      $pags = intval($pagaux);
+
+      if ($pagaux > $pags) {
+        $pags++;
+      }
+
+      $seg = intval($this->uri->segment($segmento)) + 1;
+
+      $segaux = $seg / $num;
+
+      $pag = intval($segaux);
+
+      if ($segaux > $pag) {
+        $pag++;
+      }
+
+
       $table =  "<div class='content_table '>" .
                 "<div class='limit-content-title'>".
                   "<div class='title-reporte'>".
@@ -101,7 +123,7 @@ class Salidas_saldos extends CI_Controller {
                     <ul>
                       <li>Fecha emisión: ".date('d/m/Y')."</li>
                       <li>Nombre la compañia: MTPS</li>
-                      <li>N° pagina: 1/1</li>
+                      <li>N° pagina: ". $pag .'/'. $pags ."</li>
                       <li>Nombre pantalla:</li>
                       <li>Usuario: ".$USER['nombre_completo']."</li>
                       <br />
