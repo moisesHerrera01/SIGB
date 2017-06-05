@@ -99,7 +99,7 @@ class Salidas_saldos extends CI_Controller {
 
       $pags = intval($pagaux);
 
-      if ($pagaux > $pags) {
+      if ($pagaux > $pags || $pags == 0) {
         $pags++;
       }
 
