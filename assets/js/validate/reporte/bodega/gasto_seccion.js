@@ -11,6 +11,10 @@ var reglas = {
     "autocomplete": {
       required: true,
       checkautocomplete: 'seccion'
+    },
+    "autocomplete2": {
+      required: true,
+      checkautocomplete: 'especifico'
     }
   },
   messages: {
@@ -22,12 +26,24 @@ var reglas = {
     },
     "autocomplete": {
       required: 'La seccion es obligatoria.'
+    },
+    "autocomplete2": {
+      required: 'El objeto especifico es obligatorio.'
     }
   },
 };
 
 $(document).ready(function() {
-  //producto
+  //Especificos
+  $.autocomplete({
+    elemet: $('input[name=autocomplete2]'),
+    url: 'index.php/Bodega/Especificos/Autocomplete',
+    name: 'especifico',
+    siguiente: 'fecha_inicio',
+    content: 'suggestions1'
+  });
+
+  //Sección
   $.autocomplete({
     elemet: $('input[name=autocomplete]'),
     url: 'index.php/Bodega/Solicitud/Autocomplete',

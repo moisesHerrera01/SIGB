@@ -319,7 +319,7 @@
       }
     }
 
-    public function obtenerProductosSeccion($fecha_inicio,$fecha_fin,$seccion,$segmento,$porpagina){
+    public function obtenerProductosSeccion($fecha_inicio,$fecha_fin,$seccion,$especifico,$segmento,$porpagina){
       $this->db->order_by("s.id_solicitud", "asc");
       $this->db->select('s.numero_solicitud,s.fecha_salida,sec.nombre_seccion,e.id_especifico,dp.numero_producto,
         p.nombre as producto,u.nombre as unidad,ds.cantidad,ds.total');
@@ -333,6 +333,7 @@
       $this->db->where('s.estado_solicitud','LIQUIDADA');
       $this->db->where('s.fecha_salida <=',$fecha_fin);
       $this->db->where('s.fecha_salida >=',$fecha_inicio);
+      $this->db->where('e.id_especifico',$especifico);
       if ($seccion!=0) {
        $this->db->where('s.id_seccion',$seccion);
       }
@@ -347,7 +348,7 @@
       }
     }
 
-    public function obtenerProductosSeccionTotal($fecha_inicio,$fecha_fin,$seccion){
+    public function obtenerProductosSeccionTotal($fecha_inicio,$fecha_fin,$seccion,$especifico){
       $this->db->order_by("s.id_solicitud", "asc");
       $this->db->select('count(*) numero');
       $this->db->from('sic_detalle_solicitud_producto ds');
@@ -360,6 +361,7 @@
       $this->db->where('s.estado_solicitud','LIQUIDADA');
       $this->db->where('s.fecha_salida <=',$fecha_fin);
       $this->db->where('s.fecha_salida >=',$fecha_inicio);
+      $this->db->where('e.id_especifico',$especifico);
       if ($seccion!=0) {
        $this->db->where('s.id_seccion',$seccion);
       }
@@ -367,7 +369,7 @@
       return $query->row();
     }
 
-    public function obtenerProductosSeccionTodo($fecha_inicio,$fecha_fin,$seccion){
+    public function obtenerProductosSeccionTodo($fecha_inicio,$fecha_fin,$seccion,$especifico){
       $this->db->select('s.numero_solicitud,s.fecha_salida,sec.nombre_seccion,e.id_especifico,dp.numero_producto,
         p.nombre as producto,u.nombre as unidad,ds.cantidad,ds.total');
       $this->db->from('sic_detalle_solicitud_producto ds');
@@ -380,6 +382,7 @@
       $this->db->where('s.estado_solicitud','LIQUIDADA');
       $this->db->where('s.fecha_salida <=',$fecha_fin);
       $this->db->where('s.fecha_salida >=',$fecha_inicio);
+      $this->db->where('e.id_especifico',$especifico);
       if ($seccion!=0) {
         $this->db->where('s.id_seccion',$seccion);
       }

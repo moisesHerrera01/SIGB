@@ -1,30 +1,31 @@
 <?php
-
+$user = $this->session->userdata('logged_in');
 echo $this->breadcrumb->build_breadcrump(implode('/', array_slice($this->uri->segment_array(), 0, 3)));
-
-echo "<div style='text-align:center'>";
-    echo "<div class='form-group'>";
-    echo "<h3><font color=black>5-Reporte de gasto global por sección</font></h3>";
-  echo "</div>";
-echo "</div>";
 
 $inicio= array(
     'name' => 'fecha_inicio',
-    'placeholder' => 'Escribe la fecha de inicio',
+    'placeholder' => 'Ingrese la fecha de inicio',
     'class' => "form-control",
     'type'=>'date'
 );
 
 $fin= array(
     'name' => 'fecha_fin',
-    'placeholder' => 'Escribe la fecha de inicio',
+    'placeholder' => 'Ingrese la fecha de inicio',
     'class' => "form-control",
     'type'=>'date'
 );
 
 $sec= array(
     'name' => 'autocomplete',
-    'placeholder' => 'Escribe la seccion o Unidad',
+    'placeholder' => 'Ingrese la seccion o Unidad',
+    'class' => "form-control",
+    'autocomplete' => 'off'
+);
+
+$oe = array(
+    'name' => 'autocomplete2',
+    'placeholder' => 'Ingrese el Objeto especifico',
     'class' => "form-control",
     'autocomplete' => 'off'
 );
@@ -39,10 +40,23 @@ $atributos = array(
 
 echo "<div class='content-form'>";
   echo "<div class='limit-content-title'>";
-    echo "<span class='icono icon-filter icon-title'> Filtro</span>";
+    echo "<div class='title-reporte'>";
+      echo "Reporte gasto global especifico por sección.";
+    echo "</div>";
+    echo
+    "<div class='title-header'>
+      <ul>
+        <li>Fecha emisión: ".date('d/m/Y')."</li>
+        <li>Nombre la compañia: MTPS</li>
+        <li>N° pagina: 1/1</li>
+        <li>Nombre pantalla:</li>
+        <li>Usuario: ".$user['nombre_completo']."</li>
+      </ul>
+    </div>";
   echo "</div>";
   echo "<div class='limit-content'>";
-    echo form_open("/Bodega/Detalle_solicitud_producto/RecibirGastos", $atributos);
+
+    echo form_open("/Tactico/Gasto_global/RecibirGastos", $atributos);
 
     echo "<div class='form-group'>";
       echo form_label('Fecha Inicial:', 'inicio', $atriLabel);
@@ -64,6 +78,15 @@ echo "<div class='content-form'>";
         echo form_input($sec);
         echo form_hidden('seccion');
         echo '<div id="suggestions" class="suggestions"></div>';
+      echo "</div>";
+    echo "</div>";
+
+    echo "<div class='form-group'>";
+      echo form_label('Objeto Especifico:', 'oe', $atriLabel);
+      echo "<div class='col-lg-10'>";
+        echo form_input($oe);
+        echo form_hidden('especifico');
+        echo '<div id="suggestions1" class="suggestions"></div>';
       echo "</div>";
     echo "</div>";
 

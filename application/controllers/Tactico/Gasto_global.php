@@ -1,17 +1,32 @@
 <?php
+  defined('BASEPATH') OR exit('No direct script access allowed');
+
+  class Gasto_global extends CI_Controller {
+
+    public function __construct() {
+      parent::__construct();
+      if($this->session->userdata('logged_in') == FALSE){
+        redirect('login/index/error_no_autenticado');
+      }
+      $this->load->library(array('table','excel'));
+      $this->load->helper(array('form','paginacion'));
+      $this->load->model(array('Bodega/Detalle_solicitud_producto_model', 'Bodega/Producto','Bodega/Solicitud_Model',
+      'Bodega/Fuentefondos_model','Bodega/UnidadMedida','Compras/Detalle_solicitud_compra_model', 'Bodega/Kardex_model','Bodega/Especifico'));
+    }
+
   public function RecibirGastos() {
     date_default_timezone_set('America/El_Salvador');
     $anyo=20;
     $fecha_actual=date($anyo."y-m-d");
     if ($this->input->post('fecha_inicio')!=NULL) {
       if($this->input->post('fecha_fin')==NULL){
-        redirect('Bodega/Detalle_solicitud_producto/reporteGastoSeccion/'.$this->input->post('fecha_inicio').'/'
-        .$fecha_actual.'/'.$this->input->post('seccion'));
+        redirect('Tactico/Gasto_global/reporteGastoSeccion/'.$this->input->post('fecha_inicio').'/'
+        .$fecha_actual.'/'.$this->input->post('seccion').'/'.$this->input->post('especifico'));
       }else{
-        redirect('Bodega/Detalle_solicitud_producto/reporteGastoSeccion/'.$this->input->post('fecha_inicio').'/'
-        .$this->input->post('fecha_fin').'/'.$this->input->post('seccion'));
+        redirect('Tactico/Gasto_global/reporteGastoSeccion/'.$this->input->post('fecha_inicio').'/'
+        .$this->input->post('fecha_fin').'/'.$this->input->post('seccion').'/'.$this->input->post('especifico'));
       }} else {
-        redirect('Bodega/Detalle_solicitud_producto/reporteGastoSeccion/');
+        redirect('Tactico/Gasto_global/reporteGastoSeccion/');
     }
   }
 
@@ -32,16 +47,16 @@
         'Producto', 'Unidad Medida','Cantidad','Total');
 
         $num = '10';
+        $segmento = 8;
         $seccion = ($this->uri->segment(6)==NULL) ? 0 : $this->uri->segment(6);
         $registros = $this->Detalle_solicitud_producto_model->obtenerProductosSeccion($this->uri->segment(4),
-        $this->uri->segment(5),$seccion,$num, $this->uri->segment(7));
+        $this->uri->segment(5),$seccion,$this->uri->segment(7),$num, $this->uri->segment(8));
         $total = $this->Detalle_solicitud_producto_model->obtenerProductosSeccionTotal($this->uri->segment(4),
-        $this->uri->segment(5),$seccion);
+        $this->uri->segment(5),$seccion,$this->uri->segment(7));
         $cant=$total->numero;
 
-        $pagination = paginacion('index.php/Bodega/Detalle_solicitud_producto/reporteGastoSeccion/'.$this->uri->segment(4).
-        '/'.$this->uri->segment(5).'/'.$seccion.'/',$cant,$num, '7');
-
+        $pagination = paginacion('index.php/Tactico/Gasto_global/reporteGastoSeccion/'.$this->uri->segment(4).
+        '/'.$this->uri->segment(5).'/'.$seccion.'/'.$this->uri->segment(7).'/',$cant,$num, '8');
         if (!($registros == FALSE)) {
           $i = 1;
           foreach($registros as $pro) {
@@ -53,15 +68,53 @@
           $msg = array('data' => "No se encontraron resultados", 'colspan' => "9");
           $this->table->add_row($msg);
         }
-        $table = "<div class='content_table '>" .
-                 "<div class='limit-content-title'><span class='icono icon-table icon-title'> ".$this->Seccion_model->obtenerPorIdSeccion($this->uri->segment(6)). " " . $this->uri->segment(4) . " - " . $this->uri->segment(5) . "</span></div>".
-                 "<div class='limit-content'>" .
-                 "<div class='exportar'><a href='".base_url('/index.php/Bodega/Detalle_solicitud_producto/ReporteExcel/'.$this->uri->segment(4).'/'
-                 .$this->uri->segment(5).'/'.$this->uri->segment(6).'/'.$this->uri->segment(7))."' class='icono icon-file-excel'>
-                 Exportar Excel</a></div>" . "<div class='table-responsive'>" . $this->table->generate() . "</div>" . $pagination . "</div></div>";
-      }
 
-      $data['body'] = $this->load->view('Bodega/Reportes/gasto_seccion_view', '',TRUE) . "<br>" . $table;
+                 // paginacion del header
+                 $pagaux = $cant / $num;
+
+                 $pags = intval($pagaux);
+
+                 if ($pagaux > $pags || $pags == 0) {
+                   $pags++;
+                 }
+
+                 $seg = intval($this->uri->segment($segmento)) + 1;
+
+                 $segaux = $seg / $num;
+
+                 $pag = intval($segaux);
+
+                 if ($segaux > $pag) {
+                   $pag++;
+                 }
+
+                 $seccion = ($this->uri->segment(6) != 0) ?   $this->Solicitud_Model->obtenerSeccion($this->uri->segment(6)) : 'N/E' ;
+                 $especifico = ($this->uri->segment(7) != 0) ?   $this->Especifico->obtenerEspecifico($this->uri->segment(7)) : 'N/E' ;
+                 $table =  "<div class='content_table '>" .
+                           "<div class='limit-content-title'>".
+                             "<div class='title-reporte'>".
+                               "Reporte gasto global especifico por sección.".
+                             "</div>".
+                             "<div class='title-header'>
+                               <ul>
+                                 <li>Fecha emisión: ".date('d/m/Y')."</li>
+                                 <li>Nombre la compañia: MTPS</li>
+                                 <li>N° pagina: ". $pag .'/'. $pags ."</li>
+                                 <li>Nombre pantalla:</li>
+                                 <li>Usuario: ".$USER['nombre_completo']."</li>
+                                 <br />
+                                 <li>Parametros: ".$seccion." ".$especifico." ". $this->uri->segment(4) . " - " . $this->uri->segment(5)."</li>
+                               </ul>
+                             </div>".
+                           "</div>".
+                           "<div class='limit-content'>" .
+                           "<div class='exportar'><a href='".base_url('/index.php/Tactico/Gasto_global/ReporteExcel/'.$this->uri->segment(4).'/'
+                           .$this->uri->segment(5).'/'.$this->uri->segment(6).'/'.$this->uri->segment(7))."' class='icono icon-file-excel'>
+                           Exportar Excel</a></div>" . "<div class='table-responsive'>" . $this->table->generate() . "</div>" . $pagination . "</div></div>";
+                 $data['body'] = $table;
+      }else {
+          $data['body'] = $this->load->view('Tactico/gasto_global_view', '',TRUE);
+      }
       $this->load->view('base', $data);
     } else {
       redirect('login/index/forbidden');
@@ -133,7 +186,8 @@
     $objPHPExcel->getActiveSheet()->getStyle('A1:I1')->applyFromArray($estilo_titulo);
 
     $seccion = ($this->uri->segment(6)==NULL) ? 0 : $this->uri->segment(6);
-    $registros = $this->Detalle_solicitud_producto_model->obtenerProductosSeccionTodo($this->uri->segment(4), $this->uri->segment(5),$seccion);
+    $registros = $this->Detalle_solicitud_producto_model->obtenerProductosSeccionTodo($this->uri->segment(4), $this->uri->segment(5),
+    $seccion,$this->uri->segment(7));
 
     if (!($registros == FALSE)) {
       $i = 2;
