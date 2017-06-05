@@ -108,7 +108,7 @@ class Resumen_conteo extends CI_Controller {
                     </div>".
                   "</div>".
                   "<div class='limit-content'>" .
-                  "<div class='exportar'><a href='".base_url('/index.php/Bodega/ConteoFisico/ReporteExcel/'.$nom_conteo)."' class='icono icon-file-excel'>
+                  "<div class='exportar'><a href='".base_url('/index.php/Estrategico/Resumen_conteo/ReporteExcel/'.str_replace(" ", "_", $nom_conteo))."' class='icono icon-file-excel'>
                   Exportar Excel</a></div>" . "<div class='table-responsive'>" . $this->table->generate() . "</div>" . $pagination . "</div></div>";
 
         $data['body'] = $table;
@@ -125,6 +125,7 @@ class Resumen_conteo extends CI_Controller {
 
   public function ReporteExcel() {
     $USER = $this->session->userdata('logged_in');
+    $nom_conteo = str_replace("_", " ", $this->uri->segment(4));
     if($USER){
       $this->load->library(array('excel'));
 
@@ -189,8 +190,8 @@ class Resumen_conteo extends CI_Controller {
                    ->setCellValue('I1', 'Diferencia');
       $objPHPExcel->getActiveSheet()->getStyle('A1:I1')->applyFromArray($estilo_titulo);
 
-      $registros = $this->DetalleConteoFisico_model->obtenerDetalleConteosTotal($this->uri->segment(4));
-      $fecha = $this->Conteofisico_model->obtenerFechaConteo($this->uri->segment(4));
+      $registros = $this->DetalleConteoFisico_model->obtenerDetalleConteosTotal($nom_conteo);
+      $fecha = $this->Conteofisico_model->obtenerFechaConteo($nom_conteo);
 
       if (!($registros == FALSE)) {
         $i = 2;
@@ -201,18 +202,20 @@ class Resumen_conteo extends CI_Controller {
           $nombre_especifico = $this->Especifico->obtenerEspecifico($conteo->id_especifico);
           $existencia = intval($this->Kardex_model->obtenerExistencias($conteo->id_detalleproducto, $fecha));
 
-          $objPHPExcel->setActiveSheetIndex(0)
-                      ->setCellValue('A'.$i, $i-1)
-                      ->setCellValue('B'.$i, $conteo->id_especifico)
-                      ->setCellValue('C'.$i, $producto->nombre)
-                      ->setCellValue('D'.$i, $unidad)
-                      ->setCellValue('E'.$i, $fuente)
-                      ->setCellValue('F'.$i, $this->uri->segment(4))
-                      ->setCellValue('G'.$i, $conteo->cantidad)
-                      ->setCellValue('H'.$i, $existencia)
-                      ->setCellValue('I'.$i, $conteo->cantidad - $existencia);
-          $objPHPExcel->getActiveSheet()->getStyle('A'.$i.':I'.$i)->applyFromArray($estilo_contenido);
-          $i++;
+          if ($conteo->cantidad - $existencia != 0){
+            $objPHPExcel->setActiveSheetIndex(0)
+                        ->setCellValue('A'.$i, $i-1)
+                        ->setCellValue('B'.$i, $conteo->id_especifico)
+                        ->setCellValue('C'.$i, $producto->nombre)
+                        ->setCellValue('D'.$i, $unidad)
+                        ->setCellValue('E'.$i, $fuente)
+                        ->setCellValue('F'.$i, $this->uri->segment(4))
+                        ->setCellValue('G'.$i, $conteo->cantidad)
+                        ->setCellValue('H'.$i, $existencia)
+                        ->setCellValue('I'.$i, $conteo->cantidad - $existencia);
+            $objPHPExcel->getActiveSheet()->getStyle('A'.$i.':I'.$i)->applyFromArray($estilo_contenido);
+            $i++;
+          }
         }
 
         foreach(range('A','I') as $columnID){
