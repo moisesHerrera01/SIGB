@@ -2,12 +2,6 @@
 
 echo $this->breadcrumb->build_breadcrump(implode('/', array_slice($this->uri->segment_array(), 0, 3)));
 
-echo "<div style='text-align:center'>";
-    echo "<div class='form-group'>";
-    echo "<h3><font color=black>Reporte resumen conteo físico</font></h3>";
-  echo "</div>";
-echo "</div>";
-
 $conteo = array(
     'name' => 'conteo',
     'placeholder' => 'Escribe Conteo',
