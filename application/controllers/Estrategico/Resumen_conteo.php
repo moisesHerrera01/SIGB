@@ -60,10 +60,11 @@ class Resumen_conteo extends CI_Controller {
             $fuente = $this->Kardex_model->obtenerFuenteFondo($conteo->id_detalleproducto, $fecha);
             $nombre_especifico = $this->Especifico->obtenerEspecifico($conteo->id_especifico);
             $existencia = intval($this->Kardex_model->obtenerExistencias($conteo->id_detalleproducto, $fecha));
-            $this->table->add_row($i, $conteo->id_especifico, $producto->nombre, $unidad, $fuente, $nom_conteo,
-                                  $conteo->cantidad, $existencia,  $conteo->cantidad - $existencia);
-
-            $i++;
+            if ($conteo->cantidad - $existencia != 0) {
+              $this->table->add_row($i, $conteo->id_especifico, $producto->nombre, $unidad, $fuente, $nom_conteo,
+                                    $conteo->cantidad, $existencia,  $conteo->cantidad - $existencia);
+              $i++;
+            }
           }
         } else {
           $msg = array('data' => "No se encontraron resultados", 'colspan' => "9");
