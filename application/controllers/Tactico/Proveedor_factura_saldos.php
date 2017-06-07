@@ -2,6 +2,18 @@
 defined('BASEPATH') OR exit('No direct script access allowed');
 
 class Proveedor_factura_saldos extends CI_Controller {
+
+  
+  public function __construct() {
+    parent::__construct();
+    if($this->session->userdata('logged_in') == FALSE){
+      redirect('login/index/error_no_autenticado');
+    }
+    $this->load->helper(array('form', 'paginacion'));
+    $this->load->library('table');
+    $this->load->model(array('Bodega/Proveedor','Bodega/Detalle_solicitud_producto_model', 'Bodega/Fuentefondos_model'));
+  }
+
   public function RecibirFiltro() {
 
     if ($this->input->post()==NULL) {
@@ -12,25 +24,28 @@ class Proveedor_factura_saldos extends CI_Controller {
   }
 
   public function Reporte(){
-    $this->load->model('Bodega/Fuentefondos_model');
+    
     $USER = $this->session->userdata('logged_in');
     if($USER){
+      $this->load->model('Bodega/Fuentefondos_model');
       $this->load->library(array('table'));
 
-      $data['title'] = "4-Reporte por Proveedor, Factura y Especifico";
+      $data['title'] = "Proveedor, facturas y saldos";
       $data['menu'] = $this->menu_dinamico->menus($this->session->userdata('logged_in'),$this->uri->segment(1));
       $data['js'] = 'assets/js/validate/reporte/bodega/general.js';
+      $table = '';
+
+    if (($this->uri->segment(4))!=NULL && ($this->uri->segment(5))!=NULL && ($this->uri->segment(6))!=NULL) {
 
       $template = array(
           'table_open' => '<table class="table table-striped table-bordered">'
       );
       $this->table->set_template($template);
-      $this->table->set_heading('Fecha Factura', 'Numero Factura', 'Compromiso', 'Proveedor', 'Objeto Especifico',
-                                'Total OE');
+      $this->table->set_heading('Fecha Factura', 'Numero Factura', 'Compromiso', 'Proveedor', 'Objeto Especifico','Total OE');
 
       $num = 12;
       $total_registros = $this->Proveedor->TotalReporteProveedores($this->uri->segment(4), $this->uri->segment(5), $this->uri->segment(6));
-      $pagination = paginacion('index.php/Bodega/Proveedores/Reporte/' .$this->uri->segment(4). '/' .$this->uri->segment(5). '/' . $this->uri->segment(6),
+      $pagination = paginacion('index.php/Tactico/Proveedor_factura_saldos/Reporte/' .$this->uri->segment(4). '/' .$this->uri->segment(5). '/' . $this->uri->segment(6),
                     $total_registros, $num, '7');
 
       if ($total_registros > 0) {
@@ -62,17 +77,55 @@ class Proveedor_factura_saldos extends CI_Controller {
       } else {
         $msg = array('data' => "No se encontraron resultados", 'colspan' => "6");
         $this->table->add_row($msg);
+      } 
+
+
+                 // paginacion del header
+                 $pagaux = $cant / $num;
+
+                 $pags = intval($pagaux);
+
+                 if ($pagaux > $pags || $pags == 0) {
+                   $pags++;
+                 }
+
+                 $seg = intval($this->uri->segment($segmento)) + 1;
+
+                 $segaux = $seg / $num;
+
+                 $pag = intval($segaux);
+
+                 if ($segaux > $pag) {
+                   $pag++;
+                 }
+
+                 $seccion = ($this->uri->segment(6) != 0) ?   $this->Solicitud_Model->obtenerSeccion($this->uri->segment(6)) : 'N/E' ;
+                 $especifico = ($this->uri->segment(7) != 0) ?   $this->Especifico->obtenerEspecifico($this->uri->segment(7)) : 'N/E' ; 
+                 $table =  "<div class='content_table '>" .
+                           "<div class='limit-c ontent-title'>".
+                             "<div class='title-reporte'>".
+                               "Reporte por Proveedor, factura y saldos.".
+                             "</div>".
+                             "<div class='title-header'>
+                               <ul>
+                                 <li>Fecha emisión: ".date('d/m/Y')."</li>
+                                 <li>Nombre la compañia: MTPS</li>
+                                 <li>N° pagina: ". $pag .'/'. $pags ."</li>
+                                 <li>Nombre pantalla:</li>
+                                 <li>Usuario: ".$USER['nombre_completo']."</li>
+                                 <br />
+                                 <li>Parametros: ".$seccion." ".$especifico." ". $this->uri->segment(4) . " - " . $this->uri->segment(5)."</li>
+                               </ul>
+                             </div>".
+                           "</div>".
+                           "<div class='limit-content'>" .
+                           "<div class='exportar'><a href='".base_url('/index.php/Tactico/Proveedor_factura_saldos/ReporteExcel/'.$this->uri->segment(4).'/'
+                           .$this->uri->segment(5).'/'.$this->uri->segment(6).'/'.$this->uri->segment(7))."' class='icono icon-file-excel'>
+                           Exportar Excel</a></div>" . "<div class='table-responsive'>" . $this->table->generate() . "</div>" . $pagination . "</div></div>";
+                 $data['body'] = $table;
+      }else {
+          $data['body'] = $this->load->view('Tactico/filtro_fuentes_view', '',TRUE);
       }
-
-      $data['body'] = $this->load->view('Bodega/Reportes/filtro_fuentes_view', array('url' => '/Bodega/Proveedores/RecibirFiltro','title'=>$data['title']) ,TRUE) . "<br>" .
-                      "<div class='content_table'>" .
-                      "<div class='limit-content-title'><span class='icono icon-table icon-title'> ".$this->Fuentefondos_model->obtenerFuente($this->uri->segment(4)). " " . $this->uri->segment(5) ." - ". $this->uri->segment(6) ."</span></div>".
-                      "<div class='limit-content'>" .
-                     "<div class='exportar'>
-                        <a href='".base_url('/index.php/Bodega/Proveedores/ReporteExcel/'.$this->uri->segment(4).'/'.$this->uri->segment(5).'/'.$this->uri->segment(6))."'
-                        class='icono icon-file-excel'> Exportar Excel</a>
-                     </div>" . "<div class='table-responsive'>" . $this->table->generate() . "</div>" . $pagination . "</div></div>";
-
       $this->load->view('base', $data);
     } else {
       redirect('login/index/forbidden');

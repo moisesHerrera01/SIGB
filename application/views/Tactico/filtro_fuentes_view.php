@@ -1,12 +1,7 @@
 <?php
-
+$user = $this->session->userdata('logged_in');
 echo $this->breadcrumb->build_breadcrump(implode('/', array_slice($this->uri->segment_array(), 0, 3)));
 
-echo "<div style='text-align:center'>";
-    echo "<div class='form-group'>";
-    echo "<h3><font color=black>$title</font></h3>";
-  echo "</div>";
-echo "</div>";
 
 $fuente = array(
     'name' => 'autocomplete1',
@@ -39,10 +34,11 @@ $atributos = array(
 
 echo "<div class='content-form'>";
   echo "<div class='limit-content-title'>";
+    echo "<div class='title-reporte'>";
     echo "<span class='icono icon-filter icon-title'> Filtro</span>";
   echo "</div>";
   echo "<div class='limit-content'>";
-    echo form_open($url, $atributos);
+    echo form_open("/Tactico/Proveedor_factura_saldos/Reporte", $atributos);
       echo "<div class='form-group'>";
         echo form_label('Fuente de Fondos:', 'f', $atriLabel);
         echo "<div class='col-lg-10'>";
