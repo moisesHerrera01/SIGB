@@ -3,7 +3,7 @@ defined('BASEPATH') OR exit('No direct script access allowed');
 
 class Proveedor_factura_saldos extends CI_Controller {
 
-  
+
   public function __construct() {
     parent::__construct();
     if($this->session->userdata('logged_in') == FALSE){
@@ -11,20 +11,28 @@ class Proveedor_factura_saldos extends CI_Controller {
     }
     $this->load->helper(array('form', 'paginacion'));
     $this->load->library('table');
-    $this->load->model(array('Bodega/Proveedor','Bodega/Detalle_solicitud_producto_model', 'Bodega/Fuentefondos_model'));
+    $this->load->model(array('Bodega/Proveedor','Bodega/Detalle_solicitud_producto_model', 'Bodega/Fuentefondos_model', 'Bodega/Solicitud_Model'));
   }
 
   public function RecibirFiltro() {
 
-    if ($this->input->post()==NULL) {
-      redirect('Bodega/Proveedores/Reporte/');
-    } else {
-      redirect('Bodega/Proveedores/Reporte/'.$this->input->post('fuente').'/'.$this->input->post('fechaMin').'/'.$this->input->post('fechaMax') );
+    date_default_timezone_set('America/El_Salvador');
+    $anyo=20;
+    $fecha_actual=date($anyo."y-m-d");
+    if ($this->input->post('fechaMin')!=NULL && $this->input->post('fuente')!=NULL) {
+      if($this->input->post('fechaMax')==NULL){
+        redirect('Tactico/Proveedor_factura_saldos/Reporte/'.$this->input->post('fechaMin').'/'
+        .post('fechaMax').'/'.$this->input->post('fuente'));
+      }else{
+        redirect('Tactico/Proveedor_factura_saldos/Reporte/'.$this->input->post('fechaMin').'/'
+        .$this->input->post('fechaMax').'/'.$this->input->post('fuente'));
+      }} else {
+        redirect('Tactico/Proveedor_factura_saldos/');
     }
   }
 
   public function Reporte(){
-    
+
     $USER = $this->session->userdata('logged_in');
     if($USER){
       $this->load->model('Bodega/Fuentefondos_model');
@@ -44,14 +52,16 @@ class Proveedor_factura_saldos extends CI_Controller {
       $this->table->set_heading('Fecha Factura', 'Numero Factura', 'Compromiso', 'Proveedor', 'Objeto Especifico','Total OE');
 
       $num = 12;
+
       $total_registros = $this->Proveedor->TotalReporteProveedores($this->uri->segment(4), $this->uri->segment(5), $this->uri->segment(6));
+
       $pagination = paginacion('index.php/Tactico/Proveedor_factura_saldos/Reporte/' .$this->uri->segment(4). '/' .$this->uri->segment(5). '/' . $this->uri->segment(6),
                     $total_registros, $num, '7');
 
       if ($total_registros > 0) {
 
-        $registros = $this->Proveedor->ReporteProveedores($this->uri->segment(4), $this->uri->segment(5), $this->uri->segment(6), $num, $this->uri->segment(7));
-
+        $registros = $this->Proveedor->ReporteProveedores($this->uri->segment(4), $this->uri->segment(5), $this->uri->segment(6), $num, 0);
+      //  var_dump($registros);
         $total = 0;
         while ($registro = current($registros)) {
           $this->table->add_row($registro['fecha_factura'], $registro['numero_factura'], $registro['numero_compromiso'],
@@ -77,11 +87,12 @@ class Proveedor_factura_saldos extends CI_Controller {
       } else {
         $msg = array('data' => "No se encontraron resultados", 'colspan' => "6");
         $this->table->add_row($msg);
-      } 
-
+      }
+                $cant=10;
+                $segmento=10;
 
                  // paginacion del header
-                 $pagaux = $cant / $num;
+                $pagaux = $cant / $num;
 
                  $pags = intval($pagaux);
 
@@ -100,9 +111,9 @@ class Proveedor_factura_saldos extends CI_Controller {
                  }
 
                  $seccion = ($this->uri->segment(6) != 0) ?   $this->Solicitud_Model->obtenerSeccion($this->uri->segment(6)) : 'N/E' ;
-                 $especifico = ($this->uri->segment(7) != 0) ?   $this->Especifico->obtenerEspecifico($this->uri->segment(7)) : 'N/E' ; 
+                 $especifico = ($this->uri->segment(7) != 0) ?   $this->Especifico->obtenerEspecifico($this->uri->segment(7)) : 'N/E' ;
                  $table =  "<div class='content_table '>" .
-                           "<div class='limit-c ontent-title'>".
+                           "<div class='limit-content-title'>".
                              "<div class='title-reporte'>".
                                "Reporte por Proveedor, factura y saldos.".
                              "</div>".

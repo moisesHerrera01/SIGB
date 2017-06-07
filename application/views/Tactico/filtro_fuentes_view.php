@@ -38,7 +38,8 @@ echo "<div class='content-form'>";
     echo "<span class='icono icon-filter icon-title'> Filtro</span>";
   echo "</div>";
   echo "<div class='limit-content'>";
-    echo form_open("/Tactico/Proveedor_factura_saldos/Reporte", $atributos);
+    echo form_open("/Tactico/Proveedor_factura_saldos/RecibirFiltro", $atributos);
+
       echo "<div class='form-group'>";
         echo form_label('Fuente de Fondos:', 'f', $atriLabel);
         echo "<div class='col-lg-10'>";
@@ -47,18 +48,21 @@ echo "<div class='content-form'>";
           echo '<div id="suggestions" class="suggestions"></div>';
         echo "</div>";
       echo "</div>";
+
       echo "<div class='form-group'>";
         echo form_label('Fecha inicial:', 'fechaini', $atriLabel);
         echo "<div class='col-lg-10'>";
           echo form_input($fechaInicial);
         echo "</div>";
       echo "</div>";
+
       echo "<div class='form-group'>";
         echo form_label('Fecha Final:', 'fechafin', $atriLabel);
         echo "<div class='col-lg-10'>";
           echo form_input($fechaFinal);
         echo "</div>";
       echo "</div>";
+
       echo form_submit('','Generar', $button);
     echo form_close();
   echo "</div>";

@@ -131,7 +131,7 @@
       $this->db->delete('sic_proveedores', array('id_proveedores' => $id));
     }
 
-    public function ReporteProveedores($id_fuente, $minFecha, $maxFecha, $porpagina = 10000, $segmento = 0) {
+    public function ReporteProveedores( $minFecha, $maxFecha,$id_fuente, $porpagina, $segmento) {
       $tiempo_inicio = microtime(true);
       $this->db->select('a.id_factura, a.fecha_factura, a.numero_factura, a.numero_compromiso, b.nombre_proveedor, c.id_detalleproducto,
                         d.id_especifico, SUM(c.total) AS "total"')
@@ -158,7 +158,7 @@
     }
 
 
-    public function TotalReporteProveedores($id_fuente, $minFecha, $maxFecha ){
+    public function TotalReporteProveedores( $minFecha, $maxFecha,$id_fuente ){
       $this->db->select('id_proveedores')
                ->from('sic_factura');
       $query=$this->db->get();
