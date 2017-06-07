@@ -110,7 +110,7 @@ class Resumen_conteo extends CI_Controller {
           'class' => 'form-control',
           'autocomplete' => 'off',
           'id' => 'buscar',
-          'url' => 'index.php/Estrategico/Resumen_conteo/Reporte/CONTEO_PRUEBA'
+          'url' => 'index.php/Estrategico/Resumen_conteo/Reporte/'.str_replace(" ", "_", $nom_conteo)
         );
 
         $table = "<div class='content_table '>" .
