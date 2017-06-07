@@ -45,23 +45,31 @@ class Resumen_conteo extends CI_Controller {
                                   'Contador', 'Contador Sistema','Diferencia');
 
         $num = '15';
-        $count = $this->DetalleConteoFisico_model->totalDetalleConteo($nom_conteo);
         $segmento = '5';
-        $registros = $this->DetalleConteoFisico_model->obtenerDetalleConteosLimit($nom_conteo, $num, $this->uri->segment(5));
-        $pagination = paginacion('index.php/Bodega/ConteoFisico/reporte/',
-                      $count , $num, $segmento);
+
+        if ($this->input->is_ajax_request()) {
+          if (!($this->input->post('busca') == "")) {
+              $registros = $this->DetalleConteoFisico_model->obtenerDetalleConteosBusca($nom_conteo, $this->input->post('busca'));
+              $count = count($registros);
+          } else {
+            $registros = $this->DetalleConteoFisico_model->obtenerDetalleConteosLimit($nom_conteo, $num, $this->uri->segment(5));
+            $count = $this->DetalleConteoFisico_model->totalDetalleConteo($nom_conteo);
+          }
+        } else {
+            $registros = $this->DetalleConteoFisico_model->obtenerDetalleConteosLimit($nom_conteo, $num, $this->uri->segment(5));
+            $count = $this->DetalleConteoFisico_model->totalDetalleConteo($nom_conteo);
+        }
+
+        $pagination = paginacion('index.php/Bodega/ConteoFisico/reporte/', $count , $num, $segmento);
 
         $fecha = $this->Conteofisico_model->obtenerFechaConteo($nom_conteo);
         if (!($registros == FALSE)) {
           $i = 1;
           foreach($registros as $conteo) {
-            $producto = $this->Producto->obtenerTodoProducto($conteo->id_producto);
-            $unidad = $this->UnidadMedida->obtenerUnidad($producto->id_unidad_medida);
             $fuente = $this->Kardex_model->obtenerFuenteFondo($conteo->id_detalleproducto, $fecha);
-            $nombre_especifico = $this->Especifico->obtenerEspecifico($conteo->id_especifico);
             $existencia = intval($this->Kardex_model->obtenerExistencias($conteo->id_detalleproducto, $fecha));
             if ($conteo->cantidad - $existencia != 0) {
-              $this->table->add_row($i, $conteo->id_especifico, $producto->nombre, $unidad, $fuente, $nom_conteo,
+              $this->table->add_row($i, $conteo->id_especifico, $conteo->nombre_producto, $conteo->nombre_unidad, $fuente, $nom_conteo,
                                     $conteo->cantidad, $existencia,  $conteo->cantidad - $existencia);
               $i++;
             }
@@ -69,6 +77,11 @@ class Resumen_conteo extends CI_Controller {
         } else {
           $msg = array('data' => "No se encontraron resultados", 'colspan' => "9");
           $this->table->add_row($msg);
+        }
+
+        if ($this->input->is_ajax_request()) {
+          echo $this->table->generate();
+          return false;
         }
 
         // paginacion del header
@@ -90,6 +103,16 @@ class Resumen_conteo extends CI_Controller {
           $pag++;
         }
 
+        $buscar = array(
+          'name' => 'buscar',
+          'type' => 'search',
+          'placeholder' => 'Buscar',
+          'class' => 'form-control',
+          'autocomplete' => 'off',
+          'id' => 'buscar',
+          'url' => 'index.php/Estrategico/Resumen_conteo/Reporte/CONTEO_PRUEBA'
+        );
+
         $table = "<div class='content_table '>" .
                   "<div class='limit-content-title'>".
                     "<div class='title-reporte'>".
@@ -109,7 +132,8 @@ class Resumen_conteo extends CI_Controller {
                   "</div>".
                   "<div class='limit-content'>" .
                   "<div class='exportar'><a href='".base_url('/index.php/Estrategico/Resumen_conteo/ReporteExcel/'.str_replace(" ", "_", $nom_conteo))."' class='icono icon-file-excel'>
-                  Exportar Excel</a></div>" . "<div class='table-responsive'>" . $this->table->generate() . "</div>" . $pagination . "</div></div>";
+                  Exportar Excel</a> <span class='content_buscar'><i class='glyphicon glyphicon-search'></i>".form_input($buscar)."</span></div>".
+                  "<div class='table-responsive'>" . $this->table->generate() . "</div>" . $pagination . "</div></div>";
 
         $data['body'] = $table;
       } else {

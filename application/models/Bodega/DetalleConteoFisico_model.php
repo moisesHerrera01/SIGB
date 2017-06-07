@@ -66,16 +66,38 @@
     }
 
     public function obtenerDetalleConteosLimit($conteo, $porpagina, $segmento){
-      // $this->db->select('p.id_producto, p.id_especifico, c.nombre_conteo, c.cantidad');
-      // $this->db->from('sic_detalle_conteo c');
-      // $this->db->join('sic_detalle_producto p', 'c.id_detalleproducto = p.id_detalleproducto');
-      // $this->db->where('c.nombre_conteo', $conteo);
-      // $query = $this->db->get('sic_detalle_conteo', $porpagina, $segmento);
       $segmento = intval($segmento);
 
-      $query = $this->db->query('SELECT p.id_producto, p.id_especifico, c.nombre_conteo, c.cantidad, c.id_detalleproducto
-        FROM sic_detalle_conteo c JOIN sic_detalle_producto p
-        ON c.id_detalleproducto = p.id_detalleproducto WHERE c.nombre_conteo = "'.$conteo.'" LIMIT '.$segmento.', '.$porpagina.';');
+      $this->db->select('b.id_producto, b.id_especifico, a.nombre_conteo, a.cantidad, b.id_detalleproducto,
+                          c.nombre nombre_producto, d.nombre nombre_unidad')
+               ->from('sic_detalle_conteo a')
+               ->join('sic_detalle_producto b', 'a.id_detalleproducto = b.id_detalleproducto')
+               ->join('sic_producto c', 'b.id_producto = c.id_producto')
+               ->join('sic_unidad_medida d', 'c.id_unidad_medida = d.id_unidad_medida')
+               ->where('a.nombre_conteo', $conteo)
+               ->limit($porpagina, $segmento);
+      
+      $query = $this->db->get();
+      if ($query->num_rows() > 0) {
+          return  $query->result();
+      }
+      else {
+          return FALSE;
+      }
+    }
+
+    public function obtenerDetalleConteosBusca($conteo, $busca) {
+      $this->db->select('b.id_producto, b.id_especifico, a.nombre_conteo, a.cantidad, b.id_detalleproducto,
+                          c.nombre nombre_producto, d.nombre nombre_unidad')
+               ->from('sic_detalle_conteo a')
+               ->join('sic_detalle_producto b', 'a.id_detalleproducto = b.id_detalleproducto')
+               ->join('sic_producto c', 'b.id_producto = c.id_producto')
+               ->join('sic_unidad_medida d', 'c.id_unidad_medida = d.id_unidad_medida')
+               ->where('a.nombre_conteo', $conteo)
+               ->like('c.nombre', $busca)
+               ->or_like('b.id_especifico', $busca);
+
+      $query = $this->db->get();
       if ($query->num_rows() > 0) {
           return  $query->result();
       }
