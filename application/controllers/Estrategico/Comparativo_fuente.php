@@ -10,7 +10,7 @@ class Comparativo_fuente extends CI_Controller {
     }
     $this->load->helper(array('form', 'paginacion'));
     $this->load->library('table');
-    //$this->load->model(array());
+    $this->load->model(array('Bodega/Kardex_model'));
   }
 
   public function RecibirDato() {
@@ -36,18 +36,33 @@ class Comparativo_fuente extends CI_Controller {
       $this->table->set_template($template);
       $column = 1;
 
-      $registros = FALSE;
+      $cell = array('');
+      $head = array('Fuente de Fondo');
+      $comp;
 
-      if (!($registros == FALSE)) {
+      for ($i=0; $i < $this->uri->segment(4); $i++) {
+        $cell[$i+1] = array('data' => date('Y') - $i, 'colspan' => 2);
 
-        foreach($registros as $fuente) {
 
+        $registros = $this->Kardex_model->comparacionFuenteFondo($this->uri->segment(4));
+
+        if (!($registros == FALSE)) {
+
+          array_push($head, 'Cantidad', 'Saldo');
+
+          foreach($registros as $fuente) {
+            $comp = array($fuente->nombre_fuente, number_format($fuente->cantidad), '$' . number_format($fuente->saldo, 3));
+          }
+
+        } else {
+          $msg = array('data' => "No se encontraron resultados", 'colspan' => $column);
+          $this->table->add_row($msg);
         }
-
-      } else {
-        $msg = array('data' => "No se encontraron resultados", 'colspan' => $column);
-        $this->table->add_row($msg);
       }
+
+      $this->table->set_heading($cell);
+      $this->table->add_row($head);
+      $this->table->add_row($comp);
 
       $table =  "<div class='content_table '>" .
                 "<div class='limit-content-title'>".
