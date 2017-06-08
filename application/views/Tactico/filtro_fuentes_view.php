@@ -38,7 +38,7 @@ echo "<div class='content-form'>";
     echo "<span class='icono icon-filter icon-title'> Filtro</span>";
   echo "</div>";
   echo "<div class='limit-content'>";
-    echo form_open("/Tactico/Proveedor_factura_saldos/RecibirFiltro", $atributos);
+    echo form_open("/Tactico/Proveedor_factura_especifico/RecibirFiltro", $atributos);
 
       echo "<div class='form-group'>";
         echo form_label('Fuente de Fondos:', 'f', $atriLabel);

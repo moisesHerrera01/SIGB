@@ -1,7 +1,7 @@
 <?php
 defined('BASEPATH') OR exit('No direct script access allowed');
 
-class Proveedor_factura_saldos extends CI_Controller {
+class Proveedor_factura_especifico extends CI_Controller {
 
 
   public function __construct() {
@@ -21,13 +21,13 @@ class Proveedor_factura_saldos extends CI_Controller {
     $fecha_actual=date($anyo."y-m-d");
     if ($this->input->post('fechaMin')!=NULL && $this->input->post('fuente')!=NULL) {
       if($this->input->post('fechaMax')==NULL){
-        redirect('Tactico/Proveedor_factura_saldos/Reporte/'.$this->input->post('fechaMin').'/'
-        .post('fechaMax').'/'.$this->input->post('fuente'));
+        redirect('Tactico/Proveedor_factura_especifico/Reporte/'.$this->input->post('fuente').'/'
+        .post('fechaMin').'/'.$this->input->post('fechaMax'));
       }else{
-        redirect('Tactico/Proveedor_factura_saldos/Reporte/'.$this->input->post('fechaMin').'/'
-        .$this->input->post('fechaMax').'/'.$this->input->post('fuente'));
+        redirect('Tactico/Proveedor_factura_especifico/Reporte/'.$this->input->post('fuente').'/'
+        .$this->input->post('fechaMin').'/'.$this->input->post('fechaMax'));
       }} else {
-        redirect('Tactico/Proveedor_factura_saldos/');
+        redirect('Tactico/Proveedor_factura_especifico/');
     }
   }
 
@@ -38,13 +38,13 @@ class Proveedor_factura_saldos extends CI_Controller {
       $this->load->model('Bodega/Fuentefondos_model');
       $this->load->library(array('table'));
 
-      $data['title'] = "Proveedor, facturas y saldos";
+      $data['title'] = "Reporte por Proveedor, Factura y Especifico";
       $data['menu'] = $this->menu_dinamico->menus($this->session->userdata('logged_in'),$this->uri->segment(1));
       $data['js'] = 'assets/js/validate/reporte/bodega/general.js';
       $table = '';
 
     if (($this->uri->segment(4))!=NULL && ($this->uri->segment(5))!=NULL && ($this->uri->segment(6))!=NULL) {
-
+      $cant=0;
       $template = array(
           'table_open' => '<table class="table table-striped table-bordered">'
       );
@@ -55,22 +55,22 @@ class Proveedor_factura_saldos extends CI_Controller {
 
       $total_registros = $this->Proveedor->TotalReporteProveedores($this->uri->segment(4), $this->uri->segment(5), $this->uri->segment(6));
 
-      $pagination = paginacion('index.php/Tactico/Proveedor_factura_saldos/Reporte/' .$this->uri->segment(4). '/' .$this->uri->segment(5). '/' . $this->uri->segment(6),
+      $pagination = paginacion('index.php/Tactico/Proveedor_factura_especifico/Reporte/' .$this->uri->segment(4). '/' .$this->uri->segment(5). '/' . $this->uri->segment(6),
                     $total_registros, $num, '7');
 
       if ($total_registros > 0) {
 
-        $registros = $this->Proveedor->ReporteProveedores($this->uri->segment(4), $this->uri->segment(5), $this->uri->segment(6), $num, 0);
-      //  var_dump($registros);
+        $registros = $this->Proveedor->ReporteProveedores($this->uri->segment(4), $this->uri->segment(5), $this->uri->segment(6), $num, $this->uri->segment(7));
+      
         $total = 0;
         while ($registro = current($registros)) {
           $this->table->add_row($registro['fecha_factura'], $registro['numero_factura'], $registro['numero_compromiso'],
                                 $registro['nombre_proveedor'], $registro['id_especifico'], number_format($registro['total'], 3));
 
           $total += $registro['total'];
-
+          $cant=$num;
           $next = next($registros);
-
+          //  var_dump($registros);
           if ($next != FALSE) {
             if($registro['id_factura'] != $next['id_factura'] && $total != 0){
               $msg = array('data' => "Total factura:", 'colspan' => "5");
@@ -88,8 +88,8 @@ class Proveedor_factura_saldos extends CI_Controller {
         $msg = array('data' => "No se encontraron resultados", 'colspan' => "6");
         $this->table->add_row($msg);
       }
-                $cant=10;
-                $segmento=10;
+                //$cant=10;
+                $segmento=8;
 
                  // paginacion del header
                 $pagaux = $cant / $num;
@@ -115,7 +115,7 @@ class Proveedor_factura_saldos extends CI_Controller {
                  $table =  "<div class='content_table '>" .
                            "<div class='limit-content-title'>".
                              "<div class='title-reporte'>".
-                               "Reporte por Proveedor, factura y saldos.".
+                               "Reporte por Proveedor, factura y especifico.".
                              "</div>".
                              "<div class='title-header'>
                                <ul>
@@ -130,7 +130,7 @@ class Proveedor_factura_saldos extends CI_Controller {
                              </div>".
                            "</div>".
                            "<div class='limit-content'>" .
-                           "<div class='exportar'><a href='".base_url('/index.php/Tactico/Proveedor_factura_saldos/ReporteExcel/'.$this->uri->segment(4).'/'
+                           "<div class='exportar'><a href='".base_url('/index.php/Tactico/Proveedor_factura_especifico/ReporteExcel/'.$this->uri->segment(4).'/'
                            .$this->uri->segment(5).'/'.$this->uri->segment(6).'/'.$this->uri->segment(7))."' class='icono icon-file-excel'>
                            Exportar Excel</a></div>" . "<div class='table-responsive'>" . $this->table->generate() . "</div>" . $pagination . "</div></div>";
                  $data['body'] = $table;
