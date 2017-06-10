@@ -34,35 +34,55 @@ class Comparativo_fuente extends CI_Controller {
           'table_open' => '<table class="table table-striped table-bordered">'
       );
       $this->table->set_template($template);
+      $this->table->set_empty("&nbsp;");
       $column = 1;
 
       $cell = array('');
       $head = array('Fuente de Fondo');
-      $comp;
+      $comp = array();
 
       for ($i=0; $i < $this->uri->segment(4); $i++) {
         $cell[$i+1] = array('data' => date('Y') - $i, 'colspan' => 2);
+        array_push($head, 'Cantidad', 'Saldo');
 
-
-        $registros = $this->Kardex_model->comparacionFuenteFondo($this->uri->segment(4));
+        $registros = $this->Kardex_model->comparacionFuenteFondo(date('Y') - $i);
 
         if (!($registros == FALSE)) {
 
-          array_push($head, 'Cantidad', 'Saldo');
-
           foreach($registros as $fuente) {
-            $comp = array($fuente->nombre_fuente, number_format($fuente->cantidad), '$' . number_format($fuente->saldo, 3));
+            if ($i == 0) {
+              $fila = array($fuente->nombre_fuente, number_format($fuente->cantidad), '$' . number_format($fuente->saldo, 3));
+              $fila = $this->reñenarEspacio($fila, $this->uri->segment(4) - 1);
+              array_push($comp, $fila);
+            } else {
+
+              for ($k=0; $k < count($comp); $k++) {
+                if ($comp[$k][0] == $fuente->nombre_fuente) {
+                  $comp[$k][$i * 2 + 1] = number_format($fuente->cantidad);
+                  $comp[$k][$i * 2 + 2] = '$' . number_format($fuente->saldo, 3);
+                  $k = count($comp);
+                } else {
+                  $fila = array($fuente->nombre_fuente);
+                  $fila = $this->reñenarEspacio($fila, $i);
+                  array_push($fila, number_format($fuente->cantidad), '$' . number_format($fuente->saldo, 3));
+                  $fila = $this->reñenarEspacio($fila, $this->uri->segment(4) - $i - 1);
+                  array_push($comp, $fila);
+                  $k = count($comp);
+                }
+              }
+
+            }
+
           }
 
         } else {
-          $msg = array('data' => "No se encontraron resultados", 'colspan' => $column);
-          $this->table->add_row($msg);
+          // $msg = array('data' => "No se encontraron resultados", 'colspan' => $column);
+          // $this->table->add_row($msg);
         }
       }
 
       $this->table->set_heading($cell);
       $this->table->add_row($head);
-      $this->table->add_row($comp);
 
       $table =  "<div class='content_table '>" .
                 "<div class='limit-content-title'>".
@@ -84,7 +104,7 @@ class Comparativo_fuente extends CI_Controller {
                 "<div class='limit-content'>" .
                 "<div class='exportar'><a href='".base_url('/index.php/Estrategico/Comparativo_fuente/ReporteExcel/'.$this->uri->segment(4).'/')."'
                 class='icono icon-file-excel'>Exportar Excel</a></div>" .
-                "<div class='table-responsive'>" . $this->table->generate() . "</div></div></div>";
+                "<div class='table-responsive'>" . $this->table->generate($comp) . "</div></div></div>";
 
       $data['body'] = $table;
 
@@ -95,6 +115,14 @@ class Comparativo_fuente extends CI_Controller {
     }
 
     $this->load->view('base', $data);
+  }
+
+  public function reñenarEspacio($array, $anios) {
+    for ($j=0; $j < $anios; $j++) {
+      array_push($array, '', '');
+    }
+
+    return $array;
   }
 
   public function ReporteExcel() {

@@ -543,12 +543,12 @@
     }
 
     /*SIGB*/
-    public function comparacionFuenteFondo() {
+    public function comparacionFuenteFondo($anio) {
       $this->db->select('b.id_fuentes, b.nombre_fuente, SUM(a.cantidad) cantidad, SUM(a.cantidad * a.precio) saldo')
                ->from('sic_kardex a')
                ->join('sic_fuentes_fondo b', 'a.id_fuentes = b.id_fuentes')
                ->where('a.movimiento', 'SALIDA')
-               ->where("a.fecha_ingreso BETWEEN '2017-01-01' AND '2017-12-31'")
+               ->where("a.fecha_ingreso BETWEEN '".$anio."-01-01' AND '".$anio."-12-31'")
                ->group_by('a.id_fuentes');
 
       $query=$this->db->get();
