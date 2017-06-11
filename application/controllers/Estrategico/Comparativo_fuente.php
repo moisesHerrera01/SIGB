@@ -97,7 +97,7 @@ class Comparativo_fuente extends CI_Controller {
                       <li>Nombre pantalla:</li>
                       <li>Usuario: ".$USER['nombre_completo']."</li>
                       <br />
-                      <li>Parametros: ".$this->uri->segment(4)."</li>
+                      <li>Parametros: ".$this->uri->segment(4)." años</li>
                     </ul>
                   </div>".
                 "</div>".
