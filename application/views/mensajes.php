@@ -44,6 +44,17 @@ if (isset($alert)) {
     */
     if (isset($controller)) {
       switch ($controller) {
+        case 'Etl':
+          switch ($alert) {
+            case 'etl':
+              $mensaje = "Proceso de extracción, transformación y carga ejecutado correctamente";
+              break;
+            case 'cls':
+              $mensaje = "Tablas de la base de datos gerencial se han vaciado correctamente";
+              break;
+            default:
+              break;
+          }
         case 'Detallefactura':
           switch ($alert) {
             case 'cargar':
