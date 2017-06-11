@@ -145,7 +145,6 @@ class Comparativo_fuente extends CI_Controller {
         'horizontal' => PHPExcel_Style_Alignment::HORIZONTAL_CENTER,
         'vertical' => PHPExcel_Style_Alignment::VERTICAL_CENTER,
         'rotation' => 0,
-        'wrap' => TRUE,
       ),
     );
 
@@ -171,49 +170,137 @@ class Comparativo_fuente extends CI_Controller {
     );
 
     $objPHPExcel = new PHPExcel();
-    $objPHPExcel->getProperties()->setCreator("SICBAF")
-                 ->setLastModifiedBy("SICBAF")
-                 ->setTitle("Reporte de Salidas y Saldos de Bodega de productos por Objeto Especifico.")
-                 ->setSubject("Reporte de Salidas y Saldos de Bodega de productos por Objeto Especifico.")
-                 ->setDescription("Reporte generado para conciliaciones contables al cierre de cada mes..")
+    $objPHPExcel->getProperties()->setCreator("SIGB")
+                 ->setLastModifiedBy("SIGB")
+                 ->setTitle("Cuadro comparativo de gastos por fuente de fondo por año.")
+                 ->setSubject("Cuadro comparativo de gastos por fuente de fondo por año.")
+                 ->setDescription("Cuadro comparativo de gastos por fuente de fondo por año")
                  ->setKeywords("office PHPExcel php")
-                 ->setCategory("Reporte de Salidas y Saldos de Bodega de productos por Objeto Especifico.");
-
-    $objPHPExcel->setActiveSheetIndex(0)
-                 ->setCellValue('A1', '#')
-                 ->setCellValue('B1', 'Número Especifico')
-                 ->setCellValue('C1', 'Nombre Especifico')
-                 ->setCellValue('D1', 'Saldo')
-                 ->setCellValue('E1', 'Salida');
-    $objPHPExcel->getActiveSheet()->getStyle('A1:E1')->applyFromArray($estilo_titulo);
+                 ->setCategory("Cuadro comparativo de gastos por fuente de fondo por año.");
 
     $registros = FALSE;
+    $afuente = array();
 
-    if (!($registros == FALSE)) {
-      $i = 2;
-      foreach($registros as $fuente) {
+    $objPHPExcel->setActiveSheetIndex(0)->setCellValue('A2', 'Fuente de Fondo');
 
+    for ($i=0; $i < $this->uri->segment(4); $i++) {
+      $objPHPExcel->setActiveSheetIndex(0)->setCellValue($this->obtenerColumnaExcel($i*2 + 2) .'1', date('Y') - $i);
 
-        $objPHPExcel->setActiveSheetIndex(0)
-                    ->setCellValue('A'.$i, $i-1)
-                    ->setCellValue('B'.$i, $salida->id_especifico);
-        $objPHPExcel->getActiveSheet()->getStyle('A'.$i.':B'.$i)->applyFromArray($estilo_contenido);
-        $i++;
+      $objPHPExcel->setActiveSheetIndex(0)->mergeCells($this->obtenerColumnaExcel($i*2 + 2).'1'.':'.$this->obtenerColumnaExcel($i*2 + 3).'1');
+
+      $objPHPExcel->setActiveSheetIndex(0)
+                   ->setCellValue($this->obtenerColumnaExcel($i*2 + 2).'2', 'Cantidad')
+                   ->setCellValue($this->obtenerColumnaExcel($i*2 + 3).'2', 'Saldo');
+
+      $registros = $this->Kardex_model->comparacionFuenteFondo(date('Y') - $i);
+
+      if (!($registros == FALSE)) {
+
+        $j = 3;
+
+        foreach($registros as $fuente) {
+
+          if ($i == 0) {
+            array_push($afuente, $fuente->nombre_fuente);
+            $objPHPExcel->setActiveSheetIndex(0)
+                         ->setCellValue('A'.$j, $fuente->nombre_fuente)
+                         ->setCellValue('B'.$j, number_format($fuente->cantidad))
+                         ->setCellValue('C'.$j, '$' . number_format($fuente->saldo, 3));
+          } else {
+
+            for ($k=0; $k < count($afuente); $k++) {
+              if ($afuente[$k] == $fuente->nombre_fuente) {
+                $objPHPExcel->setActiveSheetIndex(0)
+                             ->setCellValue($this->obtenerColumnaExcel($i*2 + 2).($k + 3), number_format($fuente->cantidad))
+                             ->setCellValue($this->obtenerColumnaExcel($i*2 + 3).($k + 3), '$' . number_format($fuente->saldo, 3));
+                $k = count($afuente);
+              } else {
+                $objPHPExcel->setActiveSheetIndex(0)
+                             ->setCellValue('A'.(count($afuente)+3), $fuente->nombre_fuente)
+                             ->setCellValue($this->obtenerColumnaExcel($i*2 + 2).(count($afuente)+3), number_format($fuente->cantidad))
+                             ->setCellValue($this->obtenerColumnaExcel($i*2 + 3).(count($afuente)+3), '$' . number_format($fuente->saldo, 3));
+                $k = count($afuente);
+              }
+            }
+
+          }
+
+          $j++;
+
+        }
+
       }
 
-      foreach(range('A','B') as $columnID){
-        $objPHPExcel->getActiveSheet()->getColumnDimension($columnID)->setAutoSize(true);
-      }
-
-      $objPHPExcel->setActiveSheetIndex(0);
-
-      header("Content-Type: application/vnd.openxmlformats-officedocument.spreadsheetml.sheet");
-      header("Content-Disposition: attachment; filename='reporte_salidas_saldos.xlsx'");
-      header('Cache-Control: max-age=0');
-
-      $objWriter = PHPExcel_IOFactory::createWriter($objPHPExcel, 'Excel2007');
-      $objWriter->save('php://output');
     }
+
+    $objPHPExcel->getActiveSheet()->getStyle('A1:'.$this->obtenerColumnaExcel($i*2 + 1).'1')->applyFromArray($estilo_titulo);
+    $objPHPExcel->getActiveSheet()->getStyle('A2:'.$this->obtenerColumnaExcel($i*2 + 1).'2')->applyFromArray($estilo_titulo);
+
+    for ($l=0; $l < count($afuente) + 1; $l++) {
+      $objPHPExcel->getActiveSheet()->getStyle('A'.($l + 3).':'.$this->obtenerColumnaExcel($i*2 + 1).($l + 3))->applyFromArray($estilo_contenido);
+    }
+
+    foreach(range('A', $this->obtenerColumnaExcel($i*2 + 1)) as $columnID){
+      $objPHPExcel->getActiveSheet()->getColumnDimension($columnID)->setAutoSize(true);
+    }
+
+    $objPHPExcel->setActiveSheetIndex(0);
+
+    header("Content-Type: application/vnd.openxmlformats-officedocument.spreadsheetml.sheet");
+    header("Content-Disposition: attachment; filename='reporte_salidas_saldos.xlsx'");
+    header('Cache-Control: max-age=0');
+
+    $objWriter = PHPExcel_IOFactory::createWriter($objPHPExcel, 'Excel2007');
+    $objWriter->save('php://output');
+  }
+
+  /*
+  * devueve hasta la ZZ
+  */
+  public function obtenerColumnaExcel($col) {
+    if ($col > 0) {
+      $letras = array('A', 'B', 'C', 'D', 'E', 'F', 'G', 'H', 'I', 'J', 'K', 'L', 'M', 'N', 'O', 'P', 'Q', 'R', 'S',
+                'T', 'U', 'V', 'W', 'X', 'Y', 'Z');
+
+      if ($col > 26) {
+
+        $columna = '';
+
+        $num_col_uno = floor($col/26) - 1;
+        if ($num_col_uno >= 0) {
+
+          if ($col % 26 == 0) {
+            $num_col_uno = $num_col_uno - 1;
+          }
+
+          $columna = $letras[$num_col_uno];
+
+        } else {
+
+          $columna = '';
+
+        }
+
+
+        $num_col_dos = $col % 26;
+
+        if ($num_col_dos == 0) {
+          $num_col_dos = 26;
+        }
+
+        $columna .= $letras[$num_col_dos - 1];
+
+        return $columna;
+
+      } else {
+
+        return $letras[$col - 1];
+
+      }
+    } else {
+      return 0;
+    }
+
   }
 
 }
