@@ -35,8 +35,7 @@ class Dashboard extends CI_Controller {
 
   public function __construct() {
     parent::__construct();
-    $this->load->model(array('Bodega/Solicitud_Model', 'Bodega/Factura_Model', 'Compras/Solicitud_Compra_Model',
-                    'Bodega/Producto', 'Compras/Compromiso_Presupuestario_Model', 'ActivoFijo/Datos_Comunes_Model'));
+    $this->load->model(array('Bodega/Factura_Model', 'Bodega/Producto'));
   }
 
   public function index(){

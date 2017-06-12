@@ -105,7 +105,7 @@ class Menu_dinamico {
       $html_out = "<nav>";
         $html_out .= "<ul class='hbp-vimenu'>";
           $html_out .= "<li>";
-            $html_out .= "<span><span><img src='".base_url("assets/image/sicbaf_logo.png")."' width='32px' /></span>SICBAF</span>";
+            $html_out .= "<span>SIGB</span>";
           $html_out .= "</li>";
           // $html_out .= "<li>";
           //   $html_out .= "<span class='icono icon-user'></span><span id='usuario_sistema'>&nbsp;" . $user['nombre_completo'] . "</span>";
