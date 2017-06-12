@@ -17,7 +17,7 @@ class Usuario_Rol extends CI_Controller {
 
   public function index(){
     $data['title'] = "Usuarios";
-    //$data['js'] = "assets/js/validate/um.js";
+    $data['js'] = "assets/js/validate/usuario_rol.js";
     $msg = array('alert' => $this->uri->segment(3), );
 
 		$data['body'] = $this->load->view('mensajes', $msg, TRUE) . $this->load->view('usuario_rol_view', '', TRUE) .

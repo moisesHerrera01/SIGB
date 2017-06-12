@@ -15,23 +15,15 @@
   $us = array(
       'name' => 'autocomplete1',
       'placeholder' => 'Ingrese el nombre del usuario',
-      'class' => "form-control autocomplete",
-      'autocomplete' => 'off',
-      'uri' => 'index.php/Usuario_Rol/AutocompleteUsuario',
-      'name_op' => 'usuario',
-      'siguiente' => 'rol',
-      'content' => 'suggestions1'
+      'class' => "form-control",
+      'autocomplete' => 'off'
   );
 
   $rol = array(
       'name' => 'autocomplete2',
       'placeholder' => 'Ingrese el nombre del rol',
       'class' => "form-control autocomplete",
-      'autocomplete' => 'off',
-      'uri' => 'index.php/Usuario_Rol/AutocompleteRol',
-      'name_op' => 'rol',
-      'siguiente' => 'button',
-      'content' => 'suggestions2'
+      'autocomplete' => 'off'
   );
 
   $atriLabel = array('class' => 'col-lg-2 control-label');
