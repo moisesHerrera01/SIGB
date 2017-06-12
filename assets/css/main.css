@@ -280,44 +280,28 @@ input.error:focus{
 
 /* dashboard */
 
-.dashboard-panel-izq {
-	float: left;
-	width: 35%;
-	margin-bottom: 6em;
-}
-
-.dashboard-panel-der {
-	float: right;
-	width: 60%;
-	margin-bottom: 6em;
-}
-
 .dashboard-box {
-	margin-bottom: 1em;
-	background: #e2e2e2;
+	position: relative;
+	width: 70%;
+	height: 20em;
+	margin: 0 auto;
+	padding: 0.5em;
+	top: 3em;
+	background: #c2c2c2;
 	border: 1px solid #808080;
 }
 
-.dashboard-box-title {
-	height: 2.5em;
+.dashboard-title-box {
 	padding: 0.5em;
-	background: #fff;
-	border-bottom: 2px solid #808080;
+	font-size: 1.25em;
+	color: #fff;
+	text-shadow: #000 0.05em 0.05em 0.05em;
 }
 
-.dashboard-box-title > span:first-child {
-	float: left;
-}
 
-.dashboard-box-title > span {
+.dashboard-user {
 	float: right;
-	padding: 0.2em;
-	font-size: 0.9em;
-}
-
-.chart-content {
-	width: 80%;
-	margin: 2em auto;
+	position: relative;
 }
 
 /* Footer */

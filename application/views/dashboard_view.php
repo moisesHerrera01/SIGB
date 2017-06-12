@@ -17,8 +17,6 @@
     <script src=<?= base_url("vendor/twbs/bootstrap/dist/js/bootstrap.min.js")?>></script>
     <script src="<?= base_url('assets/js/jquery.validate.min.js')?>"></script>
     <script src=<?= base_url("assets/js/main.js")?>></script>
-    <script src=<?= base_url("assets/js/jQueryRotate.js")?>></script>
-    <script src=<?= base_url("assets/js/dashboard.js")?> type="text/javascript"></script>
     <?php
       if (isset($js)) {
         echo "<script src=".base_url($js)." type=\"text/javascript\"></script>";
@@ -34,9 +32,18 @@
       ?>
     </div>
     <div class="content">
-      <?= $dhb ?>
+      <div class="dashboard-box">
+        <span class="dashboard-title-box">BIENVENIDO AL SISTEMA INFORMATICO GERENCIAL PARA GESTIÓN DE BODEGA INSTITUCIONAL</span>
+        <br>
+        <br>
+        <br>
+        <span class="dashboard-user">
+          <b>USUARIO:</b> <?= $usuario ?>
+          &emsp;
+          <b>ROL:</b> <?= $rol ?>
+        </span>
+      </div>
     </div>
-    <!-- div class="content-notice"></div-->
     <div class="footer">
       <div class="content_footer">
         <div class="content-info-sis">
@@ -49,7 +56,7 @@
         </div>
         <div class="conten-info-min">
           <img id="ues" src="<?= base_url("assets/image/minerva.gif")?>" alt="" width="50px"/>
-          <span style="font-size:0.5px">PAM</span>
+          <span style="font-size:0.5px">WAMP</span>
           <img id="escudo" src="<?= base_url("assets/image/escudo.png")?>" alt="" />
           &nbsp; MINISTERIO DE TRABAJO Y PREVISIÓN SOCIAL
         </div>
