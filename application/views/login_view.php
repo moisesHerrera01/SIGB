@@ -35,15 +35,10 @@
               'class' => 'form-control'
             );
 
-            $radio = array(
-              'name' => 'modulo',
-              'value' => ''
-            );
-
             $atributos = array(
               'class' => '',
               'role' => 'form'
-            );
+            ); 
 
             echo form_open('Login/verificaLogin', $atributos);
 
@@ -68,9 +63,10 @@
       </div>
     </div>
   </body>
-  <!-- script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.3/jquery.min.js"></script -->
   <script>window.jQuery || document.write("<script src='<?= base_url('assets/js/jquery-1.11.3.min.js') ?>'>")</script>
   <script src=<?= base_url("vendor/twbs/bootstrap/dist/js/bootstrap.min.js")?>></script>
+  <script src="<?= base_url('assets/js/jquery.validate.min.js')?>"></script>
+  <script src="<?= base_url('assets/js/validate/login.js')?>"></script>
   <script type="text/javascript">
     $(".close").click(function(){
         $("#myAlert").slideUp();

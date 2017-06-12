@@ -27,7 +27,7 @@ class Comparativo_fuente extends CI_Controller {
     $USER = $this->session->userdata('logged_in');
     $data['title'] = "Comparativo de gastos por fuente de fondo";
     $data['menu'] = $this->menu_dinamico->menus($this->session->userdata('logged_in'),$this->uri->segment(1));
-    $data['js'] = 'assets/js/validate/reporte/comparativo.js';
+    $data['js'] = 'assets/js/validate/reporte/bodega/comparativo.js';
     $table = '';
     if (($this->uri->segment(4))!=NULL) {
       $template = array(
