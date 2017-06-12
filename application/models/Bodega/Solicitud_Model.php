@@ -504,5 +504,29 @@
            return FALSE;
        }
      }
+
+     public function totalSolicitudesBodega($fecha1,$fecha2){
+
+       $this->db->select("distinct(select count(id_solicitud) from sic_solicitud where nivel_solicitud=0 and fecha_solicitud between '$fecha1' and '$fecha2') as nivel0,
+      (select count(id_solicitud) from sic_solicitud where nivel_solicitud=1 and fecha_solicitud between '$fecha1' and '$fecha2') as  nivel1,
+      (select count(id_solicitud) from sic_solicitud where nivel_solicitud=2 and fecha_solicitud between '$fecha1' and '$fecha2') as  nivel2,
+      (select count(id_solicitud) from sic_solicitud where nivel_solicitud=3 and fecha_solicitud between '$fecha1' and '$fecha2') as  nivel3,
+      (select count(id_solicitud) from sic_solicitud where nivel_solicitud=4 and fecha_solicitud between '$fecha1' and '$fecha2') as  nivel4,
+      (select count(id_solicitud) from sic_solicitud where nivel_solicitud=9 and fecha_solicitud between '$fecha1' and '$fecha2') as  nivel9,
+      ((select count(id_solicitud) from sic_solicitud where nivel_solicitud=0 and fecha_solicitud between '$fecha1' and '$fecha2')+
+      (select count(id_solicitud) from sic_solicitud where nivel_solicitud=1 and fecha_solicitud between '$fecha1' and '$fecha2')+
+      (select count(id_solicitud) from sic_solicitud where nivel_solicitud=2 and fecha_solicitud between '$fecha1' and '$fecha2')+
+      (select count(id_solicitud) from sic_solicitud where nivel_solicitud=3 and fecha_solicitud between '$fecha1' and '$fecha2')+
+      (select count(id_solicitud) from sic_solicitud where nivel_solicitud=4 and fecha_solicitud between '$fecha1' and '$fecha2')+
+      (select count(id_solicitud) from sic_solicitud where nivel_solicitud=9 and fecha_solicitud between '$fecha1' and '$fecha2')) as total")
+      ->from('sic_solicitud');
+      $query = $this->db->get();
+      if ($query->num_rows() > 0) {
+          return  $query->row();
+      }
+      else {
+          return FALSE;
+      }
+    }
 }
 ?>

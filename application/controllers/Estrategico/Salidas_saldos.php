@@ -231,8 +231,8 @@ class Salidas_saldos extends CI_Controller {
     );
 
     $objPHPExcel = new PHPExcel();
-    $objPHPExcel->getProperties()->setCreator("SICBAF")
-                 ->setLastModifiedBy("SICBAF")
+    $objPHPExcel->getProperties()->setCreator("SIGB")
+                 ->setLastModifiedBy("SIGB")
                  ->setTitle("Reporte de Salidas y Saldos de Bodega de productos por Objeto Especifico.")
                  ->setSubject("Reporte de Salidas y Saldos de Bodega de productos por Objeto Especifico.")
                  ->setDescription("Reporte generado para conciliaciones contables al cierre de cada mes..")
