@@ -125,7 +125,7 @@ class Kardex extends CI_Controller {
     setlocale(LC_TIME, 'en_US');
 
     $data['title'] = "Reporte Generación del Kardex";
-    $data['js'] = 'assets/js/validate/reporte/bodega/kardex.js';
+    //$data['js'] = 'assets/js/validate/reporte/bodega/kardex.js';
     $table = '';
     if ($this->uri->segment(4) != '' && $this->uri->segment(5) != '' && $this->uri->segment(5) != '') {
       $template = array(

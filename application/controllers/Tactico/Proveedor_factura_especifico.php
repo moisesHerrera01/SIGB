@@ -19,7 +19,7 @@ class Proveedor_factura_especifico extends CI_Controller {
     date_default_timezone_set('America/El_Salvador');
     $anyo=20;
     $fecha_actual=date($anyo."y-m-d");
-    if ($this->input->post('fechaMin')!=NULL && $this->input->post('fuente')!=NULL) {
+    if ($this->input->post('fechaMin')!=NULL && $this->input->post('fuente')!=NULL) { 
       if($this->input->post('fechaMax')==NULL){
         redirect('Tactico/Proveedor_factura_especifico/Reporte/'.$this->input->post('fuente').'/'
         .post('fechaMin').'/'.$this->input->post('fechaMax'));
@@ -110,7 +110,7 @@ class Proveedor_factura_especifico extends CI_Controller {
                    $pag++;
                  }
 
-                 $seccion = ($this->uri->segment(6) != 0) ?   $this->Solicitud_Model->obtenerSeccion($this->uri->segment(6)) : 'N/E' ;
+                 $seccion = ($this->uri->segment(4) != 0) ?   $this->Solicitud_Model->obtenerSeccion($this->uri->segment(4)) : 'N/E' ;
                  $especifico = ($this->uri->segment(7) != 0) ?   $this->Especifico->obtenerEspecifico($this->uri->segment(7)) : 'N/E' ;
                  $table =  "<div class='content_table '>" .
                            "<div class='limit-content-title'>".
@@ -125,7 +125,7 @@ class Proveedor_factura_especifico extends CI_Controller {
                                  <li>Nombre pantalla:</li>
                                  <li>Usuario: ".$USER['nombre_completo']."</li>
                                  <br />
-                                 <li>Parametros: ".$seccion." ".$especifico." ". $this->uri->segment(4) . " - " . $this->uri->segment(5)."</li>
+                                 
                                </ul>
                              </div>".
                            "</div>".
