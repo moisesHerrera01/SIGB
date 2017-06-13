@@ -95,7 +95,7 @@ fieldset > legend {
 .content_buscar {
 	position: relative;
   width: 20em;
-  margin: 15px;
+  /*margin: 15px;*/
   float: right;
 	margin-top: -0.25em;
 }
