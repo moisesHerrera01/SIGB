@@ -134,11 +134,11 @@ class Menu_dinamico {
 
   public function obtenerMenu($dependencia, $user) {
     $this->ci->db->select("a.id_modulo, a.nombre_modulo, a.url_modulo, a.img_modulo")
-         ->from("org_modulo a")
-         ->join("org_rol_modulo_permiso b", "a.id_modulo = b.id_modulo")
-         ->join("org_rol c", "b.id_rol = c.id_rol")
-         ->join("org_usuario d", "d.id_usuario = ".$user['id'])
-         ->join("org_usuario_rol e", "d.id_usuario = e.id_usuario")
+         ->from("mtps.org_modulo a")
+         ->join("mtps.org_rol_modulo_permiso b", "a.id_modulo = b.id_modulo")
+         ->join("mtps.org_rol c", "b.id_rol = c.id_rol")
+         ->join("mtps.org_usuario d", "d.id_usuario = ".$user['id'])
+         ->join("mtps.org_usuario_rol e", "d.id_usuario = e.id_usuario")
          ->where("c.id_rol = e.id_rol")
          ->where("a.id_sistema = 14")
          ->where("a.dependencia", $dependencia)

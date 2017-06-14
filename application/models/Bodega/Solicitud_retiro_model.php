@@ -65,8 +65,8 @@
     public function buscarSolicitudes($busca){
       $this->db->select('*')
                ->from('sic_solicitud s')
-               ->join('org_usuario u','u.id_usuario=s.id_usuario')
-               ->join('org_seccion sec','sec.id_seccion=s.id_seccion')
+               ->join('mtps.org_usuario u','u.id_usuario=s.id_usuario')
+               ->join('mtps.org_seccion sec','sec.id_seccion=s.id_seccion')
                ->join('sic_fuentes_fondo f','f.id_fuentes=s.id_fuentes')
                ->order_by("prioridad desc, id_solicitud desc")
                ->like('s.numero_solicitud',$busca)
@@ -83,8 +83,8 @@
     public function obtenerSolicitudesLimit($porpagina, $segmento){
       $this->db->select('*')
                ->from('sic_solicitud s')
-               ->join('org_usuario u','u.id_usuario=s.id_usuario')
-               ->join('org_seccion sec','sec.id_seccion=s.id_seccion')
+               ->join('mtps.org_usuario u','u.id_usuario=s.id_usuario')
+               ->join('mtps.org_seccion sec','sec.id_seccion=s.id_seccion')
                ->join('sic_fuentes_fondo f','f.id_fuentes=s.id_fuentes')
                ->order_by("prioridad desc, id_solicitud desc")
                ->limit($porpagina, $segmento);
@@ -198,7 +198,7 @@
 
      public function obtenerSeccion($id){
        $this->db->where('id_seccion',$id);
-       $query = $this->db->get('org_seccion');
+       $query = $this->db->get('mtps.org_seccion');
        if ($query->num_rows() > 0) {
          $nombre;
          foreach ($query->result() as $sec) {
@@ -213,7 +213,7 @@
 
      public function obtenerSecciones(){
        $this->db->order_by("id_seccion", "asc");
-       $query = $this->db->get('org_seccion');
+       $query = $this->db->get('mtps.org_seccion');
        if ($query->num_rows() > 0) {
            return  $query->result();
        }
@@ -224,7 +224,7 @@
 
      public function buscarSecciones($busca){
        $this->db->like('nombre_seccion', $busca);
-       $query = $this->db->get('org_seccion', 10);
+       $query = $this->db->get('mtps.org_seccion', 10);
        if ($query->num_rows() > 0) {
            return  $query->result();
        }
@@ -314,7 +314,7 @@
      public function obtenerSolicitudUsuario($id) {
         $this->db->select('b.usuario')
                  ->from('sic_solicitud a')
-                 ->join('org_usuario b', 'a.id_usuario = b.id_usuario')
+                 ->join('mtps.org_usuario b', 'a.id_usuario = b.id_usuario')
                  ->where('a.id_solicitud', $id);
         $query = $this->db->get();
         if ($query->num_rows() == 1) {
@@ -501,7 +501,7 @@
 
      public function obtenerIdSeccion($nombre){
        $this->db->select('*')
-                ->from('org_seccion')
+                ->from('mtps.org_seccion')
                 ->where('nombre_seccion',$nombre);
        $query=$this->db->get();
        return $query->row();

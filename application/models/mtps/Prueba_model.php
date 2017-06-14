@@ -6,7 +6,7 @@
     }
 
     public function obtener(){
-      return $mtps->get('org_departamento')->result();
+      return $mtps->get('mtps.org_departamento')->result();
     }
   }
 ?>

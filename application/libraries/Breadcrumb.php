@@ -60,7 +60,7 @@ if (!defined('BASEPATH')) exit('No direct script access allowed');
 
    public function obtenerModulo($url) {
      $this->ci->db->select("a.dependencia, a.nombre_modulo, a.url_modulo")
-          ->from("org_modulo a")
+          ->from("mtps.org_modulo a")
           ->where("a.url_modulo", $url)
           ->limit(1);
      $query = $this->ci->db->get();
@@ -73,7 +73,7 @@ if (!defined('BASEPATH')) exit('No direct script access allowed');
 
    public function obtenerDependencia($id) {
      $this->ci->db->select("a.dependencia, a.nombre_modulo, a.url_modulo")
-          ->from("org_modulo a")
+          ->from("mtps.org_modulo a")
           ->where("a.id_modulo", $id)
           ->limit(1);
      $query = $this->ci->db->get();

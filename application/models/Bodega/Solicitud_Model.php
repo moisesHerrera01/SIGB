@@ -181,7 +181,7 @@
 
      public function obtenerSeccion($id){
        $this->db->where('id_seccion',$id);
-       $query = $this->db->get('org_seccion');
+       $query = $this->db->get('mtps.org_seccion');
        if ($query->num_rows() > 0) {
          $nombre;
          foreach ($query->result() as $sec) {
@@ -196,7 +196,7 @@
 
      public function obtenerSecciones(){
        $this->db->order_by("id_seccion", "asc");
-       $query = $this->db->get('org_seccion');
+       $query = $this->db->get('mtps.org_seccion');
        if ($query->num_rows() > 0) {
            return  $query->result();
        }
@@ -207,7 +207,7 @@
 
      public function buscarSecciones($busca){
        $this->db->like('nombre_seccion', $busca);
-       $query = $this->db->get('org_seccion', 10);
+       $query = $this->db->get('mtps.org_seccion', 10);
        if ($query->num_rows() > 0) {
            return  $query->result();
        }
@@ -297,7 +297,7 @@
      public function obtenerSolicitudUsuario($id) {
         $this->db->select('b.usuario')
                  ->from('sic_solicitud a')
-                 ->join('org_usuario b', 'a.id_usuario = b.id_usuario')
+                 ->join('mtps.org_usuario b', 'a.id_usuario = b.id_usuario')
                  ->where('a.id_solicitud', $id);
         $query = $this->db->get();
         if ($query->num_rows() == 1) {
@@ -489,11 +489,11 @@
                 ->join('sic_detalle_solicitud_producto dsp','s.id_solicitud = dsp.id_solicitud')
                 ->join('sic_detalle_producto dp','dsp.id_detalleproducto = dp.id_detalleproducto')
                 ->join('sic_producto p','dp.id_producto = p.id_producto')
-                ->join('org_seccion se','s.id_seccion = se.id_seccion')
-                ->join('org_usuario u','s.id_usuario = u.id_usuario')
-                ->join('sir_empleado e','u.nr = e.nr')
-                ->join('sir_empleado_informacion_laboral ei','e.id_empleado = ei.id_empleado')
-                ->join('org_linea_trabajo lt','ei.id_linea_trabajo=lt.id_linea_trabajo')
+                ->join('mtps.org_seccion se','s.id_seccion = se.id_seccion')
+                ->join('mtps.org_usuario u','s.id_usuario = u.id_usuario')
+                ->join('mtps.sir_empleado e','u.nr = e.nr')
+                ->join('mtps.sir_empleado_informacion_laboral ei','e.id_empleado = ei.id_empleado')
+                ->join('mtps.org_linea_trabajo lt','ei.id_linea_trabajo=lt.id_linea_trabajo')
                 ->where('s.id_solicitud', $id)
                 ->group_by('dsp.id_detalleproducto');
        $query = $this->db->get();

@@ -34,12 +34,14 @@
       /*tabla sic_fuentes_fondo*/
       $this->db->query("INSERT INTO $base.sic_fuentes_fondo (id_fuentes,nombre_fuente)
       select id_fuentes,nombre_fuente from mtps.sic_fuentes_fondo");
-      /*tabla sic_categoria_proveedor*/
+
+      /*tabla sic_categoria_proveedor
       $this->db->query("INSERT INTO $base.sic_categoria_proveedor (id_categoria_proveedor,nombre_categoria)
-      select id_categoria_proveedor,nombre_categoria from mtps.sic_categoria_proveedor");
+      select id_categoria_proveedor,nombre_categoria from mtps.sic_categoria_proveedor");*/
+
       /*tabla sic_proveedor*/
-      $this->db->query("INSERT INTO $base.sic_proveedores (id_proveedores,nombre_proveedor,id_categoria_proveedor)
-      select id_proveedores,nombre_proveedor,id_categoria_proveedor from mtps.sic_proveedores");
+      $this->db->query("INSERT INTO $base.sic_proveedores (id_proveedores,nombre_proveedor)
+      select id_proveedores,nombre_proveedor from mtps.sic_proveedores");
       /*tabla sic_factura*/
       $this->db->query("INSERT INTO $base.sic_factura (id_factura,numero_factura,id_proveedores,fecha_factura,fecha_ingreso,id_fuentes,
       numero_compromiso,orden_compra,id_seccion,total,estado,hora,correlativo_fuente_fondo)
@@ -52,7 +54,7 @@
       /*tabla sic_kardex*/
       $this->db->query("INSERT INTO $base.sic_kardex (id_kardex,id_detalleproducto,cantidad,precio,movimiento,fecha_ingreso,id_fuentes)
       select id_kardex,id_detalleproducto,cantidad,precio,movimiento,fecha_ingreso,id_fuentes from mtps.sic_kardex");
-      /*tabla sic_kardex*/
+      /*tabla sic_kardex_saldo*/
       $this->db->query("INSERT INTO $base.sic_kardex_saldo (id_kardex_saldo,id_kardex,id_fuentes,existencia,precio_unitario,total)
       select id_kardex_saldo,id_kardex,id_fuentes,existencia,precio_unitario,total from mtps.sic_kardex_saldo");
       /*tabla sic_solicitud*/
@@ -75,7 +77,8 @@
                ->from('information_schema.tables')
                ->where("table_schema='mtps'")
                ->where("table_name like 'sic%'")
-               ->where("table_name NOT IN ('sic_notificacion','sic_rastreabilidad')");
+               //->where("table_name NOT IN ('sic_notificacion','sic_rastreabilidad')")
+               ;
       $query=$this->db->get();
       /*Obtiene nombre y cantidad de registros para las tablas correspondientes a la bd gerencial*/
       $this->db->select('table_name,table_rows as cant_sigb,version as cant_mtps')
@@ -119,10 +122,16 @@
       $this->db->truncate($base.'.sic_especifico');
       $this->db->truncate($base.'.sic_producto');
       $this->db->truncate($base.'.sic_proveedores');
-      $this->db->truncate($base.'.sic_categoria_proveedor');
+      //$this->db->truncate($base.'.sic_categoria_proveedor');
       $this->db->truncate($base.'.sic_fuentes_fondo');
       $this->db->truncate($base.'.sic_unidad_medida');
       $this->db->query("SET FOREIGN_KEY_CHECKS = 1");
     }
+
+    /*public function totalUM(){
+      $this->db->select('count(*) as total')
+               ->from('mtps.sic_producto');
+      return $this->db->get()->row()->total;
+    }*/
   }
 ?>

@@ -14,7 +14,7 @@
 
     public function login($data){
       $this->db->select('*')
-               ->from('org_usuario u')
+               ->from('mtps.org_usuario u')
                ->where('usuario', $data['username'])
                ->where('password', MD5($data['password']));
       $query=$this->db->get();
@@ -27,25 +27,25 @@
 
     public function dataUser($username){
     $this->db->select('max(ei.fecha_inicio) as fecha_inicio')
-               ->from('org_usuario u')
-               ->join('sir_empleado e','e.nr=u.nr')
-               ->join('sir_empleado_informacion_laboral ei','ei.id_empleado=e.id_empleado')
+               ->from('mtps.org_usuario u')
+               ->join('mtps.sir_empleado e','e.nr=u.nr')
+               ->join('mtps.sir_empleado_informacion_laboral ei','ei.id_empleado=e.id_empleado')
                ->where('u.usuario',$username);
       $query_0=$this->db->get();
       $info=$query_0->row();
 
       $this->db->select('u.id_usuario,u.nombre_completo,u.usuario,s.id_seccion,u.estado,r.id_rol,r.nombre_rol, CONCAT(e.primer_nombre,
       " ", e.segundo_nombre) as nombre_empleado,e.id_empleado,cf.funcional as cargo_funcional,l.linea_trabajo')
-               ->from('org_usuario u')
-               ->join('org_usuario_rol ur','ur.id_usuario=u.id_usuario')
-               ->join('org_rol r','r.id_rol=ur.id_rol')
-               ->join('org_rol_modulo_permiso b', 'r.id_rol = b.id_rol')
-               ->join('org_modulo c', 'b.id_modulo = c.id_modulo')
-               ->join('sir_empleado e','u.nr=e.nr')
-               ->join('sir_empleado_informacion_laboral i','i.id_empleado=e.id_empleado')
-               ->join('sir_cargo_funcional cf','cf.id_cargo_funcional=i.id_cargo_funcional')
-               ->join('org_linea_trabajo l','l.id_linea_trabajo=i.id_linea_trabajo')
-               ->join('org_seccion s','i.id_seccion=s.id_seccion')
+               ->from('mtps.org_usuario u')
+               ->join('mtps.org_usuario_rol ur','ur.id_usuario=u.id_usuario')
+               ->join('mtps.org_rol r','r.id_rol=ur.id_rol')
+               ->join('mtps.org_rol_modulo_permiso b', 'r.id_rol = b.id_rol')
+               ->join('mtps.org_modulo c', 'b.id_modulo = c.id_modulo')
+               ->join('mtps.sir_empleado e','u.nr=e.nr')
+               ->join('mtps.sir_empleado_informacion_laboral i','i.id_empleado=e.id_empleado')
+               ->join('mtps.sir_cargo_funcional cf','cf.id_cargo_funcional=i.id_cargo_funcional')
+               ->join('mtps.org_linea_trabajo l','l.id_linea_trabajo=i.id_linea_trabajo')
+               ->join('mtps.org_seccion s','i.id_seccion=s.id_seccion')
                ->where('usuario', $username)
                ->where('i.fecha_inicio',$info->fecha_inicio)
                ->where('c.id_sistema = 14');
@@ -86,11 +86,11 @@
         return FALSE;
       } else {
         $this->db->select('count(*) AS num')
-             ->from('org_modulo a')
-             ->join('org_rol_modulo_permiso b', 'a.id_modulo = b.id_modulo')
-             ->join('org_rol c', 'b.id_rol = c.id_rol')
-             ->join('org_usuario d', 'd.id_usuario = '.$id_usuario )
-             ->join('org_usuario_rol e', 'd.id_usuario = e.id_usuario')
+             ->from('mtps.org_modulo a')
+             ->join('mtps.org_rol_modulo_permiso b', 'a.id_modulo = b.id_modulo')
+             ->join('mtps.org_rol c', 'b.id_rol = c.id_rol')
+             ->join('mtps.org_usuario d', 'd.id_usuario = '.$id_usuario )
+             ->join('mtps.org_usuario_rol e', 'd.id_usuario = e.id_usuario')
              ->where('a.id_sistema', 14)
              ->where('a.id_modulo', $id_modulo)
              ->where('c.id_rol = e.id_rol')
@@ -107,7 +107,7 @@
 
     public function obtenerModulo($url){
       $this->db->select('id_modulo')
-               ->from('org_modulo')
+               ->from('mtps.org_modulo')
                ->where('url_modulo',$url);
       $query=$this->db->get();
       $cor;
@@ -119,7 +119,7 @@
 
     public function obtenerModuloNombre($id){
       $this->db->select('url_modulo')
-               ->from('org_modulo')
+               ->from('mtps.org_modulo')
                ->where('id_modulo',$id);
       $query=$this->db->get();
       $cor;
@@ -131,11 +131,11 @@
 
     public function obtenerCorreoUsuario($rol, $seccion) {
       $this->db->select("a.id_usuario, a.usuario, d.correo")
-           ->from("org_usuario a")
-           ->join("org_usuario_rol b", "a.id_usuario = b.id_usuario")
-           ->join("org_rol c", "b.id_rol = c.id_rol")
-           ->join("sir_empleado d", "a.nr = d.nr")
-           ->join("sir_empleado_informacion_laboral e", "d.id_empleado = e.id_empleado")
+           ->from("mtps.org_usuario a")
+           ->join("mtps.org_usuario_rol b", "a.id_usuario = b.id_usuario")
+           ->join("mtps.org_rol c", "b.id_rol = c.id_rol")
+           ->join("mtps.sir_empleado d", "a.nr = d.nr")
+           ->join("mtps.sir_empleado_informacion_laboral e", "d.id_empleado = e.id_empleado")
            ->where("c.id_rol", $rol)
            ->where("e.id_seccion", $seccion)
            ->order_by('e.fecha_inicio', 'desc')
@@ -150,8 +150,8 @@
 
     public function obtenerUsuario($id) {
       $this->db->select("*")
-           ->from("org_usuario a")
-           ->join("sir_empleado b", "a.nr = b.nr")
+           ->from("mtps.org_usuario a")
+           ->join("mtps.sir_empleado b", "a.nr = b.nr")
            ->where("a.id_usuario", $id);
        $query = $this->db->get();
        if ($query->num_rows() > 0) {
@@ -163,10 +163,10 @@
 
     public function obtenerUsuarioPorEmpleado($id) {
       $this->db->select("a.id_usuario, a.usuario, d.correo")
-           ->from("org_usuario a")
-           ->join("org_usuario_rol b", "a.id_usuario = b.id_usuario")
-           ->join("org_rol c", "b.id_rol = c.id_rol")
-           ->join("sir_empleado d", "a.nr = d.nr")
+           ->from("mtps.org_usuario a")
+           ->join("mtps.org_usuario_rol b", "a.id_usuario = b.id_usuario")
+           ->join("mtps.org_rol c", "b.id_rol = c.id_rol")
+           ->join("mtps.sir_empleado d", "a.nr = d.nr")
            ->where("d.id_empleado", $id);
       $query = $this->db->get();
       if ($query->num_rows() > 0) {
@@ -178,9 +178,9 @@
 
     public function obtenerRolesSistema() {
       $this->db->select("a.id_rol")
-           ->from("org_rol a")
-           ->join("org_rol_modulo_permiso b", "a.id_rol = b.id_rol")
-           ->join("org_modulo c", "b.id_modulo = c.id_modulo")
+           ->from("mtps.org_rol a")
+           ->join("mtps.org_rol_modulo_permiso b", "a.id_rol = b.id_rol")
+           ->join("mtps.org_modulo c", "b.id_modulo = c.id_modulo")
            ->where("c.id_sistema = 14")
            ->group_by("a.id_rol");
        $query = $this->db->get();
@@ -253,8 +253,8 @@
    public function obtenerRastreabilidadFiltro($fecha_inicio,$fecha_fin,$segmento,$porpagina){
      $this->db->select('r.id_registro,u.nombre_completo,m.nombre_modulo,r.fecha,r.hora,r.operacion')
               ->from('sic_rastreabilidad r')
-              ->join('org_usuario u','u.id_usuario=r.id_usuario')
-              ->join('org_modulo m','m.id_modulo=r.id_modulo')
+              ->join('mtps.org_usuario u','u.id_usuario=r.id_usuario')
+              ->join('mtps.org_modulo m','m.id_modulo=r.id_modulo')
               ->order_by('r.id_sic_rastreabilidad','desc')
               ->limit($segmento,$porpagina)
               ->where("r.fecha BETWEEN '$fecha_inicio' AND '$fecha_fin'");
@@ -269,8 +269,8 @@
    public function obtenerRastreabilidadFiltroTotal($fecha_inicio,$fecha_fin){
      $this->db->select('count(*) as total')
               ->from('sic_rastreabilidad r')
-              ->join('org_usuario u','u.id_usuario=r.id_usuario')
-              ->join('org_modulo m','m.id_modulo=r.id_modulo')
+              ->join('mtps.org_usuario u','u.id_usuario=r.id_usuario')
+              ->join('mtps.org_modulo m','m.id_modulo=r.id_modulo')
               ->order_by('r.id_sic_rastreabilidad','desc')
               ->where("r.fecha BETWEEN '$fecha_inicio' AND '$fecha_fin'");
      $query=$this->db->get();
@@ -279,11 +279,11 @@
 
    public function buscarUsuariosSICBAF($busca){
      $this->db->select('u.nombre_completo,ur.id_usuario_rol,r.nombre_rol,ur.id_usuario,ur.id_rol,u.sexo')
-              ->from('org_usuario_rol ur')
-              ->join('org_rol r','r.id_rol=ur.id_rol')
-              ->join('org_usuario u','u.id_usuario=ur.id_usuario')
-              ->join('org_rol_modulo_permiso rmp','r.id_rol=rmp.id_rol')
-              ->join('org_modulo m','m.id_modulo=rmp.id_modulo')
+              ->from('mtps.org_usuario_rol ur')
+              ->join('mtps.org_rol r','r.id_rol=ur.id_rol')
+              ->join('mtps.org_usuario u','u.id_usuario=ur.id_usuario')
+              ->join('mtps.org_rol_modulo_permiso rmp','r.id_rol=rmp.id_rol')
+              ->join('mtps.org_modulo m','m.id_modulo=rmp.id_modulo')
               ->group_by('ur.id_usuario')
               ->where('u.estado',1)
               ->where('m.id_sistema',14);
@@ -301,11 +301,11 @@
 
    public function obtenerUsuariosSICBAFLimit($porpagina, $segmento){
      $this->db->select('u.nombre_completo,ur.id_usuario_rol,r.nombre_rol,ur.id_usuario,ur.id_rol,u.sexo')
-              ->from('org_usuario_rol ur')
-              ->join('org_rol r','r.id_rol=ur.id_rol')
-              ->join('org_usuario u','u.id_usuario=ur.id_usuario')
-              ->join('org_rol_modulo_permiso rmp','r.id_rol=rmp.id_rol')
-              ->join('org_modulo m','m.id_modulo=rmp.id_modulo')
+              ->from('mtps.org_usuario_rol ur')
+              ->join('mtps.org_rol r','r.id_rol=ur.id_rol')
+              ->join('mtps.org_usuario u','u.id_usuario=ur.id_usuario')
+              ->join('mtps.org_rol_modulo_permiso rmp','r.id_rol=rmp.id_rol')
+              ->join('mtps.org_modulo m','m.id_modulo=rmp.id_modulo')
               ->where('u.estado',1)
               ->limit($porpagina, $segmento)
               ->group_by('ur.id_usuario')
@@ -322,11 +322,11 @@
 
    public function obtenerUsuariosSICBAFTotal(){
      $this->db->select('')
-              ->from('org_usuario_rol ur')
-              ->join('org_rol r','r.id_rol=ur.id_rol')
-              ->join('org_usuario u','u.id_usuario=ur.id_usuario')
-              ->join('org_rol_modulo_permiso rmp','r.id_rol=rmp.id_rol')
-              ->join('org_modulo m','m.id_modulo=rmp.id_modulo')
+              ->from('mtps.org_usuario_rol ur')
+              ->join('mtps.org_rol r','r.id_rol=ur.id_rol')
+              ->join('mtps.org_usuario u','u.id_usuario=ur.id_usuario')
+              ->join('mtps.org_rol_modulo_permiso rmp','r.id_rol=rmp.id_rol')
+              ->join('mtps.org_modulo m','m.id_modulo=rmp.id_modulo')
               ->where('u.estado',1)
               ->group_by('u.id_usuario')
               ->where('m.id_sistema',14);
@@ -342,7 +342,7 @@
 
    public function actualizarUsuarioRol($id, $data){
      $this->db->where('id_usuario_rol',$id);
-     $this->db->update('org_usuario_rol', $data);
+     $this->db->update('mtps.org_usuario_rol', $data);
    }
 
    public function insertarUsuarioRol($data){
@@ -350,21 +350,21 @@
        'id_usuario'=>$data['id_usuario'],
        'id_rol'=>$data['id_rol']
      );
-       $this->db->insert('org_usuario_rol', $user);
+       $this->db->insert('mtps.org_usuario_rol', $user);
        return $this->db->insert_id();
    }
 
    public function eliminarUsuarioRol($id){
-     $this->db->delete('org_usuario_rol', array('id_usuario_rol' => $id));
+     $this->db->delete('mtps.org_usuario_rol', array('id_usuario_rol' => $id));
    }
 
    public function obtenerUsuarios(){
      $this->db->select('e.id_empleado, ei.id_empleado_informacion_laboral, u.nombre_completo,u.id_usuario,ei.id_seccion,s.nombre_seccion,ei.id_traslado')
-              ->from('org_usuario u')
-              ->join('sir_empleado e','u.nr=e.nr')
-              ->join('sir_empleado_informacion_laboral ei','e.id_empleado=ei.id_empleado')
-              ->join('sir_traslado t','ei.id_traslado=t.id_traslado')
-              ->join('org_seccion s','s.id_seccion=ei.id_seccion')
+              ->from('mtps.org_usuario u')
+              ->join('mtps.sir_empleado e','u.nr=e.nr')
+              ->join('mtps.sir_empleado_informacion_laboral ei','e.id_empleado=ei.id_empleado')
+              ->join('mtps.sir_traslado t','ei.id_traslado=t.id_traslado')
+              ->join('mtps.org_seccion s','s.id_seccion=ei.id_seccion')
               ->order_by('e.id_empleado')
               ->group_by('ei.id_empleado')
               ->where('e.id_estado',1);
@@ -379,11 +379,11 @@
 
    public function buscarUsuarios($busca){
      $this->db->select('e.id_empleado, ei.id_empleado_informacion_laboral, u.nombre_completo,u.id_usuario,ei.id_seccion,s.nombre_seccion,ei.id_traslado')
-              ->from('org_usuario u')
-              ->join('sir_empleado e','u.nr=e.nr')
-              ->join('sir_empleado_informacion_laboral ei','e.id_empleado=ei.id_empleado')
-              ->join('sir_traslado t','ei.id_traslado=t.id_traslado')
-              ->join('org_seccion s','s.id_seccion=ei.id_seccion')
+              ->from('mtps.org_usuario u')
+              ->join('mtps.sir_empleado e','u.nr=e.nr')
+              ->join('mtps.sir_empleado_informacion_laboral ei','e.id_empleado=ei.id_empleado')
+              ->join('mtps.sir_traslado t','ei.id_traslado=t.id_traslado')
+              ->join('mtps.org_seccion s','s.id_seccion=ei.id_seccion')
               ->order_by('ei.id_traslado','desc')
               ->group_by('ei.id_empleado')
               ->like('u.nombre_completo',$busca)
@@ -401,7 +401,7 @@
    public function obtenerEmpleadosSeccionCorrecta($id_seccion){
      $this->db->select('u.id_usuario,lee.nombre_empleado,lee.id_seccion,lee.seccion')
               ->from('Lista_empleados_estado lee')
-              ->join('org_usuario u','u.nr=lee.nr_empleado')
+              ->join('mtps.org_usuario u','u.nr=lee.nr_empleado')
               ->where('lee.estado',1)
               ->where('lee.id_seccion',$id_seccion);
       $query=$this->db->get();
@@ -416,7 +416,7 @@
    public function buscarEmpleadosSeccionCorrecta($busca,$id_seccion){
      $this->db->select('u.id_usuario,lee.nombre_empleado,lee.id_seccion,lee.seccion')
               ->from('Lista_empleados_estado lee')
-              ->join('org_usuario u','u.nr=lee.nr_empleado')
+              ->join('mtps.org_usuario u','u.nr=lee.nr_empleado')
               ->like('lee.nombre_empleado',$busca)
               ->where('lee.estado',1)
               ->where('lee.id_seccion',$id_seccion);
@@ -432,8 +432,8 @@
 
    public function contarTraslados($id_empleado){
      $this->db->select('count(ei.id_empleado_informacion_laboral) as total')
-              ->from('sir_empleado_informacion_laboral ei')
-              ->join('sir_empleado e','e.id_empleado=ei.id_empleado')
+              ->from('mtps.sir_empleado_informacion_laboral ei')
+              ->join('mtps.sir_empleado e','e.id_empleado=ei.id_empleado')
               ->where('e.id_empleado',$id_empleado);
      $query=$this->db->get();
      return $query->row()->total;
@@ -441,9 +441,9 @@
 
    public function obtenerRoles(){
      $this->db->select('r.id_rol,r.nombre_rol')
-              ->from('org_rol r')
-              ->join('org_rol_modulo_permiso rmp','r.id_rol=rmp.id_rol')
-              ->join('org_modulo m','m.id_modulo=rmp.id_modulo')
+              ->from('mtps.org_rol r')
+              ->join('mtps.org_rol_modulo_permiso rmp','r.id_rol=rmp.id_rol')
+              ->join('mtps.org_modulo m','m.id_modulo=rmp.id_modulo')
               ->group_by('r.id_rol')
               ->where('m.id_sistema',14);
      $this->db->order_by("r.id_rol", "asc");
@@ -458,9 +458,9 @@
 
    public function buscarRoles($busca){
      $this->db->select('r.id_rol,r.nombre_rol')
-              ->from('org_rol r')
-              ->join('org_rol_modulo_permiso rmp','r.id_rol=rmp.id_rol')
-              ->join('org_modulo m','m.id_modulo=rmp.id_modulo')
+              ->from('mtps.org_rol r')
+              ->join('mtps.org_rol_modulo_permiso rmp','r.id_rol=rmp.id_rol')
+              ->join('mtps.org_modulo m','m.id_modulo=rmp.id_modulo')
               ->like('nombre_rol',$busca)
               ->group_by('r.id_rol')
               ->where('m.id_sistema',14);
@@ -477,8 +477,8 @@
    public function empleadoTituloCargo($cargo) {
      $this->db->select('a.id_empleado, a.nr_empleado, a.nombre_empleado, a.cargo_funcional, c.titulo_academico, a.genero')
               ->from('Lista_empleados_estado a')
-              ->join('sir_empleado_titulo b', 'a.id_empleado = b.id_empleado')
-              ->join('sir_titulo_academico c', 'b.id_titulo_academico = c.id_titulo_academico')
+              ->join('mtps.sir_empleado_titulo b', 'a.id_empleado = b.id_empleado')
+              ->join('mtps.sir_titulo_academico c', 'b.id_titulo_academico = c.id_titulo_academico')
               ->where('a.id_cargo_funcional', $cargo);
 
     $query = $this->db->get();

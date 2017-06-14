@@ -169,7 +169,7 @@
            $this->db->join('sic_producto p', 'p.id_producto = dp.id_producto');
            $this->db->join('sic_especifico e', 'e.id_especifico = dp.id_especifico');
            $this->db->join('sic_unidad_medida u', 'p.id_unidad_medida = u.id_unidad_medida');
-           $this->db->join('org_seccion sec', 'sec.id_seccion = f.id_seccion');
+           $this->db->join('mtps.org_seccion sec', 'sec.id_seccion = f.id_seccion');
            $this->db->join('sic_fuentes_fondo o', 'o.id_fuentes=f.id_fuentes');
            $this->db->where('f.estado','LIQUIDADA');
            $this->db->where('f.id_fuentes',$fuente);
@@ -194,7 +194,7 @@
            $this->db->join('sic_producto p', 'p.id_producto = dp.id_producto');
            $this->db->join('sic_especifico e', 'e.id_especifico = dp.id_especifico');
            $this->db->join('sic_unidad_medida u', 'p.id_unidad_medida = u.id_unidad_medida');
-           $this->db->join('org_seccion sec', 'sec.id_seccion = f.id_seccion');
+           $this->db->join('mtps.org_seccion sec', 'sec.id_seccion = f.id_seccion');
            $this->db->join('sic_fuentes_fondo o', 'o.id_fuentes=f.id_fuentes');
            $this->db->where('f.estado','LIQUIDADA');
            $this->db->where('f.id_fuentes',$fuente);
@@ -213,7 +213,7 @@
            $this->db->join('sic_producto p', 'p.id_producto = dp.id_producto');
            $this->db->join('sic_especifico e', 'e.id_especifico = dp.id_especifico');
            $this->db->join('sic_unidad_medida u', 'p.id_unidad_medida = u.id_unidad_medida');
-           $this->db->join('org_seccion sec', 'sec.id_seccion = f.id_seccion');
+           $this->db->join('mtps.org_seccion sec', 'sec.id_seccion = f.id_seccion');
            $this->db->join('sic_fuentes_fondo o', 'o.id_fuentes=f.id_fuentes');
            $this->db->where('f.estado','LIQUIDADA');
            $this->db->where('f.id_fuentes',$fuente);
