@@ -52,15 +52,16 @@ class Resumen_conteo extends CI_Controller {
               $registros = $this->DetalleConteoFisico_model->obtenerDetalleConteosBusca($nom_conteo, $this->input->post('busca'));
               $count = count($registros);
           } else {
-            $registros = $this->DetalleConteoFisico_model->obtenerDetalleConteosLimit($nom_conteo, $num, $this->uri->segment(5));
+            $registros = $this->DetalleConteoFisico_model->obtenerDetalleConteosTotal($nom_conteo);
             $count = $this->DetalleConteoFisico_model->totalDetalleConteo($nom_conteo);
           }
         } else {
-            $registros = $this->DetalleConteoFisico_model->obtenerDetalleConteosLimit($nom_conteo, $num, $this->uri->segment(5));
+            $registros = $this->DetalleConteoFisico_model->obtenerDetalleConteosTotal($nom_conteo);
             $count = $this->DetalleConteoFisico_model->totalDetalleConteo($nom_conteo);
         }
 
-        $pagination = paginacion('index.php/Bodega/ConteoFisico/reporte/', $count , $num, $segmento);
+        $pagination = paginacion('index.php/Bodega/ConteoFisico/Reporte/', $count , $num, $segmento);
+        $resumen = array();
 
         $fecha = $this->Conteofisico_model->obtenerFechaConteo($nom_conteo);
         if (!($registros == FALSE)) {
@@ -69,18 +70,22 @@ class Resumen_conteo extends CI_Controller {
             $fuente = $this->Kardex_model->obtenerFuenteFondo($conteo->id_detalleproducto, $fecha);
             $existencia = intval($this->Kardex_model->obtenerExistencias($conteo->id_detalleproducto, $fecha));
             if ($conteo->cantidad - $existencia != 0) {
-              $this->table->add_row($i, $conteo->id_especifico, $conteo->nombre_producto, $conteo->nombre_unidad, $fuente, $nom_conteo,
+              $row = array($i, $conteo->id_especifico, $conteo->nombre_producto, $conteo->nombre_unidad, $fuente, $nom_conteo,
                                     $conteo->cantidad, $existencia,  $conteo->cantidad - $existencia);
+              array_push($resumen, $row);
               $i++;
             }
           }
+
+          $resumen = array_slice($resumen, $this->uri->segment(5), $num);
+
         } else {
           $msg = array('data' => "No se encontraron resultados", 'colspan' => "9");
           $this->table->add_row($msg);
         }
 
         if ($this->input->is_ajax_request()) {
-          echo $this->table->generate();
+          echo $this->table->generate($resumen);
           return false;
         }
 
@@ -133,7 +138,7 @@ class Resumen_conteo extends CI_Controller {
                   "<div class='limit-content'>" .
                   "<div class='exportar'><a href='".base_url('/index.php/Estrategico/Resumen_conteo/ReporteExcel/'.str_replace(" ", "_", $nom_conteo))."' class='icono icon-file-excel'>
                   Exportar Excel</a> <span class='content_buscar'><i class='glyphicon glyphicon-search'></i>".form_input($buscar)."</span></div>".
-                  "<div class='table-responsive'>" . $this->table->generate() . "</div>" . $pagination . "</div></div>";
+                  "<div class='table-responsive'>" . $this->table->generate($resumen) . "</div>" . $pagination . "</div></div>";
 
         $data['body'] = $table;
       } else {
