@@ -20,7 +20,7 @@ body {
 
 .content-login {
   padding: 1.5em;
-  height: 20em;
+  height: 21em;
   background-color: #fbfbfb;
 }
 
@@ -58,6 +58,22 @@ body {
   font-family: 'icomoon';
   color: #f2f2f2;
   font-size: 1.2em;
+}
+
+label[class='error']{
+  position: relative;
+	display: inline-block;
+  background-color: #FF6961;
+  color: #fff;
+  padding: 5px;
+}
+
+input.error:focus{
+  border: solid 1px #FF6961;
+}
+
+.error{
+  border: solid 1px #FF6961;
 }
 
 /* RESPONSIVE */

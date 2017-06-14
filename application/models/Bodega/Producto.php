@@ -159,23 +159,29 @@
           return FALSE;
       }
     }
-    public function obtenerProductosFuenteLimit($fuente,$segmento,$porpagina){
-      $this->db->order_by("f.id_factura", "asc");
-      $this->db->select('dp.numero_producto,e.id_especifico,p.nombre as producto, u.nombre as unidad, o.nombre_fuente,
-      f.fecha_ingreso,sec.nombre_seccion,dp.id_detalleproducto,o.id_fuentes');
-           $this->db->from('sic_detalle_factura df');
-           $this->db->join('sic_factura f', 'f.id_factura = df.id_factura');
-           $this->db->join('sic_detalle_producto dp', 'dp.id_detalleproducto = df.id_detalleproducto');
-           $this->db->join('sic_producto p', 'p.id_producto = dp.id_producto');
-           $this->db->join('sic_especifico e', 'e.id_especifico = dp.id_especifico');
-           $this->db->join('sic_unidad_medida u', 'p.id_unidad_medida = u.id_unidad_medida');
-           $this->db->join('mtps.org_seccion sec', 'sec.id_seccion = f.id_seccion');
-           $this->db->join('sic_fuentes_fondo o', 'o.id_fuentes=f.id_fuentes');
-           $this->db->where('f.estado','LIQUIDADA');
-           $this->db->where('f.id_fuentes',$fuente);
-           $this->db->where('p.exento','N');
+    public function obtenerProductosFuenteLimit($fuente,$especifico,$segmento,$porpagina){
+      //$this->db->order_by('kar.id_detalleproducto', 'asc');
+      $this->db->select('kar.id_detalleproducto,ks.existencia,ff.nombre_fuente,dp.numero_producto,f.fecha_ingreso,um.nombre,sec.nombre_seccion');
+
+        $this->db->from('(select k.cantidad,k.fecha_ingreso,k.id_fuentes,dp.id_detalleproducto,max(ks.id_kardex_saldo) as id_kardex_saldo
+                          from sic_kardex k
+                          join sic_kardex_saldo ks on ks.id_kardex=k.id_kardex
+                          join sic_detalle_producto dp on dp.id_detalleproducto=k.id_detalleproducto
+                          group by id_detalleproducto) kar');
+           $this->db->join('sic_kardex_saldo ks ',' ks.id_kardex_saldo=kar.id_kardex_saldo');
+           $this->db->join('sic_fuentes_fondo ff ',' ks.id_fuentes=ff.id_fuentes');
+           $this->db->join('sic_detalle_producto dp ',' dp.id_detalleproducto=kar.id_detalleproducto');
+           $this->db->join('sic_producto p',' p.id_producto=dp.id_producto');
+           $this->db->join('sic_unidad_medida um ',' p.id_unidad_medida=um.id_unidad_medida');
+           $this->db->join('sic_factura f ',' f.fecha_ingreso=kar.fecha_ingreso');
+           $this->db->join('sic_factura fa ',' fa.id_fuentes=kar.id_fuentes');
+           $this->db->join('mtps.org_seccion sec ',' fa.id_seccion=sec.id_seccion');
+           $this->db->join('sic_detalle_factura detf ',' detf.id_detalleproducto=dp.id_detalleproducto');
+           $this->db->join('sic_detalle_factura detfa ',' detf.cantidad=kar.cantidad');
+           $this->db->where('dp.id_especifico',$especifico);
+           $this->db->where('kar.id_fuentes',$fuente);
            $this->db->limit($segmento,$porpagina);
-           $this->db->group_by('df.id_detalle_factura');
+           $this->db->group_by('kar.id_detalleproducto');
            $query = $this->db->get();
       if ($query->num_rows() > 0) {
           return  $query->result();
@@ -185,40 +191,40 @@
       }
     }
 
-    public function obtenerProductosFuenteTotal($fuente){
-      $this->db->order_by("f.id_factura", "asc");
+    public function   obtenerProductosFuenteTotal($fuente,$especifico){
+      $this->db->order_by("kar.id_fuentes", "asc");
       $this->db->select('count(*) as numero');
-           $this->db->from('sic_detalle_factura df');
-           $this->db->join('sic_factura f', 'f.id_factura = df.id_factura');
-           $this->db->join('sic_detalle_producto dp', 'dp.id_detalleproducto = df.id_detalleproducto');
-           $this->db->join('sic_producto p', 'p.id_producto = dp.id_producto');
-           $this->db->join('sic_especifico e', 'e.id_especifico = dp.id_especifico');
-           $this->db->join('sic_unidad_medida u', 'p.id_unidad_medida = u.id_unidad_medida');
-           $this->db->join('mtps.org_seccion sec', 'sec.id_seccion = f.id_seccion');
-           $this->db->join('sic_fuentes_fondo o', 'o.id_fuentes=f.id_fuentes');
-           $this->db->where('f.estado','LIQUIDADA');
-           $this->db->where('f.id_fuentes',$fuente);
-           $this->db->where('p.exento','N');
+           $this->db->from('(select k.id_fuentes,dp.id_detalleproducto,max(ks.id_kardex_saldo) as id_kardex_saldo from sic_kardex k join sic_kardex_saldo ks on ks.id_kardex=k.id_kardex join sic_detalle_producto dp on dp.id_detalleproducto=k.id_detalleproducto group by id_detalleproducto) kar ');
+           $this->db->join('sic_kardex_saldo ks',' ks.id_kardex_saldo=kar.id_kardex_saldo');
+           $this->db->join('sic_detalle_producto dp',' dp.id_detalleproducto=kar.id_detalleproducto');
+           $this->db->join('sic_producto p',' p.id_producto=dp.id_producto');
+           $this->db->where('dp.id_especifico',$especifico);
+           $this->db->where('kar.id_fuentes',$fuente);
            $query = $this->db->get();
            return $query->row();
     }
 
-    public function obtenerProductosFuenteTodo($fuente){
-      $this->db->order_by("f.id_factura", "asc");
-      $this->db->select('dp.numero_producto,e.id_especifico,p.nombre as producto, u.nombre as unidad, o.nombre_fuente,
-      f.fecha_ingreso,sec.nombre_seccion,dp.id_detalleproducto,o.id_fuentes');
-           $this->db->from('sic_detalle_factura df');
-           $this->db->join('sic_factura f', 'f.id_factura = df.id_factura');
-           $this->db->join('sic_detalle_producto dp', 'dp.id_detalleproducto = df.id_detalleproducto');
-           $this->db->join('sic_producto p', 'p.id_producto = dp.id_producto');
-           $this->db->join('sic_especifico e', 'e.id_especifico = dp.id_especifico');
-           $this->db->join('sic_unidad_medida u', 'p.id_unidad_medida = u.id_unidad_medida');
-           $this->db->join('mtps.org_seccion sec', 'sec.id_seccion = f.id_seccion');
-           $this->db->join('sic_fuentes_fondo o', 'o.id_fuentes=f.id_fuentes');
-           $this->db->where('f.estado','LIQUIDADA');
-           $this->db->where('f.id_fuentes',$fuente);
-           $this->db->where('p.exento','N');
-           $this->db->group_by('df.id_detalle_factura');
+    public function obtenerProductosFuenteTodo($fuente,$especifico){
+      $this->db->select('kar.id_detalleproducto,ks.existencia,ff.nombre_fuente,dp.numero_producto,f.fecha_ingreso,um.nombre,sec.nombre_seccion');
+
+        $this->db->from('(select k.cantidad,k.fecha_ingreso,k.id_fuentes,dp.id_detalleproducto,max(ks.id_kardex_saldo) as id_kardex_saldo
+                          from sic_kardex k
+                          join sic_kardex_saldo ks on ks.id_kardex=k.id_kardex
+                          join sic_detalle_producto dp on dp.id_detalleproducto=k.id_detalleproducto
+                          group by id_detalleproducto) kar');
+           $this->db->join('sic_kardex_saldo ks ',' ks.id_kardex_saldo=kar.id_kardex_saldo');
+           $this->db->join('sic_fuentes_fondo ff ',' ks.id_fuentes=ff.id_fuentes');
+           $this->db->join('sic_detalle_producto dp ',' dp.id_detalleproducto=kar.id_detalleproducto');
+           $this->db->join('sic_producto p',' p.id_producto=dp.id_producto');
+           $this->db->join('sic_unidad_medida um ',' p.id_unidad_medida=um.id_unidad_medida');
+           $this->db->join('sic_factura f ',' f.fecha_ingreso=kar.fecha_ingreso');
+           $this->db->join('sic_factura fa ',' fa.id_fuentes=kar.id_fuentes');
+           $this->db->join('mtps.org_seccion sec ',' fa.id_seccion=sec.id_seccion');
+           $this->db->join('sic_detalle_factura detf ',' detf.id_detalleproducto=dp.id_detalleproducto');
+           $this->db->join('sic_detalle_factura detfa ',' detf.cantidad=kar.cantidad');
+           $this->db->where('dp.id_especifico',$especifico);
+           $this->db->where('kar.id_fuentes',$fuente);
+           $this->db->group_by('kar.id_detalleproducto');
            $query = $this->db->get();
       if ($query->num_rows() > 0) {
           return  $query->result();
@@ -293,5 +299,6 @@
           return FALSE;
       }
     }
-  }
+}
+
 ?>

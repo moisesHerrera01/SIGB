@@ -27,7 +27,7 @@ class Comparativo_fuente extends CI_Controller {
     $USER = $this->session->userdata('logged_in');
     $data['title'] = "Comparativo de gastos por fuente de fondo";
     $data['menu'] = $this->menu_dinamico->menus($this->session->userdata('logged_in'),$this->uri->segment(1));
-    $data['js'] = 'assets/js/validate/reporte/comparativo.js';
+    $data['js'] = 'assets/js/validate/reporte/bodega/comparativo.js';
     $table = '';
     if (($this->uri->segment(4))!=NULL) {
       $template = array(
@@ -40,10 +40,13 @@ class Comparativo_fuente extends CI_Controller {
       $cell = array('');
       $head = array('Fuente de Fondo');
       $comp = array();
+      $total = array();
 
       for ($i=0; $i < $this->uri->segment(4); $i++) {
         $cell[$i+1] = array('data' => date('Y') - $i, 'colspan' => 2);
         array_push($head, 'Cantidad', 'Saldo');
+
+        $total[$i] = 0;
 
         $registros = $this->Kardex_model->comparacionFuenteFondo(date('Y') - $i);
 
@@ -73,13 +76,20 @@ class Comparativo_fuente extends CI_Controller {
 
             }
 
+            $total[$i] += $fuente->saldo;
+
           }
 
-        } else {
-          // $msg = array('data' => "No se encontraron resultados", 'colspan' => $column);
-          // $this->table->add_row($msg);
         }
       }
+
+      $aux = array('Total');
+
+      for ($i=0; $i < count($total); $i++) {
+        array_push($aux, '', '$' . number_format($total[$i], 3));
+      }
+
+      array_push($comp, $aux);
 
       $this->table->set_heading($cell);
       $this->table->add_row($head);
@@ -180,10 +190,12 @@ class Comparativo_fuente extends CI_Controller {
 
     $registros = FALSE;
     $afuente = array();
+    $total = array();
 
     $objPHPExcel->setActiveSheetIndex(0)->setCellValue('A2', 'Fuente de Fondo');
 
     for ($i=0; $i < $this->uri->segment(4); $i++) {
+      $total[$i] = 0;
       $objPHPExcel->setActiveSheetIndex(0)->setCellValue($this->obtenerColumnaExcel($i*2 + 2) .'1', date('Y') - $i);
 
       $objPHPExcel->setActiveSheetIndex(0)->mergeCells($this->obtenerColumnaExcel($i*2 + 2).'1'.':'.$this->obtenerColumnaExcel($i*2 + 3).'1');
@@ -225,6 +237,7 @@ class Comparativo_fuente extends CI_Controller {
 
           }
 
+          $total[$i] += $fuente->saldo;
           $j++;
 
         }
@@ -233,10 +246,18 @@ class Comparativo_fuente extends CI_Controller {
 
     }
 
+    $objPHPExcel->setActiveSheetIndex(0)->setCellValue('A' . ($j+2), 'Total');
+
+    for ($o=0; $o < count($total); $o++) {
+      $objPHPExcel->setActiveSheetIndex(0)
+                  ->setCellValue($this->obtenerColumnaExcel($o*2 + 2) . ($j+2), '')
+                  ->setCellValue($this->obtenerColumnaExcel($o*2 + 3) . ($j+2), '$' . number_format($total[$o], 3));
+    }
+
     $objPHPExcel->getActiveSheet()->getStyle('A1:'.$this->obtenerColumnaExcel($i*2 + 1).'1')->applyFromArray($estilo_titulo);
     $objPHPExcel->getActiveSheet()->getStyle('A2:'.$this->obtenerColumnaExcel($i*2 + 1).'2')->applyFromArray($estilo_titulo);
 
-    for ($l=0; $l < count($afuente) + 1; $l++) {
+    for ($l=0; $l < count($afuente) + 2; $l++) {
       $objPHPExcel->getActiveSheet()->getStyle('A'.($l + 3).':'.$this->obtenerColumnaExcel($i*2 + 1).($l + 3))->applyFromArray($estilo_contenido);
     }
 

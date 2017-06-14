@@ -17,7 +17,7 @@
     ?>
     <div class="content">
       <div class="content-login-title">
-        <span class="title-login"><span class="icono icon-home3"> SICBAF</span></span>
+        <span class="title-login"><span class="icono icon-home3"> SIGB</span></span>
       </div>
       <div class="content-login">
       <?php
@@ -33,11 +33,6 @@
               'name' => 'password',
               'placeholder' => 'Ingrese su contraseña',
               'class' => 'form-control'
-            );
-
-            $radio = array(
-              'name' => 'modulo',
-              'value' => ''
             );
 
             $atributos = array(
@@ -68,9 +63,10 @@
       </div>
     </div>
   </body>
-  <!-- script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.3/jquery.min.js"></script -->
   <script>window.jQuery || document.write("<script src='<?= base_url('assets/js/jquery-1.11.3.min.js') ?>'>")</script>
   <script src=<?= base_url("vendor/twbs/bootstrap/dist/js/bootstrap.min.js")?>></script>
+  <script src="<?= base_url('assets/js/jquery.validate.min.js')?>"></script>
+  <script src="<?= base_url('assets/js/validate/login.js')?>"></script>
   <script type="text/javascript">
     $(".close").click(function(){
         $("#myAlert").slideUp();
