@@ -128,10 +128,10 @@ class Resumen_conteo extends CI_Controller {
                         <li>Fecha emisión: ".date('d/m/Y')."</li>
                         <li>Nombre la compañia: MTPS</li>
                         <li>N° pagina: ". $pag .'/'. $pags ."</li>
-                        <li>Nombre pantalla:</li>
+                        <li>Nombre pantalla: XXXXXXXXXX</li>
                         <li>Usuario: ".$USER['nombre_completo']."</li>
                         <br />
-                        <li>Parametros: ".$nom_conteo."</li>
+                        <li>Parametros: XXXXXXXXXXXXXXX</li>
                       </ul>
                     </div>".
                   "</div>".
@@ -225,18 +225,15 @@ class Resumen_conteo extends CI_Controller {
       if (!($registros == FALSE)) {
         $i = 2;
         foreach($registros as $conteo) {
-          $producto = $this->Producto->obtenerTodoProducto($conteo->id_producto);
-          $unidad = $this->UnidadMedida->obtenerUnidad($producto->id_unidad_medida);
           $fuente = $this->Kardex_model->obtenerFuenteFondo($conteo->id_detalleproducto, $fecha);
-          $nombre_especifico = $this->Especifico->obtenerEspecifico($conteo->id_especifico);
           $existencia = intval($this->Kardex_model->obtenerExistencias($conteo->id_detalleproducto, $fecha));
 
           if ($conteo->cantidad - $existencia != 0){
             $objPHPExcel->setActiveSheetIndex(0)
                         ->setCellValue('A'.$i, $i-1)
                         ->setCellValue('B'.$i, $conteo->id_especifico)
-                        ->setCellValue('C'.$i, $producto->nombre)
-                        ->setCellValue('D'.$i, $unidad)
+                        ->setCellValue('C'.$i, $conteo->nombre_producto)
+                        ->setCellValue('D'.$i, $conteo->nombre_unidad)
                         ->setCellValue('E'.$i, $fuente)
                         ->setCellValue('F'.$i, $this->uri->segment(4))
                         ->setCellValue('G'.$i, $conteo->cantidad)
