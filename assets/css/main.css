@@ -248,7 +248,7 @@ input.error:focus{
 
 .limit-content-title {
   padding: 0.2em 0.5em;
-  background-color: #8BC34A;
+  background-color: #67818a;
 }
 
 .limit-content {
@@ -309,7 +309,7 @@ input.error:focus{
 .footer {
   display: block;
   position: relative;
-  background-color: #2B3840;
+  background-color: #272D33;
   top: -6.25em; /* Misma altura que el footer en negativo */
   min-height: 6.25em; /* Altura del footer */
   clear: both;

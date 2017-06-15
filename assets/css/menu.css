@@ -27,10 +27,10 @@
 	display: none;
 	position: fixed;
 	overflow: hidden;
-	width: 10.65em;
+	min-width: 10.65em;
 	height: 3em;
 	padding-left: 5px;
-	padding-right: 2px;
+	padding-right: 5px;
 	margin-top: -1px;
 	left: 3em;
 	text-align: left;
@@ -56,7 +56,7 @@
 .cbp-vimenu li a:hover,
 .cbp-submenu li:first-child a,
 .cbp-submenu li a:hover {
-	background-color: #0091D2;
+	background-color: #006593;
 	color: #fff;
 }
 
@@ -96,7 +96,7 @@
 	top: 0;
 	left: 3em;
 	list-style: none;
-	background-color: #0091D2;
+	background-color: #006593;
 	color: #fff;
 	text-align: right;
 	z-index: 100;
@@ -180,7 +180,7 @@
 		line-height: 3em;
 		color: #999;
 		text-align: center;
-		background-color: #0091D2;
+		background-color: #006593;
 	}
 
 	#pull:before {
