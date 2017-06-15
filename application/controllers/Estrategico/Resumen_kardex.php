@@ -43,20 +43,36 @@ class Resumen_kardex extends CI_Controller {
       $table = '';
 
       if ($this->uri->segment(4) != '' && $this->uri->segment(5) != '' && $this->uri->segment(7) != '') {
+          $template = array(
+            'table_open' => '<table class="table table-striped table-bordered">'
+        );
+        $this->table->set_template($template);
 
         $num = 5;
         $segmento=8;
-        $kardex = $this->Kardex_model->obtenerKardexResumido($this->uri->segment(6), $this->uri->segment(7), $this->uri->segment(4), $this->uri->segment(5), $num, $this->uri->segment(8));
-        $cant = $this->Kardex_model->totalKardexResumido($this->uri->segment(6), $this->uri->segment(7), $this->uri->segment(4), $this->uri->segment(5));
+
+        if ($this->input->is_ajax_request()) {
+          if (!($this->input->post('busca') == "")) {
+            $kardex = $this->Kardex_model->buscarKardexResumido($this->uri->segment(6), $this->uri->segment(7), $this->uri->segment(4),
+             $this->uri->segment(5), $this->input->post('busca'));
+            $cant = count($kardex);
+          } else {
+            $kardex = $this->Kardex_model->obtenerKardexResumido($this->uri->segment(6), $this->uri->segment(7), $this->uri->segment(4),
+             $this->uri->segment(5), $num, $this->uri->segment(8));
+            $cant = $this->Kardex_model->totalKardexResumido($this->uri->segment(6), $this->uri->segment(7), $this->uri->segment(4),
+            $this->uri->segment(5));
+          }
+        } else {
+          $kardex = $this->Kardex_model->obtenerKardexResumido($this->uri->segment(6), $this->uri->segment(7), $this->uri->segment(4),
+           $this->uri->segment(5), $num, $this->uri->segment(8));
+          $cant = $this->Kardex_model->totalKardexResumido($this->uri->segment(6), $this->uri->segment(7), $this->uri->segment(4),
+           $this->uri->segment(5));
+        }
+
         $pagination = paginacion('index.php/Estrategico/Resumen_kardex/kardexResumido/'.$this->uri->segment(4).
         '/'.$this->uri->segment(5).'/'.$this->uri->segment(6).'/'.$this->uri->segment(7),$cant,$num, '8');
 
         if (!($kardex == FALSE)) {
-          $template = array(
-              'table_open' => '<table class="table table-striped table-bordered">'
-          );
-          $this->table->set_template($template);
-
           foreach ($kardex as $value) {
             $kardex_prev =  $this->Kardex_saldo_model->obtenerAnteriorKardexSaldo($value->rango[0]->min, $value->id_detalleproducto);
 
@@ -76,14 +92,6 @@ class Resumen_kardex extends CI_Controller {
             $mayor1 = ($num_ingreso > $num_salida) ? $num_ingreso : $num_salida;
             $mayor2 = ($num_inicial > $num_final) ? $num_inicial : $num_final;
             $total = ($mayor1 > $mayor2) ? $mayor1 : $mayor2;
-
-            $this->table->add_row(array('data' => $value->id_especifico .' '. $value->nombre_producto, 'colspan' => "8"));
-            $cell1 = array('data' => 'Inventario Inicial', 'colspan' => 2);
-            $cell2 = array('data' => 'Ingresos', 'colspan' => 2);
-            $cell3 = array('data' => 'Salidas', 'colspan' => 2);
-            $cell4 = array('data' => 'Saldo Actual', 'colspan' => 2);
-            $this->table->add_row($cell1, $cell2, $cell3, $cell4);
-            $this->table->add_row("Cantidad", "Precio", "Cantidad", "Precio" , "Cantidad", "Precio", "Cantidad", "Precio");
 
             for ($i=0; $i < $total; $i++) {
 
@@ -124,9 +132,24 @@ class Resumen_kardex extends CI_Controller {
                 $data[] = "-";
                 $data[] = "-";
               }
-
+              $this->table->add_row(array('data' => $value->id_especifico .' '. $value->nombre_producto, 'colspan' => "8"));
+              $cell1 = array('data' => 'Inventario Inicial', 'colspan' => 2);
+              $cell2 = array('data' => 'Ingresos', 'colspan' => 2);
+              $cell3 = array('data' => 'Salidas', 'colspan' => 2);
+              $cell4 = array('data' => 'Saldo Actual', 'colspan' => 2);
+              $this->table->add_row($cell1, $cell2, $cell3, $cell4);
+              $this->table->add_row("Cantidad", "Precio", "Cantidad", "Precio" , "Cantidad", "Precio", "Cantidad", "Precio");
               $this->table->add_row($data);
             }
+          }
+          }else {
+            $this->table->set_template($template);
+              $msg = array('data' => "No se encontraron resultados", 'colspan' => "8");
+            $this->table->add_row($msg);
+          }
+          if ($this->input->is_ajax_request()) {
+            echo $this->table->generate();
+            return false;
           }
 
                     // paginacion del header
@@ -147,6 +170,16 @@ class Resumen_kardex extends CI_Controller {
                     if ($segaux > $pag) {
                       $pag++;
                     }
+
+                    $buscar = array(
+                      'name' => 'buscar',
+                      'type' => 'search',
+                      'placeholder' => 'BUSCAR POR PRODUCTO',
+                      'class' => 'form-control',
+                      'autocomplete' => 'off',
+                      'id' => 'buscar',
+                      'url' => 'index.php/Estrategico/Resumen_kardex/kardexResumido/'.$this->uri->segment(4).'/'.$this->uri->segment(5).'/'.$this->uri->segment(6).'/'.$this->uri->segment(7).'/'
+                    );
 
                     $titulo = ($this->uri->segment(6) != 0) ?   $this->Especifico->obtenerEspecifico($this->uri->segment(6)) : 'TODOS' ;
                     $table =  "<div class='content_table '>" .
@@ -169,9 +202,9 @@ class Resumen_kardex extends CI_Controller {
                               "<div class='limit-content'>" .
                               "<div class='exportar'><a href='".base_url('/index.php/Estrategico/Resumen_kardex/kardexResumidoExcel/'.$this->uri->segment(4).'/'
                               .$this->uri->segment(5).'/'.$this->uri->segment(6).'/'.$this->uri->segment(7))."' class='icono icon-file-excel'>
-                              Exportar Excel</a></div>" . "<div class='table-responsive'>" . $this->table->generate() . "</div>" . $pagination . "</div></div>";
+                              Exportar Excel</a><span class='content_buscar'><i class='glyphicon glyphicon-search'></i>".form_input($buscar)."</span></div>" . "<div class='table-responsive'>" . $this->table->generate() . "</div>" . $pagination . "</div></div>";
                     $data1['body'] = $table;
-        }
+
       }else {
           $data1['body'] = $this->load->view('Estrategico/resumen_kardex_view','', TRUE);
       }

@@ -503,6 +503,61 @@
       }
     }
 
+    public function buscarKardexResumido($id_especifico, $id_fuentes, $fecha_inicio, $fecha_fin, $busca) {
+      $this->db->select("a.id_detalleproducto, c.id_producto, c.nombre nombre_producto, b.id_especifico")
+               ->from("sic_kardex a")
+               ->join("sic_detalle_producto b", "a.id_detalleproducto = b.id_detalleproducto")
+               ->join("sic_producto c", "b.id_producto = c.id_producto")
+               ->where("a.fecha_ingreso BETWEEN '$fecha_inicio' AND '$fecha_fin'")
+               ->group_by("c.id_producto")
+               ->like('c.nombre',$busca);
+
+      if ($id_especifico != 0) {
+        $this->db->where("b.id_especifico", $id_especifico);
+      }
+
+      $productos = $this->db->get()->result();
+      if ($productos) {
+        $i = 0;
+        foreach ($productos as $producto) {
+          $this->db->select("MAX(a.id_kardex) max, MIN(a.id_kardex) min")
+                   ->from("sic_kardex a")
+                   ->where("a.id_detalleproducto", $producto->id_detalleproducto)
+                   ->where("a.id_fuentes", $id_fuentes)
+                   ->where("a.fecha_ingreso BETWEEN '$fecha_inicio' AND '$fecha_fin'");
+          $producto->rango = $this->db->get()->result();
+
+          $this->db->select("SUM(a.cantidad) cantidad, a.precio")
+                   ->from("sic_kardex a")
+                   ->where("a.id_detalleproducto", $producto->id_detalleproducto)
+                   ->where("a.id_fuentes", $id_fuentes)
+                   ->where("a.fecha_ingreso BETWEEN '$fecha_inicio' AND '$fecha_fin'")
+                   ->where("a.movimiento", "ENTRADA")
+                   ->order_by('a.id_kardex', 'asc')
+                   ->group_by('a.precio');
+          $producto->detalle_ingreso = $this->db->get()->result();
+
+          $this->db->select("SUM(a.cantidad) cantidad, a.precio")
+                   ->from("sic_kardex a")
+                   ->where("a.id_detalleproducto", $producto->id_detalleproducto)
+                   ->where("a.id_fuentes", $id_fuentes)
+                   ->where("a.fecha_ingreso BETWEEN '$fecha_inicio' AND '$fecha_fin'")
+                   ->where("a.movimiento", "SALIDA")
+                   ->order_by('a.id_kardex', 'asc')
+                   ->group_by('a.precio');
+          $producto->detalle_salida = $this->db->get()->result();
+
+          if (NULL == $producto->detalle_ingreso && NULL == $producto->detalle_salida) {
+            unset($productos[$i]);
+          }
+          $i++;
+        }
+        return $productos;
+      } else {
+        return FALSE;
+      }
+    }
+
     public function totalKardexResumido($id_especifico, $id_fuentes, $fecha_inicio, $fecha_fin) {
       $this->db->select("a.id_detalleproducto, c.id_producto, c.nombre nombre_producto")
                ->from("sic_kardex a")

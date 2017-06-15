@@ -7,7 +7,7 @@ class Solicitud extends CI_Controller {
     parent::__construct();
     $this->load->helper(array('form', 'paginacion'));
     $this->load->library('table');
-    $this->load->model(array('Bodega/Solicitud_Model','Bodega/Detalle_solicitud_producto_model', 'Notificacion_model', 'Bodega/Fuentefondos_model'));
+    $this->load->model(array('Bodega/Solicitud_Model','Bodega/Detalle_solicitud_producto_model', 'Bodega/Fuentefondos_model'));
   }
 
   public function index(){
@@ -73,7 +73,6 @@ class Solicitud extends CI_Controller {
       /*
       * llena la tabla con los datos consultados
       */
-
       if (!($registros == FALSE)) {
         foreach($registros as $sol) {
             $fuente = $this->Fuentefondos_model->obtenerFuente($sol->id_fuentes);

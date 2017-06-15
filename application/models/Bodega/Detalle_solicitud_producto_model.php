@@ -348,6 +348,35 @@
       }
     }
 
+    public function buscarProductosSeccion($fecha_inicio,$fecha_fin,$seccion,$especifico,$busca){
+      $this->db->order_by("s.id_solicitud", "asc");
+      $this->db->select('s.numero_solicitud,s.fecha_salida,sec.nombre_seccion,e.id_especifico,dp.numero_producto,
+        p.nombre as producto,u.nombre as unidad,ds.cantidad,ds.total');
+      $this->db->from('sic_detalle_solicitud_producto ds');
+      $this->db->join('sic_solicitud s', 's.id_solicitud = ds.id_solicitud');
+      $this->db->join('sic_detalle_producto dp', 'dp.id_detalleproducto = ds.id_detalleproducto');
+      $this->db->join('sic_producto p', 'p.id_producto = dp.id_producto');
+      $this->db->join('sic_especifico e', 'e.id_especifico = dp.id_especifico');
+      $this->db->join('sic_unidad_medida u', 'p.id_unidad_medida = u.id_unidad_medida');
+      $this->db->join('mtps.org_seccion sec', 'sec.id_seccion = s.id_seccion');
+      $this->db->where('s.estado_solicitud','LIQUIDADA');
+      $this->db->where('s.fecha_salida <=',$fecha_fin);
+      $this->db->where('s.fecha_salida >=',$fecha_inicio);
+      $this->db->where('e.id_especifico',$especifico);
+      if ($seccion!=0) {
+       $this->db->where('s.id_seccion',$seccion);
+      }
+      $this->db->like('p.nombre',$busca);
+      $this->db->group_by('ds.id_detalle_solicitud_producto');
+      $query = $this->db->get();
+      if ($query->num_rows() > 0) {
+          return  $query->result();
+      }
+      else {
+          return FALSE;
+      }
+    }
+
     public function obtenerProductosSeccionTotal($fecha_inicio,$fecha_fin,$seccion,$especifico){
       $this->db->order_by("s.id_solicitud", "asc");
       $this->db->select('count(*) numero');
