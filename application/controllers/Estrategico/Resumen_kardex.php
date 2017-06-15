@@ -290,7 +290,7 @@ class Resumen_kardex extends CI_Controller {
       $total = ($mayor1 > $mayor2) ? $mayor1 : $mayor2;
 
       $k = $j-1;
-      $objPHPExcel->setActiveSheetIndex(0)->setCellValue('A'.$k, $value->nombre_producto);
+      $objPHPExcel->setActiveSheetIndex(0)->setCellValue('A'.$k, $value->id_especifico.' '.$value->nombre_producto);
       $objPHPExcel->setActiveSheetIndex(0)->mergeCells('A'.$k.':H'.$k);
       $objPHPExcel->getActiveSheet()->getStyle('A'.$k.':H'.$k)->applyFromArray($estilo_titulo);
 
@@ -306,49 +306,78 @@ class Resumen_kardex extends CI_Controller {
                     ->mergeCells('G'.$j.':H'.$j);
 
       $objPHPExcel->getActiveSheet()->getStyle('A'.$j.':H'.$j)->applyFromArray($estilo_titulo);
+      $s=$j+1;
+
+      $objPHPExcel->setActiveSheetIndex(0)
+                   ->setCellValue('A'.$s, 'Cantidad')
+                   ->setCellValue('B'.$s, 'Precio')
+                   ->setCellValue('C'.$s, 'Cantidad')
+                   ->setCellValue('D'.$s, 'Precio')
+                   ->setCellValue('E'.$s, 'Cantidad')
+                   ->setCellValue('F'.$s, 'Precio')
+                   ->setCellValue('G'.$s, 'Cantidad')
+                   ->setCellValue('H'.$s, 'Precio');
+
+      $objPHPExcel->getActiveSheet()->getStyle('A'.$s.':H'.$s)->applyFromArray($estilo_contenido);
 
       for ($i=0; $i < $total; $i++) {
 
         $data = array();
         if ($i < $num_inicial && $inicial != 0) {
-          $objPHPExcel->setActiveSheetIndex(0)->setCellValue('A'.($j + $i + 1), $inicial[$i]->existencia);
-          $objPHPExcel->setActiveSheetIndex(0)->setCellValue('B'.($j + $i + 1), $inicial[$i]->precio_unitario);
+          $objPHPExcel->setActiveSheetIndex(0)->setCellValue('A'.($j + $i + 2), 'Cantidad');
+          $objPHPExcel->setActiveSheetIndex(0)->setCellValue('B'.($j + $i + 2), 'precio');
+          $objPHPExcel->setActiveSheetIndex(0)->setCellValue('A'.($j + $i + 2), $inicial[$i]->existencia);
+          $objPHPExcel->setActiveSheetIndex(0)->setCellValue('B'.($j + $i + 2), $inicial[$i]->precio_unitario);
         } else {
-          $objPHPExcel->setActiveSheetIndex(0)->setCellValue('A'.($j + $i + 1), "-");
-          $objPHPExcel->setActiveSheetIndex(0)->setCellValue('B'.($j + $i + 1), "-");
+          $objPHPExcel->setActiveSheetIndex(0)->setCellValue('A'.($j + $i + 2), 'Cantidad');
+          $objPHPExcel->setActiveSheetIndex(0)->setCellValue('B'.($j + $i + 2), 'precio');
+          $objPHPExcel->setActiveSheetIndex(0)->setCellValue('A'.($j + $i + 2), "-");
+          $objPHPExcel->setActiveSheetIndex(0)->setCellValue('B'.($j + $i + 2), "-");
         }
 
         if ($i < $num_ingreso) {
-          $objPHPExcel->setActiveSheetIndex(0)->setCellValue('C'.($j + $i + 1), $value->detalle_ingreso[$i]->cantidad);
-          $objPHPExcel->setActiveSheetIndex(0)->setCellValue('D'.($j + $i + 1), $value->detalle_ingreso[$i]->precio);
+          $objPHPExcel->setActiveSheetIndex(0)->setCellValue('C'.($j + $i + 2), 'Cantidad');
+          $objPHPExcel->setActiveSheetIndex(0)->setCellValue('D'.($j + $i + 2), 'precio');
+          $objPHPExcel->setActiveSheetIndex(0)->setCellValue('C'.($j + $i + 2), $value->detalle_ingreso[$i]->cantidad);
+          $objPHPExcel->setActiveSheetIndex(0)->setCellValue('D'.($j + $i + 2), $value->detalle_ingreso[$i]->precio);
         } else {
-          $objPHPExcel->setActiveSheetIndex(0)->setCellValue('C'.($j + $i + 1), "-");
-          $objPHPExcel->setActiveSheetIndex(0)->setCellValue('D'.($j + $i + 1), "-");
+          $objPHPExcel->setActiveSheetIndex(0)->setCellValue('C'.($j + $i + 2), 'Cantidad');
+          $objPHPExcel->setActiveSheetIndex(0)->setCellValue('D'.($j + $i + 2), 'precio');
+          $objPHPExcel->setActiveSheetIndex(0)->setCellValue('C'.($j + $i + 2), "-");
+          $objPHPExcel->setActiveSheetIndex(0)->setCellValue('D'.($j + $i + 2), "-");
         }
 
         if ($i < $num_salida) {
-          $objPHPExcel->setActiveSheetIndex(0)->setCellValue('E'.($j + $i + 1), $value->detalle_salida[$i]->cantidad);
-          $objPHPExcel->setActiveSheetIndex(0)->setCellValue('F'.($j + $i + 1), $value->detalle_salida[$i]->precio);
+          $objPHPExcel->setActiveSheetIndex(0)->setCellValue('E'.($j + $i + 2), 'Cantidad');
+          $objPHPExcel->setActiveSheetIndex(0)->setCellValue('F'.($j + $i + 2), 'precio');
+          $objPHPExcel->setActiveSheetIndex(0)->setCellValue('E'.($j + $i + 2), $value->detalle_salida[$i]->cantidad);
+          $objPHPExcel->setActiveSheetIndex(0)->setCellValue('F'.($j + $i + 2), $value->detalle_salida[$i]->precio);
         } else {
-          $objPHPExcel->setActiveSheetIndex(0)->setCellValue('E'.($j + $i + 1), "-");
-          $objPHPExcel->setActiveSheetIndex(0)->setCellValue('F'.($j + $i + 1), "-");
+          $objPHPExcel->setActiveSheetIndex(0)->setCellValue('E'.($j + $i + 2), 'Cantidad');
+          $objPHPExcel->setActiveSheetIndex(0)->setCellValue('F'.($j + $i + 2), 'precio');
+          $objPHPExcel->setActiveSheetIndex(0)->setCellValue('E'.($j + $i + 2), "-");
+          $objPHPExcel->setActiveSheetIndex(0)->setCellValue('F'.($j + $i + 2), "-");
         }
 
         if ($i < $num_final) {
-          $objPHPExcel->setActiveSheetIndex(0)->setCellValue('G'.($j + $i + 1), $final[$i]->existencia);
-          $objPHPExcel->setActiveSheetIndex(0)->setCellValue('H'.($j + $i + 1), $final[$i]->precio_unitario);
+          $objPHPExcel->setActiveSheetIndex(0)->setCellValue('G'.($j + $i + 2), 'Cantidad');
+          $objPHPExcel->setActiveSheetIndex(0)->setCellValue('H'.($j + $i + 2), 'precio');
+          $objPHPExcel->setActiveSheetIndex(0)->setCellValue('G'.($j + $i + 2), $final[$i]->existencia);
+          $objPHPExcel->setActiveSheetIndex(0)->setCellValue('H'.($j + $i + 2), $final[$i]->precio_unitario);
         } else {
-          $objPHPExcel->setActiveSheetIndex(0)->setCellValue('G'.($j + $i + 1), "-");
-          $objPHPExcel->setActiveSheetIndex(0)->setCellValue('H'.($j + $i + 1), "-");
+          $objPHPExcel->setActiveSheetIndex(0)->setCellValue('G'.($j + $i + 2), 'Cantidad');
+          $objPHPExcel->setActiveSheetIndex(0)->setCellValue('H'.($j + $i + 2), 'precio');
+          $objPHPExcel->setActiveSheetIndex(0)->setCellValue('G'.($j + $i + 2), "-");
+          $objPHPExcel->setActiveSheetIndex(0)->setCellValue('H'.($j + $i + 2), "-");
         }
-        $objPHPExcel->getActiveSheet()->getStyle('A'.($j + $i + 1).':H'.($j + $i + 1))->applyFromArray($estilo_contenido);
+        $objPHPExcel->getActiveSheet()->getStyle('A'.($j + $i + 2).':H'.($j + $i + 2))->applyFromArray($estilo_contenido);
         $this->table->add_row($data);
       }
-      $j = $j + $i + 2;
+      $j = $j + $i + 3;
     }
 
     $objPHPExcel->setActiveSheetIndex(0);
-
+        ob_end_clean();
     header("Content-Type: application/vnd.openxmlformats-officedocument.spreadsheetml.sheet");
     header("Content-Disposition: attachment; filename='kardex_resumen".$this->uri->segment(6).".xlsx'");
     header('Cache-Control: max-age=0');
