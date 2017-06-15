@@ -299,6 +299,49 @@
           return FALSE;
       }
     }
+
+
+    public function obtenerProductoMasSolicitado($cantidad,$fecha_inicio,$fecha_fin) {
+      $this->db->select("sum(ds.cantidad) as cant, ds.id_detalleproducto, p.nombre as nombre_producto,um.nombre as nombre_unidad_medida, dp.id_especifico")
+               ->from("sic_detalle_solicitud_producto ds")
+               ->join("sic_solicitud s", "ds.id_solicitud = s.id_solicitud")
+               ->join("sic_detalle_producto dp", "ds.id_detalleproducto = dp.id_detalleproducto")
+               ->join("sic_producto p", "dp.id_producto = p.id_producto")
+               ->join("sic_unidad_medida um", "p.id_unidad_medida = um.id_unidad_medida")
+               ->where("s.fecha_solicitud BETWEEN '$fecha_inicio' AND '$fecha_fin'")
+               ->group_by("id_detalleproducto")
+               ->order_by("cant DESC")
+               ->limit($cantidad);
+      $query = $this->db->get();
+      if ($query->num_rows() > 0) {
+        return $query->result_array();
+      }
+      else {
+          return FALSE;
+      }
+    }
+
+    public function obtenerProductoMasSolicitadoTotal($cantidad,$fecha_inicio,$fecha_fin) {
+      $this->db->select("count(*) numero")
+               ->from("sic_detalle_solicitud_producto ds")
+               ->join("sic_solicitud s", "ds.id_solicitud = s.id_solicitud")
+               ->join("sic_detalle_producto dp", "ds.id_detalleproducto = dp.id_detalleproducto")
+               ->join("sic_producto p", "dp.id_producto = p.id_producto")
+               ->join("sic_unidad_medida um", "p.id_unidad_medida = um.id_unidad_medida")
+               ->where("s.fecha_solicitud BETWEEN '$fecha_inicio' AND '$fecha_fin'")
+               ->group_by("ds.id_detalleproducto")
+               
+               ->limit($cantidad);
+      $query = $this->db->get();
+      if ($query->num_rows() > 0) {
+        return $query->result_array();
+      }
+      else {
+          return FALSE;
+      }
+    }
+
+
 }
 
 ?>

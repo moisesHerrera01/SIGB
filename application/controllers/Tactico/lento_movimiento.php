@@ -8,7 +8,7 @@ class Lento_movimiento extends CI_Controller {
       redirect('login/index/error_no_autenticado');
     }
 
-      $this->load->model('Bodega/Fuentefondos_model');
+    $this->load->model('Bodega/Fuentefondos_model');
     $this->load->helper(array('form', 'paginacion'));
     $this->load->library('table');
     $this->load->model(array('Bodega/Producto','Bodega/Detalle_solicitud_producto_model', 'Bodega/Fuentefondos_model', 'Bodega/Solicitud_Model'));
@@ -18,9 +18,9 @@ class Lento_movimiento extends CI_Controller {
     $USER = $this->session->userdata('logged_in');
     if($USER){
       if ($this->input->post('fuente')!=NULL && $this->input->post('especifico')!=NULL) {
-          redirect('Tactico/lento_movimiento/Reporte/'.$this->input->post('fuente').'/'.$this->input->post('especifico'));
+          redirect('Tactico/Lento_movimiento/Reporte/'.$this->input->post('fuente').'/'.$this->input->post('especifico'));
         } else {
-          redirect('Tactico/lento_movimiento/');
+          redirect('Tactico/Lento_movimiento/');
       }
     } else {
       redirect('login');
@@ -49,10 +49,10 @@ class Lento_movimiento extends CI_Controller {
         $segmento=6;
         $registros = $this->Producto->obtenerProductosFuenteLimit($this->uri->segment(4),$this->uri->segment(5),$num,$this->uri->segment(6));
         $total = $this->Producto->obtenerProductosFuenteTotal($this->uri->segment(4),$this->uri->segment(5));
-        
+
         $cant=$total->numero;
         var_dump($cant);
-        $pagination = paginacion('index.php/Tactico/lento_movimiento/Reporte/'.$this->uri->segment(4).'/'.$this->uri->segment(5),$cant,$num, $segmento);
+        $pagination = paginacion('index.php/Tactico/Lento_movimiento/Reporte/'.$this->uri->segment(4).'/'.$this->uri->segment(5),$cant,$num, $segmento);
         if (!($registros == FALSE)) {
 
           $fuente=$this->uri->segment(4);
@@ -98,7 +98,7 @@ class Lento_movimiento extends CI_Controller {
         }
 
         // paginacion del header
-        
+
         $pagaux = $cant / $num;
 
 
@@ -135,7 +135,7 @@ class Lento_movimiento extends CI_Controller {
                              </div>".
                            "</div>".
                            "<div class='limit-content'>" .
-                           "<div class='exportar'><a href='".base_url('/index.php/Tactico/lento_movimiento/ReporteExcel/'.$this->uri->segment(4).'/'
+                           "<div class='exportar'><a href='".base_url('/index.php/Tactico/Lento_movimiento/ReporteExcel/'.$this->uri->segment(4).'/'
                            .$this->uri->segment(5))."' class='icono icon-file-excel'>
                            Exportar Excel</a></div>" . "<div class='table-responsive'>" . $this->table->generate() . "</div>" . $pagination . "</div></div>";
           $data['body'] = $table;

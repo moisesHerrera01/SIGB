@@ -28,7 +28,18 @@ $atributos = array(
 echo "<div class='content-form'>";
   echo "<div class='limit-content-title'>";
     echo "<div class='title-reporte'>";
-    echo "<span class='icono icon-filter icon-title'> Filtro</span>";
+    echo "Reporte de Productos con Lento Movimiento.";
+  echo "</div>";
+  echo
+    "<div class='title-header'>
+      <ul>
+        <li>Fecha emisión: ".date('d/m/Y')."</li>
+        <li>Nombre la compañia: MTPS</li>
+        <li>N° pagina: 1/1</li>
+        <li>Nombre pantalla:</li>
+        <li>Usuario: ".$user['nombre_completo']."</li>
+      </ul>
+    </div>";
   echo "</div>";
   echo "<div class='limit-content'>";
     echo form_open("/Tactico/lento_movimiento/RecibirMovimiento", $atributos);

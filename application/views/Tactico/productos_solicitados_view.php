@@ -3,13 +3,6 @@ $user = $this->session->userdata('logged_in');
 echo $this->breadcrumb->build_breadcrump(implode('/', array_slice($this->uri->segment_array(), 0, 3)));
 
 
-$fuente = array(
-    'name' => 'autocomplete1',
-    'placeholder' => 'Escribe Fuente de Fondos',
-    'class' => "form-control",
-    'autocomplete' => 'off'
-);
-
 $fechaInicial = array(
     'name' => 'fechaMin',
     'type' => "date",
@@ -24,6 +17,13 @@ $fechaFinal = array(
     'class' => "form-control"
 );
 
+$Cantidad = array(
+    'name' => 'cantidad',
+    'placeholder' => 'Escribe la Cantidad de Productos a Mostrar',
+    'class' => "form-control",
+    'autocomplete' => 'off'
+);
+
 $button = array('class' => 'btn btn-success',);
 $atriLabel = array('class' => 'col-lg-2 control-label');
 
@@ -35,7 +35,7 @@ $atributos = array(
 echo "<div class='content-form'>";
   echo "<div class='limit-content-title'>";
     echo "<div class='title-reporte'>";
-     echo "Reporte por Proveedor, Factura y Especifico.";
+     echo "Reporte de Productos más Solicitados.";
   echo "</div>";
   echo
     "<div class='title-header'>
@@ -49,16 +49,7 @@ echo "<div class='content-form'>";
     </div>";
   echo "</div>";
   echo "<div class='limit-content'>";
-    echo form_open("/Tactico/Proveedor_factura_especifico/RecibirFiltro", $atributos);
-
-      echo "<div class='form-group'>";
-        echo form_label('Fuente de Fondos:', 'f', $atriLabel);
-        echo "<div class='col-lg-10'>";
-          echo form_input($fuente);
-          echo form_hidden('fuente');
-          echo '<div id="suggestions" class="suggestions"></div>';
-        echo "</div>";
-      echo "</div>";
+    echo form_open("/Tactico/Productos_solicitados/RecibirFiltro", $atributos);
 
       echo "<div class='form-group'>";
         echo form_label('Fecha inicial:', 'fechaini', $atriLabel);
@@ -71,6 +62,14 @@ echo "<div class='content-form'>";
         echo form_label('Fecha Final:', 'fechafin', $atriLabel);
         echo "<div class='col-lg-10'>";
           echo form_input($fechaFinal);
+        echo "</div>";
+      echo "</div>";
+
+      echo "<div class='form-group'>";
+        echo form_label('Cantidad:', 'Cantidad', $atriLabel);
+        echo "<div class='col-lg-10'>";
+          echo form_input($Cantidad);
+          echo '<div id="suggestions" class="suggestions"></div>';
         echo "</div>";
       echo "</div>";
 
