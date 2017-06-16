@@ -44,9 +44,25 @@ class Lento_movimiento extends CI_Controller {
             'table_open' => '<table class="table table-striped table-bordered">'
         );
         $this->table->set_template($template);
-        $this->table->set_heading('Numero de  Producto','Unidad de medida', 'Existencia', 'Fuente de Fondos','Fecha de Ingreso','Alerta','Seccion Solicitante');
+        $this->table->set_heading('Nombre de Producto','Numero de  Producto','Unidad de medida', 'Existencia', 'Fuente de Fondos','Fecha de Ingreso','Alerta','Seccion Solicitante');
         $num = 10;
         $segmento=6;
+
+         if ($this->input->is_ajax_request()) {
+          if (!($this->input->post('busca') == "")) {
+              $registros = $this->Producto->obtenerProductosFuenteLimitBusca($this->uri->segment(4),$this->uri->segment(5), $this->input->post('busca'));
+              $count = count($registros);
+          } else {
+            $registros = $this->Producto->obtenerProductosFuenteLimit($this->uri->segment(4),$this->uri->segment(5),$num,$this->uri->segment(6));
+            $count = $this->Producto->obtenerProductosFuenteTotal($this->uri->segment(4),$this->uri->segment(5));
+          }
+        } else {
+            $registros = $this->Producto->obtenerProductosFuenteLimit($this->uri->segment(4),$this->uri->segment(5),$num,$this->uri->segment(6));
+            $total = $this->Producto->obtenerProductosFuenteTotal($this->uri->segment(4),$this->uri->segment(5));
+        }
+
+
+
         $registros = $this->Producto->obtenerProductosFuenteLimit($this->uri->segment(4),$this->uri->segment(5),$num,$this->uri->segment(6));
         $total = $this->Producto->obtenerProductosFuenteTotal($this->uri->segment(4),$this->uri->segment(5));
 
@@ -89,12 +105,17 @@ class Lento_movimiento extends CI_Controller {
               }
 
             }
-            $this->table->add_row($pro->numero_producto,$pro->nombre,$pro->existencia,$pro->nombre_fuente,$pro->fecha_ingreso,$alerta,$pro->nombre_seccion);
+            $this->table->add_row($pro->nombre_producto,$pro->numero_producto,$pro->nombre,$pro->existencia,$pro->nombre_fuente,$pro->fecha_ingreso,$alerta,$pro->nombre_seccion);
               $i++;
           }
         }else {
           $msg = array('data' => "No se encontraron resultados", 'colspan' => "9");
           $this->table->add_row($msg);
+        }
+
+          if ($this->input->is_ajax_request()) {
+            echo $this->table->generate();
+            return false;
         }
 
         // paginacion del header
@@ -117,6 +138,18 @@ class Lento_movimiento extends CI_Controller {
         if ($segaux > $pag) {
           $pag++;
         }
+        $fuente = ($this->uri->segment(4) != 0) ?   $this->Fuentefondos_model->obtenerFuente($this->uri->segment(4)) : 'N/E' ;
+                         $fuente = ($this->uri->segment(4) != 0) ?   $this->Fuentefondos_model->obtenerFuente($this->uri->segment(4)) : 'N/E' ;
+
+                  $buscar = array(
+                    'name' => 'buscar',
+                    'type' => 'search',
+                    'placeholder' => 'Buscar',
+                    'class' => 'form-control',
+                    'autocomplete' => 'off',
+                    'id' => 'buscar',
+                    'url' => 'index.php/Tactico/Lento_movimiento/Reporte/'.$this->uri->segment(4).'/'.$this->uri->segment(5));
+
                   $table =  "<div class='content_table '>" .
                            "<div class='limit-content-title'>".
                              "<div class='title-reporte'>".
@@ -130,14 +163,14 @@ class Lento_movimiento extends CI_Controller {
                                  <li>Nombre pantalla:</li>
                                  <li>Usuario: ".$USER['nombre_completo']."</li>
                                  <br />
-                                 <li>Parametros: ".$seccion." ".$especifico." ". $this->uri->segment(4) . " - " . $this->uri->segment(5)."</li>
+                                 <li>Parametros: ".$fuente." ".$especifico." ". $this->uri->segment(4) . " - " . $this->uri->segment(5)."</li>
                                </ul>
                              </div>".
                            "</div>".
                            "<div class='limit-content'>" .
                            "<div class='exportar'><a href='".base_url('/index.php/Tactico/Lento_movimiento/ReporteExcel/'.$this->uri->segment(4).'/'
                            .$this->uri->segment(5))."' class='icono icon-file-excel'>
-                           Exportar Excel</a></div>" . "<div class='table-responsive'>" . $this->table->generate() . "</div>" . $pagination . "</div></div>";
+                           Exportar Excel</a><span class='content_buscar'><i class='glyphicon glyphicon-search'></i>".form_input($buscar)."</span></div>" . "<div class='table-responsive'>" . $this->table->generate() . "</div>" . $pagination . "</div></div>";
           $data['body'] = $table;
 
     } else {
