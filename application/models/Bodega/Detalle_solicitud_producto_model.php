@@ -319,26 +319,18 @@
       }
     }
 
-    public function obtenerProductosSeccion($fecha_inicio,$fecha_fin,$seccion,$especifico,$segmento,$porpagina){
-      $this->db->order_by("s.id_solicitud", "asc");
-      $this->db->select('s.numero_solicitud,s.fecha_salida,sec.nombre_seccion,e.id_especifico,dp.numero_producto,
-        p.nombre as producto,u.nombre as unidad,ds.cantidad,ds.total');
-      $this->db->from('sic_detalle_solicitud_producto ds');
-      $this->db->join('sic_solicitud s', 's.id_solicitud = ds.id_solicitud');
-      $this->db->join('sic_detalle_producto dp', 'dp.id_detalleproducto = ds.id_detalleproducto');
-      $this->db->join('sic_producto p', 'p.id_producto = dp.id_producto');
-      $this->db->join('sic_especifico e', 'e.id_especifico = dp.id_especifico');
-      $this->db->join('sic_unidad_medida u', 'p.id_unidad_medida = u.id_unidad_medida');
-      $this->db->join('mtps.org_seccion sec', 'sec.id_seccion = s.id_seccion');
-      $this->db->where('s.estado_solicitud','LIQUIDADA');
-      $this->db->where('s.fecha_salida <=',$fecha_fin);
-      $this->db->where('s.fecha_salida >=',$fecha_inicio);
-      $this->db->where('e.id_especifico',$especifico);
-      if ($seccion!=0) {
-       $this->db->where('s.id_seccion',$seccion);
-      }
-      $this->db->limit($segmento,$porpagina);
-      $this->db->group_by('ds.id_detalle_solicitud_producto');
+  public function obtenerProductosSeccion($fecha_inicio,$fecha_fin,$seccion,$segmento,$porpagina){
+          $this->db->select('id_detalle_solicitud_producto,e.nombre_especifico, dp.id_detalleproducto,s.id_solicitud,
+      e.id_especifico,precio,s.id_seccion, sum(ds.cantidad) as cantidad, sum(ds.total) as total, count(s.id_solicitud) as solicitudes')
+               ->from('sic_detalle_solicitud_producto ds')
+               ->join('sic_detalle_producto dp','dp.id_detalleproducto=ds.id_detalleproducto')
+               ->join('sic_especifico e','e.id_especifico=dp.id_especifico')
+               ->join('sic_solicitud s','s.id_solicitud=ds.id_solicitud')
+               ->where('s.id_seccion',$seccion)
+               ->where("s.fecha_salida BETWEEN '$fecha_inicio' AND '$fecha_fin'")
+               ->group_by('e.id_especifico')
+               ->limit($segmento,$porpagina)
+               ->order_by('s.id_solicitud,e.id_especifico');
       $query = $this->db->get();
       if ($query->num_rows() > 0) {
           return  $query->result();
@@ -348,26 +340,21 @@
       }
     }
 
-    public function buscarProductosSeccion($fecha_inicio,$fecha_fin,$seccion,$especifico,$busca){
-      $this->db->order_by("s.id_solicitud", "asc");
-      $this->db->select('s.numero_solicitud,s.fecha_salida,sec.nombre_seccion,e.id_especifico,dp.numero_producto,
-        p.nombre as producto,u.nombre as unidad,ds.cantidad,ds.total');
-      $this->db->from('sic_detalle_solicitud_producto ds');
-      $this->db->join('sic_solicitud s', 's.id_solicitud = ds.id_solicitud');
-      $this->db->join('sic_detalle_producto dp', 'dp.id_detalleproducto = ds.id_detalleproducto');
-      $this->db->join('sic_producto p', 'p.id_producto = dp.id_producto');
-      $this->db->join('sic_especifico e', 'e.id_especifico = dp.id_especifico');
-      $this->db->join('sic_unidad_medida u', 'p.id_unidad_medida = u.id_unidad_medida');
-      $this->db->join('mtps.org_seccion sec', 'sec.id_seccion = s.id_seccion');
-      $this->db->where('s.estado_solicitud','LIQUIDADA');
-      $this->db->where('s.fecha_salida <=',$fecha_fin);
-      $this->db->where('s.fecha_salida >=',$fecha_inicio);
-      $this->db->where('e.id_especifico',$especifico);
-      if ($seccion!=0) {
-       $this->db->where('s.id_seccion',$seccion);
-      }
-      $this->db->like('p.nombre',$busca);
-      $this->db->group_by('ds.id_detalle_solicitud_producto');
+
+
+    public function buscarProductosSeccion($fecha_inicio,$fecha_fin,$seccion,$busca){
+      $this->db->select('id_detalle_solicitud_producto,e.nombre_especifico, ds.id_solicitud,dp.id_detalleproducto,e.id_especifico,precio,
+      sum(ds.cantidad) as cantidad, sum(ds.total) as total, count(s.id_solicitud) as solicitudes,s.id_seccion')
+               ->from('sic_detalle_solicitud_producto ds')
+               ->join('sic_detalle_producto dp','dp.id_detalleproducto=ds.id_detalleproducto')
+               ->join('sic_especifico e','e.id_especifico=dp.id_especifico')
+               ->join('sic_solicitud s','s.id_solicitud=ds.id_solicitud')
+               ->where('s.id_seccion',$seccion)
+               ->where("s.fecha_salida BETWEEN '$fecha_inicio' AND '$fecha_fin'")
+               ->group_by('e.id_especifico')
+               ->like('e.id_especifico',$busca)
+               ->or_like('e.nombre_especifico',$busca)
+               ->order_by('s.id_solicitud,e.id_especifico');
       $query = $this->db->get();
       if ($query->num_rows() > 0) {
           return  $query->result();
@@ -377,46 +364,37 @@
       }
     }
 
-    public function obtenerProductosSeccionTotal($fecha_inicio,$fecha_fin,$seccion,$especifico){
-      $this->db->order_by("s.id_solicitud", "asc");
-      $this->db->select('count(*) numero');
-      $this->db->from('sic_detalle_solicitud_producto ds');
-      $this->db->join('sic_solicitud s', 's.id_solicitud = ds.id_solicitud');
-      $this->db->join('sic_detalle_producto dp', 'dp.id_detalleproducto = ds.id_detalleproducto');
-      $this->db->join('sic_producto p', 'p.id_producto = dp.id_producto');
-      $this->db->join('sic_especifico e', 'e.id_especifico = dp.id_especifico');
-      $this->db->join('sic_unidad_medida u', 'p.id_unidad_medida = u.id_unidad_medida');
-      $this->db->join('mtps.org_seccion sec', 'sec.id_seccion = s.id_seccion');
-      $this->db->where('s.estado_solicitud','LIQUIDADA');
-      $this->db->where('s.fecha_salida <=',$fecha_fin);
-      $this->db->where('s.fecha_salida >=',$fecha_inicio);
-      $this->db->where('e.id_especifico',$especifico);
-      if ($seccion!=0) {
-       $this->db->where('s.id_seccion',$seccion);
-      }
+    public function obtenerProductosSeccionTotal($fecha_inicio,$fecha_fin,$seccion){
+      $this->db->select('id_detalle_solicitud_producto,e.nombre_especifico, ds.id_solicitud,dp.id_detalleproducto,e.id_especifico,precio,
+      sum(ds.cantidad) as cantidad,sum(ds.total) as total,s.id_seccion')
+               ->from('sic_detalle_solicitud_producto ds')
+               ->join('sic_detalle_producto dp','dp.id_detalleproducto=ds.id_detalleproducto')
+               ->join('sic_especifico e','e.id_especifico=dp.id_especifico')
+               ->join('sic_solicitud s','s.id_solicitud=ds.id_solicitud')
+               ->where('s.id_seccion',$seccion)
+               ->where("s.fecha_salida BETWEEN '$fecha_inicio' AND '$fecha_fin'")
+               ->group_by('e.id_especifico')
+               ->order_by('s.id_solicitud,e.id_especifico');
       $query = $this->db->get();
-      return $query->row();
+      if ($query->num_rows() > 0) {
+          return  $query->num_rows();
+      }
+      else {
+          return FALSE;
+      }
     }
 
-    public function obtenerProductosSeccionTodo($fecha_inicio,$fecha_fin,$seccion,$especifico){
-      $this->db->select('s.numero_solicitud,s.fecha_salida,sec.nombre_seccion,e.id_especifico,dp.numero_producto,
-        p.nombre as producto,u.nombre as unidad,ds.cantidad,ds.total');
-      $this->db->from('sic_detalle_solicitud_producto ds');
-      $this->db->join('sic_solicitud s', 's.id_solicitud = ds.id_solicitud');
-      $this->db->join('sic_detalle_producto dp', 'dp.id_detalleproducto = ds.id_detalleproducto');
-      $this->db->join('sic_producto p', 'p.id_producto = dp.id_producto');
-      $this->db->join('sic_especifico e', 'e.id_especifico = dp.id_especifico');
-      $this->db->join('sic_unidad_medida u', 'p.id_unidad_medida = u.id_unidad_medida');
-      $this->db->join('mtps.org_seccion sec', 'sec.id_seccion = s.id_seccion');
-      $this->db->where('s.estado_solicitud','LIQUIDADA');
-      $this->db->where('s.fecha_salida <=',$fecha_fin);
-      $this->db->where('s.fecha_salida >=',$fecha_inicio);
-      $this->db->where('e.id_especifico',$especifico);
-      if ($seccion!=0) {
-        $this->db->where('s.id_seccion',$seccion);
-      }
-      $this->db->order_by("s.id_solicitud", "asc");
-      $this->db->group_by('ds.id_detalle_solicitud_producto');
+    public function obtenerProductosSeccionTodo($fecha_inicio,$fecha_fin,$seccion){
+      $this->db->select('id_detalle_solicitud_producto,e.nombre_especifico, ds.id_solicitud,dp.id_detalleproducto,e.id_especifico,precio,
+      e.id_especifico,precio,s.id_seccion, sum(ds.cantidad) as cantidad, sum(ds.total) as total, count(s.id_solicitud) as solicitudes')
+               ->from('sic_detalle_solicitud_producto ds')
+               ->join('sic_detalle_producto dp','dp.id_detalleproducto=ds.id_detalleproducto')
+               ->join('sic_especifico e','e.id_especifico=dp.id_especifico')
+               ->join('sic_solicitud s','s.id_solicitud=ds.id_solicitud')
+               ->where('s.id_seccion',$seccion)
+               ->group_by('e.id_especifico')
+               ->where("s.fecha_salida BETWEEN '$fecha_inicio' AND '$fecha_fin'")
+               ->order_by('s.id_solicitud,e.id_especifico');
       $query = $this->db->get();
       if ($query->num_rows() > 0) {
           return  $query->result();

@@ -330,7 +330,7 @@
                ->join("sic_unidad_medida um", "p.id_unidad_medida = um.id_unidad_medida")
                ->where("s.fecha_solicitud BETWEEN '$fecha_inicio' AND '$fecha_fin'")
                ->group_by("ds.id_detalleproducto")
-               
+
                ->limit($cantidad);
       $query = $this->db->get();
       if ($query->num_rows() > 0) {
@@ -341,7 +341,73 @@
       }
     }
 
+  public function productosEspecifico($fecha_fin,$segmento,$porpagina){
+      $this->db->select('dp.id_detalleproducto,k.cantidad')
+               ->from('(select k.precio,k.cantidad,k.fecha_ingreso,k.id_fuentes,dp.id_detalleproducto,max(ks.id_kardex_saldo) as id_kardex_saldo
+                                 from sic_kardex k
+                                 join sic_kardex_saldo ks on ks.id_kardex=k.id_kardex
+                                 join sic_detalle_producto dp on dp.id_detalleproducto=k.id_detalleproducto
+                                 group by id_detalleproducto) as kar')
+               ->join('sic_kardex_saldo ks ',' ks.id_kardex_saldo=kar.id_kardex_saldo')
+               ->join('sic_detalle_producto dp','dp.id_detalleproducto=kar.id_detalleproducto')
+               ->join('sic_especifico e','e.id_especifico=dp.id_especifico')
+               //->group_by('e.id_especifico')
+               ->limit($segmento,$porpagina)
+               ->where('kar.fecha_ingreso<=',$fecha_fin);
+      $query=$this->db->get();
+      if ($query->num_rows() > 0) {
+          return  $query->result();
+      }
+      else {
+          return FALSE;
+      }
+    }
 
+
+  public function totalproductosEspecifico($fecha_fin){
+      $this->db->select('count(*) total')
+               ->from('(select k.precio,k.cantidad,k.fecha_ingreso,k.id_fuentes,dp.id_detalleproducto,max(ks.id_kardex_saldo) as id_kardex_saldo
+                                 from sic_kardex k
+                                 join sic_kardex_saldo ks on ks.id_kardex=k.id_kardex
+                                 join sic_detalle_producto dp on dp.id_detalleproducto=k.id_detalleproducto
+                                 group by id_detalleproducto) as kar')
+               ->join('sic_kardex_saldo ks ',' ks.id_kardex_saldo=kar.id_kardex_saldo')
+               ->join('sic_detalle_producto dp','dp.id_detalleproducto=kar.id_detalleproducto')
+               ->join('sic_especifico e','e.id_especifico=dp.id_especifico')
+               //->group_by('e.id_especifico')
+               ->where('kar.fecha_ingreso<=',$fecha_fin);
+      $query=$this->db->get();
+      if ($query->num_rows() > 0) {
+          return  $query->row();
+      }
+      else {
+          return FALSE;
+      }
+    }
+
+
+  public function buscarProductosEspecifico($fecha_fin,$busca){
+      $this->db->select('dp.id_detalleproducto,k.cantidad')
+               ->from('(select k.precio,k.cantidad,k.fecha_ingreso,k.id_fuentes,dp.id_detalleproducto,max(ks.id_kardex_saldo) as id_kardex_saldo
+                                 from sic_kardex k
+                                 join sic_kardex_saldo ks on ks.id_kardex=k.id_kardex
+                                 join sic_detalle_producto dp on dp.id_detalleproducto=k.id_detalleproducto
+                                 group by id_detalleproducto) as kar')
+               ->join('sic_kardex_saldo ks ',' ks.id_kardex_saldo=kar.id_kardex_saldo')
+               ->join('sic_detalle_producto dp','dp.id_detalleproducto=kar.id_detalleproducto')
+               ->join('sic_especifico e','e.id_especifico=dp.id_especifico')
+               //->group_by('e.id_especifico')
+               ->like('e.id_especifico',$busca)
+               ->or_like('e.nombre_especifico')
+               ->where('kar.fecha_ingreso<=',$fecha_fin);
+      $query=$this->db->get();
+      if ($query->num_rows() > 0) {
+          return  $query->result();
+      }
+      else {
+          return FALSE;
+      }
+    }
 }
 
 ?>

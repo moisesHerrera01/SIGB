@@ -1,7 +1,7 @@
 <?php
   defined('BASEPATH') OR exit('No direct script access allowed');
 
-  class Gasto_global extends CI_Controller {
+  class Productos_especifico extends CI_Controller {
 
     public function __construct() {
       parent::__construct();
@@ -14,71 +14,64 @@
       'Bodega/Fuentefondos_model','Bodega/UnidadMedida', 'Bodega/Kardex_model','Bodega/Especifico'));
     }
 
-  public function RecibirGastos() {
+  public function recibirProductos() {
     date_default_timezone_set('America/El_Salvador');
     $anyo=20;
     $fecha_actual=date($anyo."y-m-d");
-    if ($this->input->post('fecha_inicio')!=NULL) {
       if($this->input->post('fecha_fin')==NULL){
-        redirect('Tactico/Gasto_global/reporteGastoSeccion/'.$this->input->post('fecha_inicio').'/'
-        .$fecha_actual.'/'.$this->input->post('seccion'));
+        redirect('Tactico/Productos_especifico/reporteProductosEspecifico/'.$fecha_actual);
       }else{
-        redirect('Tactico/Gasto_global/reporteGastoSeccion/'.$this->input->post('fecha_inicio').'/'
-        .$this->input->post('fecha_fin').'/'.$this->input->post('seccion'));
-      }} else {
-        redirect('Tactico/Gasto_global/reporteGastoSeccion/');
-    }
+        redirect('Tactico/Productos_especifico/reporteProductosEspecifico/'.$this->input->post('fecha_fin'));
+      }
   }
 
-  public function reporteGastoSeccion(){
+  public function reporteProductosEspecifico(){
     $USER = $this->session->userdata('logged_in');
     if($USER){
       $this->load->model(array('mtps/Seccion_model'));
-      $data['title'] = "Gasto Global";
+      $data['title'] = "Productos OE";
       $data['menu'] = $this->menu_dinamico->menus($this->session->userdata('logged_in'),$this->uri->segment(1));
-      $data['js'] = 'assets/js/validate/reporte/bodega/gasto_seccion.js';
+      $data['js'] = 'assets/js/validate/reporte/bodega/productos_especifico.js';
       $table = '';
       if (($this->uri->segment(4))!=NULL) {
         $template = array(
             'table_open' => '<table class="table table-striped table-bordered">'
         );
         $this->table->set_template($template);
-        $this->table->set_heading('Especifico','Nombre especifico','Cantidad de solicitudes','Cantidad de productos','Sub total');
+        $this->table->set_heading('Solicitud','Fecha Salida', 'Seccion', 'Especifico','Número Producto',
+        'Producto', 'Unidad Medida','Cantidad','Total');
 
         $num = '10';
-        $segmento = 7;
+        $segmento = 8;
                 $seccion = ($this->uri->segment(6)==NULL) ? 0 : $this->uri->segment(6);
 
         if ($this->input->is_ajax_request()) {
           if (!($this->input->post('busca') == "")) {
-            $registros = $this->Detalle_solicitud_producto_model->buscarProductosSeccion($this->uri->segment(4),
-            $this->uri->segment(5),$seccion,$this->input->post('busca'));
-            $total = count($registros);
+            $registros = $this->Producto->buscarProductosEspecifico($this->uri->segment(4),$this->input->post('busca'));
+            $cant = count($registros);
           } else {
-            $registros = $this->Detalle_solicitud_producto_model->obtenerProductosSeccion($this->uri->segment(4),
-            $this->uri->segment(5),$seccion,$num, $this->uri->segment(7));
+            $registros = $this->Producto->obtenerProductosEspecifico($this->uri->segment(4),$num, $this->uri->segment(5));
             $total = $this->Detalle_solicitud_producto_model->obtenerProductosSeccionTotal($this->uri->segment(4),
-            $this->uri->segment(5),$seccion);
+            $this->uri->segment(5),$seccion,$this->uri->segment(7));
+            $cant=$total->numero;
           }
         } else {
           $registros = $this->Detalle_solicitud_producto_model->obtenerProductosSeccion($this->uri->segment(4),
-          $this->uri->segment(5),$seccion,$num, $this->uri->segment(7));
+          $this->uri->segment(5),$seccion,$this->uri->segment(7),$num, $this->uri->segment(8));
           $total = $this->Detalle_solicitud_producto_model->obtenerProductosSeccionTotal($this->uri->segment(4),
-          $this->uri->segment(5),$seccion);
+          $this->uri->segment(5),$seccion,$this->uri->segment(7));
+          $cant=$total->numero;
         }
 
-        $pagination = paginacion('index.php/Tactico/Gasto_global/reporteGastoSeccion/'.$this->uri->segment(4).
-        '/'.$this->uri->segment(5).'/'.$seccion.'/',$total,$num, '7');
+        $pagination = paginacion('index.php/Tactico/Productos_especifico/reporteProductosEspecifico/'.$this->uri->segment(4).
+        '/'.$this->uri->segment(5).'/'.$seccion.'/'.$this->uri->segment(7).'/',$cant,$num, '8');
         if (!($registros == FALSE)) {
           $i = 1;
-          $total=0;
           foreach($registros as $pro) {
-            $this->table->add_row($pro->id_especifico,$pro->nombre_especifico,$pro->solicitudes,$pro->cantidad,'$'.number_format($pro->total,3));
-            $total+=$pro->total;
+            $this->table->add_row($pro->numero_solicitud, $pro->fecha_salida,$pro->nombre_seccion,$pro->id_especifico,
+            $pro->numero_producto,$pro->producto,$pro->unidad,$pro->cantidad,$pro->total);
             $i++;
           }
-          $msg = array('data' => "Total:", 'colspan' => "4");
-          $this->table->add_row($msg,  '$'.number_format($total, 3));
         } else {
           $msg = array('data' => "No se encontraron resultados", 'colspan' => "9");
           $this->table->add_row($msg);
@@ -90,7 +83,7 @@
         }
 
                  // paginacion del header
-                 $pagaux = $total / $num;
+                 $pagaux = $cant / $num;
 
                  $pags = intval($pagaux);
 
@@ -115,7 +108,7 @@
                    'class' => 'form-control',
                    'autocomplete' => 'off',
                    'id' => 'buscar',
-                   'url' => 'index.php/Tactico/Gasto_global/reporteGastoSeccion/'.$this->uri->segment(4).'/'.$this->uri->segment(5).'/'.$seccion.'/'
+                   'url' => 'index.php/Tactico/Productos_especifico/reporteProductosEspecifico/'.$this->uri->segment(4).'/'.$this->uri->segment(5).'/'.$seccion.'/'.$this->uri->segment(7).'/'
                  );
 
                  $seccion = ($this->uri->segment(6) != 0) ?   $this->Solicitud_Model->obtenerSeccion($this->uri->segment(6)) : 'N/E' ;
@@ -123,7 +116,7 @@
                  $table =  "<div class='content_table '>" .
                            "<div class='limit-content-title'>".
                              "<div class='title-reporte'>".
-                               "Reporte gasto global especifico por sección.".
+                               "Reporte de productos por especifico.".
                              "</div>".
                              "<div class='title-header'>
                                <ul>
@@ -133,17 +126,17 @@
                                  <li>Nombre pantalla:</li>
                                  <li>Usuario: ".$USER['nombre_completo']."</li>
                                  <br />
-                                 <li>Parametros: ".$seccion." ". $this->uri->segment(4) . " - " . $this->uri->segment(5)."</li>
+                                 <li>Parametros: ".$seccion." ".$especifico." ". $this->uri->segment(4) . " - " . $this->uri->segment(5)."</li>
                                </ul>
                              </div>".
                            "</div>".
                            "<div class='limit-content'>" .
                            "<div class='exportar'><a href='".base_url('/index.php/Tactico/Gasto_global/ReporteExcel/'.$this->uri->segment(4).'/'
-                           .$this->uri->segment(5).'/'.$this->uri->segment(6))."' class='icono icon-file-excel'>
+                           .$this->uri->segment(5).'/'.$this->uri->segment(6).'/'.$this->uri->segment(7))."' class='icono icon-file-excel'>
                            Exportar Excel</a><span class='content_buscar'><i class='glyphicon glyphicon-search'></i>".form_input($buscar)."</span></div>" . "<div class='table-responsive'>" . $this->table->generate() . "</div>" . $pagination . "</div></div>";
                  $data['body'] = $table;
       }else {
-          $data['body'] = $this->load->view('Tactico/gasto_global_view', '',TRUE);
+          $data['body'] = $this->load->view('Tactico/productos_especifico_view', '',TRUE);
       }
       $this->load->view('base', $data);
     } else {
@@ -204,13 +197,16 @@
                  ->setCategory("Reporte Version Sistema Operativo.");
 
     $objPHPExcel->setActiveSheetIndex(0)
-                 ->setCellValue('A1', 'Especifico')
-                 ->setCellValue('B1', 'Nombre especifico')
-                 ->setCellValue('C1', 'Cantidad de solicitudes')
-                 ->setCellValue('D1', 'Cantidad de productos')
-                 ->setCellValue('E1', 'Sub total');
-
-    $objPHPExcel->getActiveSheet()->getStyle('A1:E1')->applyFromArray($estilo_titulo);
+                 ->setCellValue('A1', 'Solicitud')
+                 ->setCellValue('B1', 'Fecha Salida')
+                 ->setCellValue('C1', 'Seccion')
+                 ->setCellValue('D1', 'Especifico')
+                 ->setCellValue('E1', 'Número Producto')
+                 ->setCellValue('F1', 'Producto')
+                 ->setCellValue('G1', 'Unidad Medida')
+                 ->setCellValue('H1', 'Cantidad')
+                 ->setCellValue('I1', 'Total');
+    $objPHPExcel->getActiveSheet()->getStyle('A1:I1')->applyFromArray($estilo_titulo);
 
     $seccion = ($this->uri->segment(6)==NULL) ? 0 : $this->uri->segment(6);
     $registros = $this->Detalle_solicitud_producto_model->obtenerProductosSeccionTodo($this->uri->segment(4), $this->uri->segment(5),
@@ -218,30 +214,29 @@
 
     if (!($registros == FALSE)) {
       $i = 2;
-      $total=0;
       foreach($registros as $pro) {
 
         $objPHPExcel->setActiveSheetIndex(0)
-                     ->setCellValue('A'.$i, $pro->id_especifico)
-                     ->setCellValue('B'.$i, $pro->nombre_especifico)
-                     ->setCellValue('C'.$i, $pro->solicitudes)
-                     ->setCellValue('D'.$i, $pro->cantidad)
-                     ->setCellValue('E'.$i, '$'.number_format($pro->total,3));
-        $objPHPExcel->getActiveSheet()->getStyle('A'.$i.':E'.$i)->applyFromArray($estilo_contenido);
-        $total+=$pro->total;
+                     ->setCellValue('A'.$i, $pro->numero_solicitud)
+                     ->setCellValue('B'.$i, $pro->fecha_salida)
+                     ->setCellValue('C'.$i, $pro->nombre_seccion)
+                     ->setCellValue('D'.$i, $pro->id_especifico)
+                     ->setCellValue('E'.$i, $pro->numero_producto)
+                     ->setCellValue('F'.$i, $pro->producto)
+                     ->setCellValue('G'.$i, $pro->unidad)
+                     ->setCellValue('H'.$i, $pro->cantidad)
+                     ->setCellValue('I'.$i, $pro->total);
+
+        $objPHPExcel->getActiveSheet()->getStyle('A'.$i.':I'.$i)->applyFromArray($estilo_contenido);
         $i++;
       }
-      $objPHPExcel->setActiveSheetIndex(0)->setCellValue('A'.$i, 'Total');
-      $objPHPExcel->setActiveSheetIndex(0)->mergeCells('A'.$i.':D'.$i);
-      $objPHPExcel->setActiveSheetIndex(0)->setCellValue('E'.$i, '$'.number_format($total,3));
-      $objPHPExcel->getActiveSheet()->getStyle('A'.$i.':E'.$i)->applyFromArray($estilo_contenido);
     } else {
-      $objPHPExcel->setActiveSheetIndex(0)->mergeCells('A2:E2');
+      $objPHPExcel->setActiveSheetIndex(0)->mergeCells('A2:I2');
       $objPHPExcel->setActiveSheetIndex(0)->setCellValue('A2', "No se encontraron resultados");
       $objPHPExcel->getActiveSheet()->getStyle('A2:I2')->applyFromArray($estilo_contenido);
     }
 
-    foreach(range('A','E') as $columnID){
+    foreach(range('A','I') as $columnID){
       $objPHPExcel->getActiveSheet()->getColumnDimension($columnID)->setAutoSize(true);
     }
 
