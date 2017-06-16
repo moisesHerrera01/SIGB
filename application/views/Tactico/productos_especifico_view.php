@@ -35,7 +35,7 @@ echo "<div class='content-form'>";
   echo "</div>";
   echo "<div class='limit-content'>";
 
-    echo form_open("/Tactico/Gasto_global/RecibirGastos", $atributos);
+    echo form_open("/Tactico/Productos_especifico/recibirProductos", $atributos);
 
       echo "<div class='form-group'>";
       echo form_label('Fecha última:', 'fin', $atriLabel);

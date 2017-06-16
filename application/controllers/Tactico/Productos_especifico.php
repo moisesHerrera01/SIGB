@@ -10,7 +10,7 @@
       }
       $this->load->library(array('table','excel'));
       $this->load->helper(array('form','paginacion'));
-      $this->load->model(array('Bodega/Detalle_solicitud_producto_model', 'Bodega/Producto','Bodega/Solicitud_Model',
+      $this->load->model(array('Bodega/Producto','Bodega/Solicitud_Model',
       'Bodega/Fuentefondos_model','Bodega/UnidadMedida', 'Bodega/Kardex_model','Bodega/Especifico'));
     }
 
@@ -38,8 +38,7 @@
             'table_open' => '<table class="table table-striped table-bordered">'
         );
         $this->table->set_template($template);
-        $this->table->set_heading('Solicitud','Fecha Salida', 'Seccion', 'Especifico','Número Producto',
-        'Producto', 'Unidad Medida','Cantidad','Total');
+        $this->table->set_heading('Especifico','Nombre especifico', 'Cantidad', 'Saldo');
 
         $num = '10';
         $segmento = 8;
@@ -48,42 +47,42 @@
         if ($this->input->is_ajax_request()) {
           if (!($this->input->post('busca') == "")) {
             $registros = $this->Producto->buscarProductosEspecifico($this->uri->segment(4),$this->input->post('busca'));
-            $cant = count($registros);
+            $total = count($registros);
           } else {
-            $registros = $this->Producto->obtenerProductosEspecifico($this->uri->segment(4),$num, $this->uri->segment(5));
-            $total = $this->Detalle_solicitud_producto_model->obtenerProductosSeccionTotal($this->uri->segment(4),
-            $this->uri->segment(5),$seccion,$this->uri->segment(7));
-            $cant=$total->numero;
+            $registros = $this->Producto->ProductosEspecifico($this->uri->segment(4),$num, $this->uri->segment(5));
+            $total = $this->Producto->totalproductosEspecifico($this->uri->segment(4));
           }
         } else {
-          $registros = $this->Detalle_solicitud_producto_model->obtenerProductosSeccion($this->uri->segment(4),
-          $this->uri->segment(5),$seccion,$this->uri->segment(7),$num, $this->uri->segment(8));
-          $total = $this->Detalle_solicitud_producto_model->obtenerProductosSeccionTotal($this->uri->segment(4),
-          $this->uri->segment(5),$seccion,$this->uri->segment(7));
-          $cant=$total->numero;
+          $registros = $this->Producto->ProductosEspecifico($this->uri->segment(4),$num, $this->uri->segment(5));
+          $total = $this->Producto->totalproductosEspecifico($this->uri->segment(4));
         }
 
-        $pagination = paginacion('index.php/Tactico/Productos_especifico/reporteProductosEspecifico/'.$this->uri->segment(4).
-        '/'.$this->uri->segment(5).'/'.$seccion.'/'.$this->uri->segment(7).'/',$cant,$num, '8');
+        $pagination = paginacion('index.php/Tactico/Productos_especifico/reporteProductosEspecifico/'.$this->uri->segment(4).'/',
+        $total,$num, '5');
         if (!($registros == FALSE)) {
           $i = 1;
+          $total_saldo=0;
+          $total_cantidad=0;
           foreach($registros as $pro) {
-            $this->table->add_row($pro->numero_solicitud, $pro->fecha_salida,$pro->nombre_seccion,$pro->id_especifico,
-            $pro->numero_producto,$pro->producto,$pro->unidad,$pro->cantidad,$pro->total);
+            $this->table->add_row($pro->id_especifico,$pro->nombre_especifico,$pro->cantidad,'$'.number_format($pro->saldo,3));
+            $total_saldo+=$pro->saldo;
+            $total_cantidad+=$pro->cantidad;
             $i++;
           }
+          $msg = array('data' => "Total:", 'colspan' => "2");
+          $this->table->add_row($msg, $total_cantidad ,'$'.number_format($total_saldo, 3));
         } else {
           $msg = array('data' => "No se encontraron resultados", 'colspan' => "9");
           $this->table->add_row($msg);
         }
 
         if ($this->input->is_ajax_request()) {
-          echo $this->table->generate();
+          echo "<div class='table-responsive'>" . $this->table->generate() . "</div>" . $pagination;
           return false;
         }
 
                  // paginacion del header
-                 $pagaux = $cant / $num;
+                 $pagaux = $total/ $num;
 
                  $pags = intval($pagaux);
 
@@ -104,15 +103,12 @@
                  $buscar = array(
                    'name' => 'buscar',
                    'type' => 'search',
-                   'placeholder' => 'BUSCAR POR PRODUCTO',
+                   'placeholder' => 'BUSCAR POR ESPECIFICO',
                    'class' => 'form-control',
                    'autocomplete' => 'off',
                    'id' => 'buscar',
-                   'url' => 'index.php/Tactico/Productos_especifico/reporteProductosEspecifico/'.$this->uri->segment(4).'/'.$this->uri->segment(5).'/'.$seccion.'/'.$this->uri->segment(7).'/'
+                   'url' => 'index.php/Tactico/Productos_especifico/reporteProductosEspecifico/'.$this->uri->segment(4).'/'
                  );
-
-                 $seccion = ($this->uri->segment(6) != 0) ?   $this->Solicitud_Model->obtenerSeccion($this->uri->segment(6)) : 'N/E' ;
-                 $especifico = ($this->uri->segment(7) != 0) ?   $this->Especifico->obtenerEspecifico($this->uri->segment(7)) : 'N/E' ;
                  $table =  "<div class='content_table '>" .
                            "<div class='limit-content-title'>".
                              "<div class='title-reporte'>".
@@ -126,14 +122,13 @@
                                  <li>Nombre pantalla:</li>
                                  <li>Usuario: ".$USER['nombre_completo']."</li>
                                  <br />
-                                 <li>Parametros: ".$seccion." ".$especifico." ". $this->uri->segment(4) . " - " . $this->uri->segment(5)."</li>
+                                 <li>Parametros: Fecha última de cálculo: ".$this->uri->segment(4)."</li>
                                </ul>
                              </div>".
                            "</div>".
                            "<div class='limit-content'>" .
-                           "<div class='exportar'><a href='".base_url('/index.php/Tactico/Gasto_global/ReporteExcel/'.$this->uri->segment(4).'/'
-                           .$this->uri->segment(5).'/'.$this->uri->segment(6).'/'.$this->uri->segment(7))."' class='icono icon-file-excel'>
-                           Exportar Excel</a><span class='content_buscar'><i class='glyphicon glyphicon-search'></i>".form_input($buscar)."</span></div>" . "<div class='table-responsive'>" . $this->table->generate() . "</div>" . $pagination . "</div></div>";
+                           "<div class='exportar'><a href='".base_url('/index.php/Tactico/Productos_especifico/ReporteExcel/'.$this->uri->segment(4))."' class='icono icon-file-excel'>
+                            Exportar Excel</a><span class='content_buscar'><i class='glyphicon glyphicon-search'></i>".form_input($buscar)."</span></div>" . "<div class='table-content'><div class='table-responsive'>" . $this->table->generate() . "</div>" . $pagination . "</div></div></div>";
                  $data['body'] = $table;
       }else {
           $data['body'] = $this->load->view('Tactico/productos_especifico_view', '',TRUE);
@@ -190,53 +185,50 @@
 
     $objPHPExcel->getProperties()->setCreator("SICBAF")
                  ->setLastModifiedBy("SICBAF")
-                 ->setTitle("Reporte Version Sistema Operativo.")
-                 ->setSubject("Reporte Version Sistema Operativo.")
-                 ->setDescription("Reporte Version Sistema Operativo.")
+                 ->setTitle("Reporte productos por especifico.")
+                 ->setSubject("Reporte productos por especifico.")
+                 ->setDescription("Reporte productos por especifico.")
                  ->setKeywords("office PHPExcel php")
-                 ->setCategory("Reporte Version Sistema Operativo.");
+                 ->setCategory("Reporte productos por especifico.");
 
     $objPHPExcel->setActiveSheetIndex(0)
-                 ->setCellValue('A1', 'Solicitud')
-                 ->setCellValue('B1', 'Fecha Salida')
-                 ->setCellValue('C1', 'Seccion')
-                 ->setCellValue('D1', 'Especifico')
-                 ->setCellValue('E1', 'Número Producto')
-                 ->setCellValue('F1', 'Producto')
-                 ->setCellValue('G1', 'Unidad Medida')
-                 ->setCellValue('H1', 'Cantidad')
-                 ->setCellValue('I1', 'Total');
-    $objPHPExcel->getActiveSheet()->getStyle('A1:I1')->applyFromArray($estilo_titulo);
+                 ->setCellValue('A1', 'Especifico')
+                 ->setCellValue('B1', 'Nombre especifico')
+                 ->setCellValue('C1', 'Cantidad')
+                 ->setCellValue('D1', 'Saldo');
+        $objPHPExcel->getActiveSheet()->getStyle('A1:D1')->applyFromArray($estilo_titulo);
 
-    $seccion = ($this->uri->segment(6)==NULL) ? 0 : $this->uri->segment(6);
-    $registros = $this->Detalle_solicitud_producto_model->obtenerProductosSeccionTodo($this->uri->segment(4), $this->uri->segment(5),
-    $seccion,$this->uri->segment(7));
+    $registros = $this->Producto->productosEspecificoExcel($this->uri->segment(4));
 
     if (!($registros == FALSE)) {
       $i = 2;
+      $total_cantidad=0;
+      $total_saldo=0;
       foreach($registros as $pro) {
 
         $objPHPExcel->setActiveSheetIndex(0)
-                     ->setCellValue('A'.$i, $pro->numero_solicitud)
-                     ->setCellValue('B'.$i, $pro->fecha_salida)
-                     ->setCellValue('C'.$i, $pro->nombre_seccion)
-                     ->setCellValue('D'.$i, $pro->id_especifico)
-                     ->setCellValue('E'.$i, $pro->numero_producto)
-                     ->setCellValue('F'.$i, $pro->producto)
-                     ->setCellValue('G'.$i, $pro->unidad)
-                     ->setCellValue('H'.$i, $pro->cantidad)
-                     ->setCellValue('I'.$i, $pro->total);
+                     ->setCellValue('A'.$i, $pro->id_especifico)
+                     ->setCellValue('B'.$i, $pro->nombre_especifico)
+                     ->setCellValue('C'.$i, $pro->cantidad)
+                     ->setCellValue('D'.$i, '$'.number_format($pro->saldo,3));
 
-        $objPHPExcel->getActiveSheet()->getStyle('A'.$i.':I'.$i)->applyFromArray($estilo_contenido);
+        $objPHPExcel->getActiveSheet()->getStyle('A'.$i.':D'.$i)->applyFromArray($estilo_contenido);
+        $total_cantidad+=$pro->cantidad;
+        $total_saldo+=$pro->saldo;
         $i++;
       }
+      $objPHPExcel->setActiveSheetIndex(0)->setCellValue('A'.$i, 'Total');
+      $objPHPExcel->setActiveSheetIndex(0)->mergeCells('A'.$i.':B'.$i);
+      $objPHPExcel->setActiveSheetIndex(0)->setCellValue('C'.$i, $total_cantidad);
+      $objPHPExcel->setActiveSheetIndex(0)->setCellValue('D'.$i, '$'.number_format($total_saldo,3));
+      $objPHPExcel->getActiveSheet()->getStyle('A'.$i.':D'.$i)->applyFromArray($estilo_contenido);
     } else {
-      $objPHPExcel->setActiveSheetIndex(0)->mergeCells('A2:I2');
+      $objPHPExcel->setActiveSheetIndex(0)->mergeCells('A2:D2');
       $objPHPExcel->setActiveSheetIndex(0)->setCellValue('A2', "No se encontraron resultados");
-      $objPHPExcel->getActiveSheet()->getStyle('A2:I2')->applyFromArray($estilo_contenido);
+      $objPHPExcel->getActiveSheet()->getStyle('A2:D2')->applyFromArray($estilo_contenido);
     }
 
-    foreach(range('A','I') as $columnID){
+    foreach(range('A','D') as $columnID){
       $objPHPExcel->getActiveSheet()->getColumnDimension($columnID)->setAutoSize(true);
     }
 
@@ -244,7 +236,7 @@
 
     ob_end_clean();
     header("Content-Type: application/vnd.openxmlformats-officedocument.spreadsheetml.sheet");
-    header("Content-Disposition: attachment; filename='reporte_gasto_seccion.xlsx'");
+    header("Content-Disposition: attachment; filename='productos_especifico.xlsx'");
     header('Cache-Control: max-age=0');
 
     $objWriter = PHPExcel_IOFactory::createWriter($objPHPExcel, 'Excel2007');
