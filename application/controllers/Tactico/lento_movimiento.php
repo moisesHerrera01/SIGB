@@ -52,6 +52,7 @@ class Lento_movimiento extends CI_Controller {
           if (!($this->input->post('busca') == "")) {
               $registros = $this->Producto->obtenerProductosFuenteLimitBusca($this->uri->segment(4),$this->uri->segment(5), $this->input->post('busca'));
               $count = count($registros);
+              $pagination =0;
           } else {
             $registros = $this->Producto->obtenerProductosFuenteLimit($this->uri->segment(4),$this->uri->segment(5),$num,$this->uri->segment(6));
             $count = $this->Producto->obtenerProductosFuenteTotal($this->uri->segment(4),$this->uri->segment(5));
@@ -59,16 +60,11 @@ class Lento_movimiento extends CI_Controller {
         } else {
             $registros = $this->Producto->obtenerProductosFuenteLimit($this->uri->segment(4),$this->uri->segment(5),$num,$this->uri->segment(6));
             $total = $this->Producto->obtenerProductosFuenteTotal($this->uri->segment(4),$this->uri->segment(5));
+            $cant=$total->numero; 
+            $pagination = paginacion('index.php/Tactico/Lento_movimiento/Reporte/'.$this->uri->segment(4).'/'.$this->uri->segment(5),$cant,$num, $segmento);
         }
 
 
-
-        $registros = $this->Producto->obtenerProductosFuenteLimit($this->uri->segment(4),$this->uri->segment(5),$num,$this->uri->segment(6));
-        $total = $this->Producto->obtenerProductosFuenteTotal($this->uri->segment(4),$this->uri->segment(5));
-
-        $cant=$total->numero;
-        var_dump($cant);
-        $pagination = paginacion('index.php/Tactico/Lento_movimiento/Reporte/'.$this->uri->segment(4).'/'.$this->uri->segment(5),$cant,$num, $segmento);
         if (!($registros == FALSE)) {
 
           $fuente=$this->uri->segment(4);
