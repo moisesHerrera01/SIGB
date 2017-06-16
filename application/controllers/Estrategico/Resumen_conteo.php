@@ -60,7 +60,7 @@ class Resumen_conteo extends CI_Controller {
             $count = $this->DetalleConteoFisico_model->totalDetalleConteo($nom_conteo);
         }
 
-        $pagination = paginacion('index.php/Bodega/ConteoFisico/Reporte/', $count , $num, $segmento);
+        $pagination = paginacion('index.php/Estrategico/Resumen_conteo/Reporte/'.$nom_conteo, $count , $num, $segmento);
         $resumen = array();
 
         $fecha = $this->Conteofisico_model->obtenerFechaConteo($nom_conteo);
@@ -85,7 +85,7 @@ class Resumen_conteo extends CI_Controller {
         }
 
         if ($this->input->is_ajax_request()) {
-          echo $this->table->generate($resumen);
+          echo "<div class='table-responsive'>" . $this->table->generate($resumen) . "</div>" . $pagination;
           return false;
         }
 
@@ -131,14 +131,14 @@ class Resumen_conteo extends CI_Controller {
                         <li>Nombre pantalla: XXXXXXXXXX</li>
                         <li>Usuario: ".$USER['nombre_completo']."</li>
                         <br />
-                        <li>Parametros: XXXXXXXXXXXXXXX</li>
+                        <li>Parametros: ".$nom_conteo."</li>
                       </ul>
                     </div>".
                   "</div>".
                   "<div class='limit-content'>" .
                   "<div class='exportar'><a href='".base_url('/index.php/Estrategico/Resumen_conteo/ReporteExcel/'.str_replace(" ", "_", $nom_conteo))."' class='icono icon-file-excel'>
                   Exportar Excel</a> <span class='content_buscar'><i class='glyphicon glyphicon-search'></i>".form_input($buscar)."</span></div>".
-                  "<div class='table-responsive'>" . $this->table->generate($resumen) . "</div>" . $pagination . "</div></div>";
+                  "<div class='table-content'><div class='table-responsive'>" . $this->table->generate($resumen) . "</div>" . $pagination . "</div></div></div>";
 
         $data['body'] = $table;
       } else {

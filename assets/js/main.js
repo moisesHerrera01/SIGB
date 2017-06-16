@@ -187,7 +187,7 @@ $(document).ready(function(){
             url: baseurl + $(this).attr('url'),
             data: { busca: $('#buscar').val().toUpperCase() },
             beforeSend: function(){
-              $(".content_table > .limit-content > .table-responsive").html("<p id='cargando' align='center' class='icono icon-spinner'></p>");
+              $(".content_table > .limit-content > .table-content").html("<p id='cargando' align='center' class='icono icon-spinner'></p>");
               var angulo = 0;
               setInterval(function(){
                     angulo += 3;
@@ -195,8 +195,7 @@ $(document).ready(function(){
               },10);
             },
             success: function(result) {
-              $('.content_table > .limit-content > .table-responsive').html(result);
-              $('.icon-eliminar').click(confirmar);
+              $('.content_table > .limit-content > .table-content').html(result);
             },
           });
         }
