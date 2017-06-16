@@ -85,7 +85,7 @@
         }
 
         if ($this->input->is_ajax_request()) {
-          echo $this->table->generate();
+          echo "<div class='table-responsive'>" . $this->table->generate() . "</div>" . $pagination;
           return false;
         }
 
@@ -140,7 +140,7 @@
                            "<div class='limit-content'>" .
                            "<div class='exportar'><a href='".base_url('/index.php/Tactico/Gasto_global/ReporteExcel/'.$this->uri->segment(4).'/'
                            .$this->uri->segment(5).'/'.$this->uri->segment(6))."' class='icono icon-file-excel'>
-                           Exportar Excel</a><span class='content_buscar'><i class='glyphicon glyphicon-search'></i>".form_input($buscar)."</span></div>" . "<div class='table-responsive'>" . $this->table->generate() . "</div>" . $pagination . "</div></div>";
+                           Exportar Excel</a><span class='content_buscar'><i class='glyphicon glyphicon-search'></i>".form_input($buscar)."</span></div>" . "<div class='table-content'><div class='table-responsive'>" . $this->table->generate() . "</div>" . $pagination . "</div></div></div>";
                  $data['body'] = $table;
       }else {
           $data['body'] = $this->load->view('Tactico/gasto_global_view', '',TRUE);

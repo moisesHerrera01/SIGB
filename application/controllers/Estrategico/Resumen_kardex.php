@@ -148,7 +148,7 @@ class Resumen_kardex extends CI_Controller {
             $this->table->add_row($msg);
           }
           if ($this->input->is_ajax_request()) {
-            echo $this->table->generate();
+            echo "<div class='table-responsive'>" . $this->table->generate() . "</div>" . $pagination;
             return false;
           }
 
@@ -202,7 +202,7 @@ class Resumen_kardex extends CI_Controller {
                               "<div class='limit-content'>" .
                               "<div class='exportar'><a href='".base_url('/index.php/Estrategico/Resumen_kardex/kardexResumidoExcel/'.$this->uri->segment(4).'/'
                               .$this->uri->segment(5).'/'.$this->uri->segment(6).'/'.$this->uri->segment(7))."' class='icono icon-file-excel'>
-                              Exportar Excel</a><span class='content_buscar'><i class='glyphicon glyphicon-search'></i>".form_input($buscar)."</span></div>" . "<div class='table-responsive'>" . $this->table->generate() . "</div>" . $pagination . "</div></div>";
+                              Exportar Excel</a><span class='content_buscar'><i class='glyphicon glyphicon-search'></i>".form_input($buscar)."</span></div>" . "<div class='table-content'><div class='table-responsive'>" . $this->table->generate() . "</div>" . $pagination . "</div></div></div>";
                     $data1['body'] = $table;
 
       }else {
