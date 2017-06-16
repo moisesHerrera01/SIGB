@@ -21,7 +21,8 @@ $Cantidad = array(
     'name' => 'cantidad',
     'placeholder' => 'Escribe la Cantidad de Productos a Mostrar',
     'class' => "form-control",
-    'autocomplete' => 'off'
+    'autocomplete' => 'off',
+    'type'=>'number'
 );
 
 $button = array('class' => 'btn btn-success',);

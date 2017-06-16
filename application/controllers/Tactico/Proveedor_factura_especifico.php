@@ -11,7 +11,7 @@ class Proveedor_factura_especifico extends CI_Controller {
     }
     $this->load->helper(array('form', 'paginacion'));
     $this->load->library('table');
-    $this->load->model(array('Bodega/Proveedor','Bodega/Detalle_solicitud_producto_model', 'Bodega/Fuentefondos_model', 'Bodega/Solicitud_Model'));
+    $this->load->model(array('Bodega/Proveedor','Bodega/Fuentefondos_model', 'Bodega/Fuentefondos_model', 'Bodega/Solicitud_Model'));
   }
 
   public function RecibirFiltro() {
@@ -55,13 +55,14 @@ class Proveedor_factura_especifico extends CI_Controller {
 
       $total_registros = $this->Proveedor->TotalReporteProveedores($this->uri->segment(4), $this->uri->segment(5), $this->uri->segment(6));
 
+
       $pagination = paginacion('index.php/Tactico/Proveedor_factura_especifico/Reporte/' .$this->uri->segment(4). '/' .$this->uri->segment(5). '/' . $this->uri->segment(6),
                     $total_registros, $num, '7');
-
+      
       if ($total_registros > 0) {
 
         $registros = $this->Proveedor->ReporteProveedores($this->uri->segment(4), $this->uri->segment(5), $this->uri->segment(6), $num, $this->uri->segment(7));
-      
+        
         $total = 0;
         while ($registro = current($registros)) {
           $this->table->add_row($registro['fecha_factura'], $registro['numero_factura'], $registro['numero_compromiso'],
@@ -88,7 +89,7 @@ class Proveedor_factura_especifico extends CI_Controller {
         $msg = array('data' => "No se encontraron resultados", 'colspan' => "6");
         $this->table->add_row($msg);
       }
-                //$cant=10;
+                
                 $segmento=8;
 
                  // paginacion del header
@@ -110,8 +111,9 @@ class Proveedor_factura_especifico extends CI_Controller {
                    $pag++;
                  }
 
-                 $seccion = ($this->uri->segment(4) != 0) ?   $this->Solicitud_Model->obtenerSeccion($this->uri->segment(4)) : 'N/E' ;
-                 $especifico = ($this->uri->segment(7) != 0) ?   $this->Especifico->obtenerEspecifico($this->uri->segment(7)) : 'N/E' ;
+                 $fuente = ($this->uri->segment(4) != 0) ?   $this->Fuentefondos_model->obtenerFuente($this->uri->segment(4)) : 'N/E' ;
+                 $seccion = ($this->uri->segment(6) != 0) ?   $this->Solicitud_Model->obtenerSeccion($this->uri->segment(6)) : 'N/E' ;
+
                  $table =  "<div class='content_table '>" .
                            "<div class='limit-content-title'>".
                              "<div class='title-reporte'>".
@@ -125,7 +127,7 @@ class Proveedor_factura_especifico extends CI_Controller {
                                  <li>Nombre pantalla:</li>
                                  <li>Usuario: ".$USER['nombre_completo']."</li>
                                  <br />
-                                 
+                                 <li>Parametros: ".$fuente." ". $this->uri->segment(5) ." - ". $this->uri->segment(6). "</li>
                                </ul>
                              </div>".
                            "</div>".
