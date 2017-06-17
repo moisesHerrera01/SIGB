@@ -204,10 +204,12 @@ class Usuario_Rol extends CI_Controller {
     if ($registros == '') {
       echo '';
     }else {
+      $i = 1;
       foreach ($registros as $usuario) {
-        echo '<div class="suggest-element" ida="usuario'.$usuario->id_usuario.'"><a id="usuario'.
+        echo '<div id="'.$i.'" class="suggest-element" ida="usuario'.$usuario->id_usuario.'"><a id="usuario'.
         $usuario->id_usuario.'" data="'.$usuario->id_usuario.'"  data1="'.$usuario->nombre_completo.'" >'
         .$usuario->nombre_completo.'</a></div>';
+        $i++;
       }
     }
   }
