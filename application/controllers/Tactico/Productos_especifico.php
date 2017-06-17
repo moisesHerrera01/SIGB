@@ -18,6 +18,17 @@
     date_default_timezone_set('America/El_Salvador');
     $anyo=20;
     $fecha_actual=date($anyo."y-m-d");
+    $USER = $this->session->userdata('logged_in');
+    $modulo=$this->User_model->obtenerModulo('Tactico/Productos_especifico/reporteProductosEspecifico');
+    $hora=date("H:i:s");
+    $rastrea = array(
+      'id_usuario' =>$USER['id'],
+      'id_modulo' =>$modulo,
+      'fecha' =>$fecha_actual,
+      'hora' =>$hora,
+      'operacion'=> 'CONSULTA'
+    );
+    $this->User_model->insertarRastreabilidad($rastrea);
       if($this->input->post('fecha_fin')==NULL){
         redirect('Tactico/Productos_especifico/reporteProductosEspecifico/'.$fecha_actual);
       }else{

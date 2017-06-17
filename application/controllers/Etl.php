@@ -49,10 +49,38 @@ class Etl extends CI_Controller {
   }
 
   public function cargarGrupo1(){
+    date_default_timezone_set('America/El_Salvador');
+    $anyo=20;
+    $fecha_actual=date($anyo."y-m-d");
+        $USER = $this->session->userdata('logged_in');
+        $modulo=$this->User_model->obtenerModulo('Etl');
+        $hora=date("H:i:s");
+        $rastrea = array(
+          'id_usuario' =>$USER['id'],
+          'id_modulo' =>$modulo,
+          'fecha' =>$fecha_actual,
+          'hora' =>$hora,
+          'operacion'=> 'ACTUALIZA'
+        );
+      $this->User_model->insertarRastreabilidad($rastrea);
       $this->Etl_model->cargarGrupo1();
       redirect('/Etl/index/etl');
   }
   public function borrar(){
+    date_default_timezone_set('America/El_Salvador');
+    $anyo=20;
+    $fecha_actual=date($anyo."y-m-d");
+    $USER = $this->session->userdata('logged_in');
+    $modulo=$this->User_model->obtenerModulo('Etl');
+    $hora=date("H:i:s");
+    $rastrea = array(
+      'id_usuario' =>$USER['id'],
+      'id_modulo' =>$modulo,
+      'fecha' =>$fecha_actual,
+      'hora' =>$hora,
+      'operacion'=> 'ELIMINA'
+    );
+    $this->User_model->insertarRastreabilidad($rastrea);
     $this->Etl_model->vaciarBD();
     redirect('/Etl/index/cls');
   }

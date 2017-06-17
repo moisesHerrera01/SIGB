@@ -19,6 +19,17 @@
     $anyo=20;
     $fecha_actual=date($anyo."y-m-d");
     if ($this->input->post('fecha_inicio')!=NULL) {
+        $USER = $this->session->userdata('logged_in');
+        $modulo=$this->User_model->obtenerModulo('Tactico/Gasto_global/reporteGastoSeccion');
+        $hora=date("H:i:s");
+        $rastrea = array(
+          'id_usuario' =>$USER['id'],
+          'id_modulo' =>$modulo,
+          'fecha' =>$fecha_actual,
+          'hora' =>$hora,
+          'operacion'=> 'CONSULTA'
+        );
+        $this->User_model->insertarRastreabilidad($rastrea);
       if($this->input->post('fecha_fin')==NULL){
         redirect('Tactico/Gasto_global/reporteGastoSeccion/'.$this->input->post('fecha_inicio').'/'
         .$fecha_actual.'/'.$this->input->post('seccion'));
