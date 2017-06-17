@@ -51,8 +51,8 @@
   echo form_hidden('id');
 
   echo form_submit('','Guardar', $button);
-
-  echo "<a class=\"btn btn-warning\" onclick=\"limpiar(['usuario','autocomplete1','rol','autocomplete2'])\">Limpiar</a>";
+  
+  echo "<button class='btn btn-warning' type='reset' value='Reset'>Limpiar</button>";
 
   echo form_close();
   echo "</div>";
