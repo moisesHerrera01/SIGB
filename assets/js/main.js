@@ -210,6 +210,8 @@ $(document).ready(function(){
         $("#myAlert").slideUp();
     }, 5000);
 
+    $('.icon-eliminar').click(confirmar);
+
     $("form").keypress(function(e){
       if(e == 13){
         return false;
