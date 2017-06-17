@@ -206,6 +206,10 @@ $(document).ready(function(){
         $("#myAlert").slideUp();
     });
 
+    setInterval(function() {
+        $("#myAlert").slideUp();
+    }, 5000);
+
     $("form").keypress(function(e){
       if(e == 13){
         return false;
