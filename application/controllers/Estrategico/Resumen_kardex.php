@@ -98,7 +98,7 @@ class Resumen_kardex extends CI_Controller {
               $data = array();
               if ($i < $num_inicial && $inicial != 0) {
                 $data[] = $inicial[$i]->existencia;
-                $data[] = $inicial[$i]->precio_unitario;
+                $data[] = '$'.number_format($inicial[$i]->precio_unitario,3);
               } else {
                 $data[] = "-";
                 $data[] = "-";
@@ -106,7 +106,7 @@ class Resumen_kardex extends CI_Controller {
 
               if ($i < $num_ingreso) {
                 $data[] = $value->detalle_ingreso[$i]->cantidad;
-                $data[] = $value->detalle_ingreso[$i]->precio;
+                $data[] = '$'.number_format($value->detalle_ingreso[$i]->precio,3);
               } else {
                 $data[] = "-";
                 $data[] = "-";
@@ -114,7 +114,7 @@ class Resumen_kardex extends CI_Controller {
 
               if ($i < $num_salida) {
                 $data[] = $value->detalle_salida[$i]->cantidad;
-                $data[] = $value->detalle_salida[$i]->precio;
+                $data[] = '$'.number_format($value->detalle_salida[$i]->precio,3);
               } else {
                 $data[] = "-";
                 $data[] = "-";
@@ -123,7 +123,7 @@ class Resumen_kardex extends CI_Controller {
               if ($i < $num_final) {
                 if ($final) {
                   $data[] = $final[$i]->existencia;
-                  $data[] = $final[$i]->precio_unitario;
+                  $data[] = '$'.number_format($final[$i]->precio_unitario,3);
                 } else {
                   $data[] = "-";
                   $data[] = "-";
@@ -327,7 +327,7 @@ class Resumen_kardex extends CI_Controller {
           $objPHPExcel->setActiveSheetIndex(0)->setCellValue('A'.($j + $i + 2), 'Cantidad');
           $objPHPExcel->setActiveSheetIndex(0)->setCellValue('B'.($j + $i + 2), 'precio');
           $objPHPExcel->setActiveSheetIndex(0)->setCellValue('A'.($j + $i + 2), $inicial[$i]->existencia);
-          $objPHPExcel->setActiveSheetIndex(0)->setCellValue('B'.($j + $i + 2), $inicial[$i]->precio_unitario);
+          $objPHPExcel->setActiveSheetIndex(0)->setCellValue('B'.($j + $i + 2), '$'.number_format($inicial[$i]->precio_unitario,3));
         } else {
           $objPHPExcel->setActiveSheetIndex(0)->setCellValue('A'.($j + $i + 2), 'Cantidad');
           $objPHPExcel->setActiveSheetIndex(0)->setCellValue('B'.($j + $i + 2), 'precio');
@@ -339,7 +339,7 @@ class Resumen_kardex extends CI_Controller {
           $objPHPExcel->setActiveSheetIndex(0)->setCellValue('C'.($j + $i + 2), 'Cantidad');
           $objPHPExcel->setActiveSheetIndex(0)->setCellValue('D'.($j + $i + 2), 'precio');
           $objPHPExcel->setActiveSheetIndex(0)->setCellValue('C'.($j + $i + 2), $value->detalle_ingreso[$i]->cantidad);
-          $objPHPExcel->setActiveSheetIndex(0)->setCellValue('D'.($j + $i + 2), $value->detalle_ingreso[$i]->precio);
+          $objPHPExcel->setActiveSheetIndex(0)->setCellValue('D'.($j + $i + 2), '$'.number_format($value->detalle_ingreso[$i]->precio,3));
         } else {
           $objPHPExcel->setActiveSheetIndex(0)->setCellValue('C'.($j + $i + 2), 'Cantidad');
           $objPHPExcel->setActiveSheetIndex(0)->setCellValue('D'.($j + $i + 2), 'precio');
@@ -351,7 +351,7 @@ class Resumen_kardex extends CI_Controller {
           $objPHPExcel->setActiveSheetIndex(0)->setCellValue('E'.($j + $i + 2), 'Cantidad');
           $objPHPExcel->setActiveSheetIndex(0)->setCellValue('F'.($j + $i + 2), 'precio');
           $objPHPExcel->setActiveSheetIndex(0)->setCellValue('E'.($j + $i + 2), $value->detalle_salida[$i]->cantidad);
-          $objPHPExcel->setActiveSheetIndex(0)->setCellValue('F'.($j + $i + 2), $value->detalle_salida[$i]->precio);
+          $objPHPExcel->setActiveSheetIndex(0)->setCellValue('F'.($j + $i + 2), '$'.number_format($value->detalle_salida[$i]->precio,3));
         } else {
           $objPHPExcel->setActiveSheetIndex(0)->setCellValue('E'.($j + $i + 2), 'Cantidad');
           $objPHPExcel->setActiveSheetIndex(0)->setCellValue('F'.($j + $i + 2), 'precio');
@@ -363,7 +363,7 @@ class Resumen_kardex extends CI_Controller {
           $objPHPExcel->setActiveSheetIndex(0)->setCellValue('G'.($j + $i + 2), 'Cantidad');
           $objPHPExcel->setActiveSheetIndex(0)->setCellValue('H'.($j + $i + 2), 'precio');
           $objPHPExcel->setActiveSheetIndex(0)->setCellValue('G'.($j + $i + 2), $final[$i]->existencia);
-          $objPHPExcel->setActiveSheetIndex(0)->setCellValue('H'.($j + $i + 2), $final[$i]->precio_unitario);
+          $objPHPExcel->setActiveSheetIndex(0)->setCellValue('H'.($j + $i + 2), '$'.number_format($final[$i]->precio_unitario,3));
         } else {
           $objPHPExcel->setActiveSheetIndex(0)->setCellValue('G'.($j + $i + 2), 'Cantidad');
           $objPHPExcel->setActiveSheetIndex(0)->setCellValue('H'.($j + $i + 2), 'precio');
