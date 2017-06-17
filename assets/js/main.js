@@ -278,6 +278,29 @@ function llenarFormulario(tabla, name, value, select_name, select_value, atribut
 
 /*FUNCIONES*/
 
+var confirmar = function() {
+   var elemet = $(this);
+   swal({
+     title: "Seguro que desea eliminar?",
+     text: "Usted no será capaz de recuperar la información eliminada!",
+     type: "warning",
+     showCancelButton: true,
+     confirmButtonColor: "#DD6B55",
+     confirmButtonText: "Si, eliminar",
+     cancelButtonText: "No, elimnar",
+     closeOnConfirm: false,
+     closeOnCancel: false },
+
+     function(isConfirm){
+       if (isConfirm) {
+          var url = elemet.attr('uri');
+          $(location).attr('href',url);
+       } else {
+         swal("Cancelando", "La información no ha sido eliminada.", "error");
+       }
+     });
+}
+
 jQuery.extend({
     stepForm: function(txtBack, txtNext, token){
     	var fieldsets = $((token || 'fieldset'), $("form.stepMe"));
