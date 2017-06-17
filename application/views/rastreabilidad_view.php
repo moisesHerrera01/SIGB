@@ -2,12 +2,6 @@
 
 echo $this->breadcrumb->build_breadcrump($this->uri->uri_string());
 
-echo "<div style='text-align:center'>";
-    echo "<div class='form-group'>";
-    echo "<h3><font color=black>Reporte de Rastreabilidad de los usuarios</font></h3>";
-  echo "</div>";
-echo "</div>";
-
 $inicio= array(
     'name' => 'fecha_inicio',
     'placeholder' => 'Escribe la fecha de inicio',
@@ -32,7 +26,19 @@ $atributos = array(
 
 echo "<div class='content-form'>";
   echo "<div class='limit-content-title'>";
-    echo "<span class='icono icon-filter icon-title'> Filtro</span>";
+    echo "<div class='title-reporte'>";
+     echo "Reporte de Rastreabilidad de los usuarios.";
+  echo "</div>";
+  echo
+    "<div class='title-header'>
+      <ul>
+        <li>Fecha emisión: ".date('d/m/Y')."</li>
+        <li>Nombre la compañia: MTPS</li>
+        <li>N° pagina: 1/1</li>
+        <li>Nombre pantalla:</li>
+        <li>Usuario: ".$user['nombre_completo']."</li>
+      </ul>
+    </div>";
   echo "</div>";
   echo "<div class='limit-content'>";
     echo form_open("/Rastreabilidad/Recibirfechas", $atributos);

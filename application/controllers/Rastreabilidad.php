@@ -67,10 +67,25 @@ class Rastreabilidad extends CI_Controller {
           $this->table->add_row($msg);
         }
         $table =  "<div class='content_table '>" .
-                  "<div class='limit-content-title'><span class='icono icon-table icon-title'> ". $this->uri->segment(3) . " - " . $this->uri->segment(4) ."</span></div>".
+                  "<div class='limit-content-title'>".
+                    "<div class='title-reporte'>".
+                      "Reporte de Rastreabilidad de los usuarios..".
+                    "</div>".
+                    "<div class='title-header'>
+                      <ul>
+                        <li>Fecha emisión: ".date('d/m/Y')."</li>
+                        <li>Nombre la compañia: MTPS</li>
+                        <li>N° pagina: 1/1</li>
+                        <li>Nombre pantalla:</li>
+                        <li>Usuario: ".$USER['nombre_completo']."</li>
+                        <br />
+                        <li>Parametros: ".$this->uri->segment(4) . " - " . $this->uri->segment(5)."</li>
+                      </ul>
+                    </div>".
+                  "</div>".
                   "<div class='limit-content'>". "<div class='table-responsive'>" . $this->table->generate() . "</div>" . $pagination . "</div></div>";
       }
-      $data['body'] = $this->load->view('rastreabilidad_view', '',TRUE) . "<br>" . $table;
+      $data['body'] = $this->load->view('rastreabilidad_view', array('user' => $USER), TRUE) . "<br>" . $table;
       $this->load->view('base', $data);
     } else {
       redirect('login/index/forbidden');
