@@ -15,9 +15,20 @@ class Resumen_conteo extends CI_Controller {
   }
 
   public function RecibirConteo() {
+    $fecha_actual=date("Y-m-d");
     $USER = $this->session->userdata('logged_in');
+    $modulo=$this->User_model->obtenerModulo('Estrategico/Resumen_conteo/Reporte');
+    $hora=date("H:i:s");
+    $rastrea = array(
+      'id_usuario' =>$USER['id'],
+      'id_modulo' =>$modulo,
+      'fecha' =>$fecha_actual,
+      'hora' =>$hora,
+      'operacion'=> 'CONSULTA'
+    );
     if($USER){
       if (($this->input->post()) != '') {
+        $this->User_model->insertarRastreabilidad($rastrea);
         $conteo = str_replace(" ", "_", $this->input->post('conteo'));
         redirect('Estrategico/Resumen_conteo/Reporte/'.$conteo);
       } else {

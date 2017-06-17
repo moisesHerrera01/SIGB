@@ -16,7 +16,7 @@ class Comparativo_fuente extends CI_Controller {
   public function RecibirDato() {
     $fecha_actual=date("Y-m-d");
     $USER = $this->session->userdata('logged_in');
-    $modulo=$this->User_model->obtenerModulo('Estrategico/Resumen_kardex/kardexResumido');
+    $modulo=$this->User_model->obtenerModulo('Estrategico/Comparativo_fuente/Reporte');
     $hora=date("H:i:s");
     $rastrea = array(
       'id_usuario' =>$USER['id'],
