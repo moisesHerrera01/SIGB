@@ -18,7 +18,18 @@ class Resumen_kardex extends CI_Controller {
     date_default_timezone_set('America/El_Salvador');
     $anyo=20;
     $fecha_actual=date($anyo."y-m-d");
+    $USER = $this->session->userdata('logged_in');
+    $modulo=$this->User_model->obtenerModulo('Estrategico/Resumen_kardex/kardexResumido');
+    $hora=date("H:i:s");
+    $rastrea = array(
+      'id_usuario' =>$USER['id'],
+      'id_modulo' =>$modulo,
+      'fecha' =>$fecha_actual,
+      'hora' =>$hora,
+      'operacion'=> 'CONSULTA'
+    );
     if ($this->input->post('fecha_inicio') != NULL &&  $this->input->post('fuente') != NULL) {
+        $this->User_model->insertarRastreabilidad($rastrea);
       if($this->input->post('fecha_fin') == NULL){
         $esp = ($this->input->post('especifico') == NULL) ? '0' : $this->input->post('especifico');
         redirect('Estrategico/Resumen_kardex/kardexResumido/'.$this->input->post('fecha_inicio')

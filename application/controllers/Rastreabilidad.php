@@ -33,8 +33,7 @@ class Rastreabilidad extends CI_Controller {
   public function reporte(){
     $USER = $this->session->userdata('logged_in');
     if($USER){
-      //$this->load->model(array('mtps/Seccion_model'));
-      $data['title'] = "Ingreso Global";
+      $data['title'] = "Rastreabilidad";
       $data['menu'] = $this->menu_dinamico->menus($this->session->userdata('logged_in'),$this->uri->segment(1));
       $table = '';
       if (($this->uri->segment(3)) != '') {
@@ -42,7 +41,7 @@ class Rastreabilidad extends CI_Controller {
             'table_open' => '<table class="table table-striped table-bordered">'
         );
         $this->table->set_template($template);
-        $this->table->set_heading('Usuario','Modulo','Registro','Operación','Fecha','Hora');
+        $this->table->set_heading('Usuario','Rol','Modulo','Registro','Operación','Fecha','Hora');
         $num = '10';
         $registros = $this->User_model->obtenerRastreabilidadFiltro($this->uri->segment(3),
         $this->uri->segment(4),$num, $this->uri->segment(5));
@@ -57,7 +56,10 @@ class Rastreabilidad extends CI_Controller {
           $fecha_fin=$this->uri->segment(4);
           $i = 1;
           foreach($registros as $pro) {
-            $this->table->add_row($pro->nombre_completo,$pro->nombre_modulo,$pro->id_registro,$pro->operacion,$pro->fecha,$pro->hora);
+            if ($pro->id_registro==NULL) {
+              $pro->id_registro='N/A';
+            }
+            $this->table->add_row($pro->nombre_completo,$pro->nombre_rol,$pro->nombre_modulo,$pro->id_registro,$pro->operacion,$pro->fecha,$pro->hora);
             $i++;
           }
         } else {

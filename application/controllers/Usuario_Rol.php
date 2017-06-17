@@ -146,7 +146,7 @@ class Usuario_Rol extends CI_Controller {
       if ($this->User_model->validarAccesoCrud($modulo, $USER['id'], 'insert')) {
         $this->User_model->insertarUsuarioRol($data);
         $rastrea['operacion']='INSERTA';
-        $rastrea['id_registro']=$this->User_model->obtenerSiguienteIdModuloIncrement('mtps.org_usuario_rol')-1;
+        $rastrea['id_registro']=$this->User_model->obtenerSiguienteIdModuloIncrement('org_usuario_rol')-1;
         $this->User_model->insertarRastreabilidad($rastrea);
         redirect('/Usuario_Rol/index/new');
       } else {

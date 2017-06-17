@@ -203,11 +203,11 @@
     }
 
     public function obtenerSiguienteIdModuloIncrement($tabla){
-     $this->db->select('DATABASE() as nombre');
+     /*$this->db->select('DATABASE() as nombre');
      $query=$this->db->get();
-     $base=$query->row()->nombre;
+     $base=$query->row()->nombre;*/
      $this->db->select('AUTO_INCREMENT as var');
-     $this->db->where('TABLE_SCHEMA',$base);
+     $this->db->where('TABLE_SCHEMA','mtps');
      $this->db->where('TABLE_NAME',$tabla);
      $query = $this->db->get('information_schema.TABLES');
      if ($query->num_rows() > 0) {
@@ -251,12 +251,18 @@
    }
 
    public function obtenerRastreabilidadFiltro($fecha_inicio,$fecha_fin,$segmento,$porpagina){
-     $this->db->select('r.id_registro,u.nombre_completo,m.nombre_modulo,r.fecha,r.hora,r.operacion')
+     $this->db->select('r.id_registro,u.nombre_completo,m.nombre_modulo,r.fecha,r.hora,r.operacion,r.nombre_rol')
               ->from('sic_rastreabilidad r')
               ->join('mtps.org_usuario u','u.id_usuario=r.id_usuario')
+              ->join('mtps.org_usuario_rol ur','ur.id_usuario=u.id_usuario')
+              ->join('mtps.org_rol r','r.id_rol=ur.id_rol')
               ->join('mtps.org_modulo m','m.id_modulo=r.id_modulo')
+              ->join('mtps.org_rol_modulo_permiso rmp','rmp.id_rol=r.id_rol')
+              ->join('mtps.org_modulo mod','mod.id_modulo=rmp.id_modulo')
+              ->group_by('r.id_sic_rastreabilidad')
               ->order_by('r.id_sic_rastreabilidad','desc')
               ->limit($segmento,$porpagina)
+              ->where('mod.id_sistema',14)
               ->where("r.fecha BETWEEN '$fecha_inicio' AND '$fecha_fin'");
      $query=$this->db->get();
      if ($query->num_rows()>0) {
