@@ -14,8 +14,19 @@ class Comparativo_fuente extends CI_Controller {
   }
 
   public function RecibirDato() {
-    $fecha_actual=date($anyo."y-m-d");
+    $fecha_actual=date("Y-m-d");
+    $USER = $this->session->userdata('logged_in');
+    $modulo=$this->User_model->obtenerModulo('Estrategico/Resumen_kardex/kardexResumido');
+    $hora=date("H:i:s");
+    $rastrea = array(
+      'id_usuario' =>$USER['id'],
+      'id_modulo' =>$modulo,
+      'fecha' =>$fecha_actual,
+      'hora' =>$hora,
+      'operacion'=> 'CONSULTA'
+    );
     if ($this->input->post('anio')!=NULL ) {
+        $this->User_model->insertarRastreabilidad($rastrea);
         redirect('Estrategico/Comparativo_fuente/Reporte/'.$this->input->post('anio').'/');
     } else {
         redirect('Estrategico/Comparativo_fuente/Reporte');

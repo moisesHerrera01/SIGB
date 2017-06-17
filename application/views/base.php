@@ -9,6 +9,7 @@
     <link href=<?= base_url("assets/css/main.css")?> rel="stylesheet" media="screen">
     <link href=<?= base_url("assets/css/menu.css")?> rel="stylesheet" media="screen">
     <link href=<?= base_url("assets/css/iconos.css")?> rel="stylesheet" media="screen">
+    <link href=<?= base_url("assets/css/sweetalert.css")?> rel="stylesheet" media="screen">
     <script type="text/javascript">
       var baseurl = "<?= base_url(); ?>";
     </script>
@@ -49,6 +50,7 @@
     <script src="<?= base_url("vendor/twbs/bootstrap/dist/js/bootstrap.min.js")?>"></script>
     <script src="<?= base_url("assets/js/jQueryRotate.js")?>"></script>
     <script src="<?= base_url("assets/js/main.js")?>"></script>
+    <script src="<?= base_url("assets/js/sweetalert.min.js")?>"></script>
     <?php
       if (isset($js)) {
         echo "<script src=".base_url($js)." type=\"text/javascript\"></script>";
