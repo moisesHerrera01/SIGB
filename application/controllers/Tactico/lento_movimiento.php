@@ -28,9 +28,6 @@ class Lento_movimiento extends CI_Controller {
   }
    public function Reporte(){
     $USER = $this->session->userdata('logged_in');
-   // $fuente = $this->uri->segment(4);
-    //$especifico = $this->uri->segment(5);
-
 
       $data['title'] = "Lento movimiento";
       $data['menu'] = $this->menu_dinamico->menus($this->session->userdata('logged_in'),$this->uri->segment(1));
@@ -55,14 +52,15 @@ class Lento_movimiento extends CI_Controller {
               $pagination =0;
           } else {
             $registros = $this->Producto->obtenerProductosFuenteLimit($this->uri->segment(4),$this->uri->segment(5),$num,$this->uri->segment(6));
-            $count = $this->Producto->obtenerProductosFuenteTotal($this->uri->segment(4),$this->uri->segment(5));
+            $total = $this->Producto->obtenerProductosFuenteTotal($this->uri->segment(4),$this->uri->segment(5));
           }
         } else {
             $registros = $this->Producto->obtenerProductosFuenteLimit($this->uri->segment(4),$this->uri->segment(5),$num,$this->uri->segment(6));
             $total = $this->Producto->obtenerProductosFuenteTotal($this->uri->segment(4),$this->uri->segment(5));
             $cant=$total->numero;
-            $pagination = paginacion('index.php/Tactico/Lento_movimiento/Reporte/'.$this->uri->segment(4).'/'.$this->uri->segment(5),$cant,$num, $segmento);
         }
+
+        $pagination = paginacion('index.php/Tactico/Lento_movimiento/Reporte/'.$this->uri->segment(4).'/'.$this->uri->segment(5),$cant,$num, $segmento);
 
 
         if (!($registros == FALSE)) {
@@ -101,9 +99,11 @@ class Lento_movimiento extends CI_Controller {
               }
 
             }
-            $this->table->add_row($pro->nombre_producto,$pro->numero_producto,$pro->nombre,$pro->existencia,$pro->nombre_fuente,$pro->fecha_ingreso,$alerta,$pro->nombre_seccion);
+              $this->table->add_row($pro->nombre_producto,$pro->numero_producto,$pro->nombre,$pro->existencia,$pro->nombre_fuente,$pro->fecha_ingreso,$alerta,$pro->nombre_seccion);
+
               $i++;
           }
+
         }else {
           $msg = array('data' => "No se encontraron resultados", 'colspan' => "9");
           $this->table->add_row($msg);
@@ -140,7 +140,7 @@ class Lento_movimiento extends CI_Controller {
                   $buscar = array(
                     'name' => 'buscar',
                     'type' => 'search',
-                    'placeholder' => 'Buscar',
+                    'placeholder' => 'Escriba el nombre del producto a buscar',
                     'class' => 'form-control',
                     'autocomplete' => 'off',
                     'id' => 'buscar',

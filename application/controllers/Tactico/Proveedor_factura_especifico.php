@@ -19,7 +19,7 @@ class Proveedor_factura_especifico extends CI_Controller {
     date_default_timezone_set('America/El_Salvador');
     $anyo=20;
     $fecha_actual=date($anyo."y-m-d");
-    if ($this->input->post('fechaMin')!=NULL && $this->input->post('fuente')!=NULL) { 
+    if ($this->input->post('fechaMin')!=NULL && $this->input->post('fuente')!=NULL) {
       if($this->input->post('fechaMax')==NULL){
         redirect('Tactico/Proveedor_factura_especifico/Reporte/'.$this->input->post('fuente').'/'
         .post('fechaMin').'/'.$this->input->post('fechaMax'));
@@ -53,20 +53,34 @@ class Proveedor_factura_especifico extends CI_Controller {
 
       $num = 12;
 
-      $total_registros = $this->Proveedor->TotalReporteProveedores($this->uri->segment(4), $this->uri->segment(5), $this->uri->segment(6));
+
+      $total_registros = $this->Proveedor->TotalReporteProveedores($this->uri->segment(4),$this->uri->segment(5), $this->uri->segment(6));
 
 
-      $pagination = paginacion('index.php/Tactico/Proveedor_factura_especifico/Reporte/' .$this->uri->segment(4). '/' .$this->uri->segment(5). '/' . $this->uri->segment(6),
-                    $total_registros, $num, '7');
-      
+
       if ($total_registros > 0) {
 
-        $registros = $this->Proveedor->ReporteProveedores($this->uri->segment(4), $this->uri->segment(5), $this->uri->segment(6), $num, $this->uri->segment(7));
-        
+        if ($this->input->is_ajax_request()) {
+          if (!($this->input->post('busca') == "")) {
+              $registros = $this->Proveedor->ReporteProveedoresBuscar($this->uri->segment(4), $this->uri->segment(5), $this->uri->segment(6), $num, $this->uri->segment(7), $this->input->post('busca'));
+              $total = count($registros);
+
+          } else {
+             $registros = $this->Proveedor->ReporteProveedores($this->uri->segment(4), $this->uri->segment(5), $this->uri->segment(6), $num, $this->uri->segment(7));
+             $total = $this->Proveedor->TotalReporteProveedores($this->uri->segment(4),$this->uri->segment(5), $this->uri->segment(6));
+
+            }
+        } else {
+             $registros = $this->Proveedor->ReporteProveedores($this->uri->segment(4), $this->uri->segment(5), $this->uri->segment(6), $num, $this->uri->segment(7));
+             $total = $this->Proveedor->TotalReporteProveedores($this->uri->segment(4),$this->uri->segment(5), $this->uri->segment(6));
+        }
+        $pagination = paginacion('index.php/Tactico/Proveedor_factura_especifico/Reporte/' .$this->uri->segment(4). '/' .$this->uri->segment(5). '/' . $this->uri->segment(6),
+                    $total, $num, '8');
+
         $total = 0;
         while ($registro = current($registros)) {
           $this->table->add_row($registro['fecha_factura'], $registro['numero_factura'], $registro['numero_compromiso'],
-                                $registro['nombre_proveedor'], $registro['id_especifico'], number_format($registro['total'], 3));
+                                $registro['nombre_proveedor'], $registro['id_especifico'],"$". number_format($registro['total'], 3));
 
           $total += $registro['total'];
           $cant=$num;
@@ -74,22 +88,25 @@ class Proveedor_factura_especifico extends CI_Controller {
           //  var_dump($registros);
           if ($next != FALSE) {
             if($registro['id_factura'] != $next['id_factura'] && $total != 0){
-              $msg = array('data' => "Total factura:", 'colspan' => "5");
-              $this->table->add_row($msg,  number_format($total, 3));
+              $msg = array('data' => "Total factura: " , 'colspan' => "5");
+              $this->table->add_row($msg, "$". number_format($total, 3));
               $total = 0;
             }
           } else {
             $msg = array('data' => "Total factura:", 'colspan' => "5");
-            $this->table->add_row($msg,  number_format($total, 3));
+            $this->table->add_row($msg, "$". number_format($total, 3));
             $total = 0;
           }
-
         }
       } else {
         $msg = array('data' => "No se encontraron resultados", 'colspan' => "6");
         $this->table->add_row($msg);
       }
-                
+
+      if ($this->input->is_ajax_request()) {
+          echo "<div class='table-responsive'>" . $this->table->generate() . "</div>" . $pagination;
+          return false;
+        }
                 $segmento=8;
 
                  // paginacion del header
@@ -114,6 +131,16 @@ class Proveedor_factura_especifico extends CI_Controller {
                  $fuente = ($this->uri->segment(4) != 0) ?   $this->Fuentefondos_model->obtenerFuente($this->uri->segment(4)) : 'N/E' ;
                  $seccion = ($this->uri->segment(6) != 0) ?   $this->Solicitud_Model->obtenerSeccion($this->uri->segment(6)) : 'N/E' ;
 
+
+                 $buscar = array(
+                    'name' => 'buscar',
+                    'type' => 'search',
+                    'placeholder' => 'Escriba el Especifico o Proveedor',
+                    'class' => 'form-control',
+                    'autocomplete' => 'off',
+                    'id' => 'buscar',
+                    'url' => 'index.php/Tactico/Proveedor_factura_especifico/Reporte/'.$this->uri->segment(4).'/'.$this->uri->segment(5).'/'.$this->uri->segment(6).'/');
+
                  $table =  "<div class='content_table '>" .
                            "<div class='limit-content-title'>".
                              "<div class='title-reporte'>".
@@ -134,7 +161,7 @@ class Proveedor_factura_especifico extends CI_Controller {
                            "<div class='limit-content'>" .
                            "<div class='exportar'><a href='".base_url('/index.php/Tactico/Proveedor_factura_especifico/ReporteExcel/'.$this->uri->segment(4).'/'
                            .$this->uri->segment(5).'/'.$this->uri->segment(6).'/'.$this->uri->segment(7))."' class='icono icon-file-excel'>
-                           Exportar Excel</a></div>" . "<div class='table-responsive'>" . $this->table->generate() . "</div>" . $pagination . "</div></div>";
+                           Exportar Excel</a><span class='content_buscar'><i class='glyphicon glyphicon-search'></i>".form_input($buscar)."</span></div>" . "<div class='table-content'><div class='table-responsive'>" . $this->table->generate() . "</div>" . $pagination . "</div></div></div>";
                  $data['body'] = $table;
       }else {
           $data['body'] = $this->load->view('Tactico/filtro_fuentes_view', '',TRUE);

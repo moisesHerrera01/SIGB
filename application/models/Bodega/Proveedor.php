@@ -140,7 +140,7 @@
                ->join('sic_detalle_factura c', 'c.id_factura = a.id_factura')
                ->join('sic_detalle_producto d', 'd.id_detalleproducto = c.id_detalleproducto')
                ->where('a.id_fuentes', $id_fuente)
-                ->where("a.fecha_factura BETWEEN '$minFecha' AND '$maxFecha'")
+               ->where("a.fecha_factura BETWEEN '$minFecha' AND '$maxFecha'")
                ->group_by(array('a.id_factura', 'd.id_especifico'))
                ->order_by('a.fecha_factura ASC')
                ->order_by('a.id_factura ASC')
@@ -155,6 +155,34 @@
 
        $tiempo_fin = microtime(true);
        echo "Tiempo empleado: " . ($tiempo_fin - $tiempo_inicio);
+    }
+
+    public function ReporteProveedoresBuscar( $id_fuente,$minFecha, $maxFecha, $porpagina = 10000, $segmento = 0,$busca ) {
+      
+      $tiempo_inicio = microtime(true);
+      $this->db->select('a.id_factura, a.fecha_factura, a.numero_factura, a.numero_compromiso, b.nombre_proveedor, c.id_detalleproducto,
+                        d.id_especifico, SUM(c.total) AS "total"')
+               ->from('sic_factura a')
+               ->join('sic_proveedores b', 'a.id_proveedores = b.id_proveedores')
+               ->join('sic_detalle_factura c', 'c.id_factura = a.id_factura')
+               ->join('sic_detalle_producto d', 'd.id_detalleproducto = c.id_detalleproducto')
+               ->where('a.id_fuentes', $id_fuente)
+               ->where("a.fecha_factura BETWEEN '$minFecha' AND '$maxFecha'")
+               ->group_by(array('a.id_factura', 'd.id_especifico'))
+               ->like('d.id_especifico',$busca)
+               ->or_like('b.nombre_proveedor',$busca)
+               ->order_by('a.fecha_factura ASC')
+               ->order_by('a.id_factura ASC')
+               ->limit($porpagina, $segmento);
+       $query = $this->db->get();
+       if ($query->num_rows() > 0) {
+           return  $query->result_array();
+
+       }
+       else {
+           return FALSE;
+       }
+
     }
 
 
@@ -181,5 +209,6 @@
           return 0;
       }
     }
+
   }
 ?>

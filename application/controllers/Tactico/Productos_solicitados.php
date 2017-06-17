@@ -51,9 +51,25 @@ class Productos_solicitados extends CI_Controller {
         $num = 10;
 
       $registros = $this->Producto->obtenerProductoMasSolicitado($this->uri->segment(4),$this->uri->segment(5),$this->uri->segment(6));
+
+      if ($this->input->is_ajax_request()) {
+          if (!($this->input->post('busca') == "")) {
+              $registros = $this->Producto->obtenerProductoMasSolicitadoBuscar($this->uri->segment(4),$this->uri->segment(5),$this->uri->segment(6), $this->input->post('busca'));
+              $total = count($registros);
+              
+          } else {
+            $registros = $this->Producto->obtenerProductoMasSolicitado($this->uri->segment(4),$this->uri->segment(5),$this->uri->segment(6));
+            $total = count($registros);
+          }
+        } else {
+            $registros = $this->Producto->obtenerProductoMasSolicitado($this->uri->segment(4),$this->uri->segment(5),$this->uri->segment(6));
+            $total = count($registros);
+        }
+
       
       if ($registros != 0) {
         $total = 0;
+        
         while ($registro = current($registros)) {
           $this->table->add_row($registro['nombre_producto'], $registro['id_detalleproducto'],
                                 $registro['nombre_unidad_medida'], $registro['id_especifico'], $registro['cant']);
@@ -74,6 +90,11 @@ class Productos_solicitados extends CI_Controller {
         $msg = array('data' => "No se encontraron resultados", 'colspan' => "6");
         $this->table->add_row($msg);
       }
+
+      if ($this->input->is_ajax_request()) {
+            echo "<div class='table-responsive'>" . $this->table->generate() . "</div>" ;
+            return false;
+        }
                 //$cant=10;
                 $segmento=7;
 
@@ -98,6 +119,18 @@ class Productos_solicitados extends CI_Controller {
 
                  $seccion = ($this->uri->segment(4) != 0) ?   $this->Solicitud_Model->obtenerSeccion($this->uri->segment(4)) : 'N/E' ;
                  $especifico = ($this->uri->segment(7) != 0) ?   $this->Especifico->obtenerEspecifico($this->uri->segment(7)) : 'N/E' ;
+
+                 $buscar = array(
+                    'name' => 'buscar',
+                    'type' => 'search',
+                    'placeholder' => 'Escriba el nombre del producto a buscar',
+                    'class' => 'form-control',
+                    'autocomplete' => 'off',
+                    'id' => 'buscar',
+                    'url' => 'index.php/Tactico/Productos_solicitados/Reporte/'.$this->uri->segment(4).'/'.$this->uri->segment(5).'/'.$this->uri->segment(6));
+
+
+
                  $table =  "<div class='content_table '>" .
                            "<div class='limit-content-title'>".
                              "<div class='title-reporte'>".
@@ -118,7 +151,7 @@ class Productos_solicitados extends CI_Controller {
                            "<div class='limit-content'>" .
                            "<div class='exportar'><a href='".base_url('/index.php/Tactico/Productos_solicitados/ReporteExcel/'.$this->uri->segment(4).'/'
                            .$this->uri->segment(5).'/'.$this->uri->segment(6).'/'.$this->uri->segment(7))."' class='icono icon-file-excel'>
-                           Exportar Excel</a></div>" . "<div class='table-responsive'>" . $this->table->generate() . "</div>" .  "</div></div>";
+                           Exportar Excel</a><span class='content_buscar'><i class='glyphicon glyphicon-search'></i>".form_input($buscar)."</span></div>" . "<div class='table-content'><div class='table-responsive'>" . $this->table->generate() . "</div>"  . "</div></div></div>";
                  $data['body'] = $table;
       }else {
           $data['body'] = $this->load->view('Tactico/productos_solicitados_view', '',TRUE);
