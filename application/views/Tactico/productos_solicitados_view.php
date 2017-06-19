@@ -25,6 +25,8 @@ $Cantidad = array(
     'type'=>'number'
 );
 
+
+
 $button = array('class' => 'btn btn-success',);
 $atriLabel = array('class' => 'col-lg-2 control-label');
 

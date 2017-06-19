@@ -34,7 +34,7 @@ class Productos_solicitados extends CI_Controller {
 
       $data['title'] = "Productos mas Solicitados ";
       $data['menu'] = $this->menu_dinamico->menus($this->session->userdata('logged_in'),$this->uri->segment(1));
-      $data['js'] = "assets/js/validate/reporte/bodega/general.js";
+      $data['js'] = "assets/js/validate/reporte/bodega/productos_solicitados.js";
       $table = '';
 
       if (($this->uri->segment(4))!=NULL && ($this->uri->segment(5))!=NULL && ($this->uri->segment(6))!=NULL) {
