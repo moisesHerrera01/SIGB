@@ -347,7 +347,7 @@
    }
 
    public function actualizarUsuarioRol($id, $data){
-     $this->db->where('id_usuario_rol',$id);
+     $this->db->where('id_Usuario_Rol',$id);
      $this->db->update('mtps.org_usuario_rol', $data);
    }
 
@@ -361,7 +361,7 @@
    }
 
    public function eliminarUsuarioRol($id){
-     $this->db->delete('mtps.org_usuario_rol', array('id_usuario_rol' => $id));
+     $this->db->delete('mtps.org_usuario_rol', array('id_Usuario_Rol' => $id));
    }
 
    public function obtenerUsuarios(){

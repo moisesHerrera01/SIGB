@@ -1,7 +1,7 @@
 <?php
 defined('BASEPATH') OR exit('No direct script access allowed');
 
-class Usuario_Rol extends CI_Controller {
+class Usuarios_rol extends CI_Controller {
 
   public function __construct() {
     parent::__construct();
@@ -20,7 +20,7 @@ class Usuario_Rol extends CI_Controller {
     $data['js'] = "assets/js/validate/usuario_rol.js";
     $msg = array('alert' => $this->uri->segment(3), );
 
-		$data['body'] = $this->load->view('mensajes', $msg, TRUE) . $this->load->view('usuario_rol_view', '', TRUE) .
+		$data['body'] = $this->load->view('mensajes', $msg, TRUE) . $this->load->view('usuarios_rol_view', '', TRUE) .
                     "<br><div class='content_table'>" .
                     "<div class='limit-content-title'><span class='icono icon-table icon-title'> Usuarios</span></div>".
                     "<div class='limit-content'>" . $this->mostrarTabla() . "</div></div>";
@@ -29,7 +29,7 @@ class Usuario_Rol extends CI_Controller {
 	}
 
   public function mostrarTabla(){
-    $modulo=$this->User_model->obtenerModulo('Usuario_Rol');
+    $modulo=$this->User_model->obtenerModulo('Usuarios_rol');
     $USER = $this->session->userdata('logged_in');
     if($USER){
       if ($this->User_model->validarAccesoCrud($modulo, $USER['id'], 'select')) {
@@ -57,12 +57,12 @@ class Usuario_Rol extends CI_Controller {
           } else {
               $registros = $this->User_model->obtenerUsuariosSICBAFLimit($num, $this->uri->segment(3));
 
-              $pagination = paginacion('index.php/Usuario_Rol/index/', $this->User_model->obtenerUsuariosSICBAFTotal(),
+              $pagination = paginacion('index.php/Usuarios_rol/index/', $this->User_model->obtenerUsuariosSICBAFTotal(),
                             $num, '3');
           }
         } else {
               $registros = $this->User_model->obtenerUsuariosSICBAFLimit($num, $this->uri->segment(3));
-              $pagination = paginacion('index.php/Usuario_Rol/index/', $this->User_model->obtenerUsuariosSICBAFTotal(),
+              $pagination = paginacion('index.php/Usuarios_rol/index/', $this->User_model->obtenerUsuariosSICBAFTotal(),
                             $num, '3');
         }
         /*
@@ -88,7 +88,7 @@ class Usuario_Rol extends CI_Controller {
                  }
               $this->table->add_row($us->id_usuario_rol,$us->nombre_completo,$nombre_rol,
                               '<a class="icono icon-actualizar" onClick="'.$onClick.'"></a>',
-                              '<a class="icono icon-eliminar" uri='.base_url('index.php/Usuario_Rol/EliminarDato/'.$us->id_usuario_rol).'></a>');
+                              '<a class="icono icon-eliminar" uri='.base_url('index.php/Usuarios_rol/EliminarDato/'.$us->id_usuario_rol).'></a>');
           }
         } else {
           $msg = array('data' => "Texto no encontrado", 'colspan' => "5");
@@ -104,7 +104,7 @@ class Usuario_Rol extends CI_Controller {
           return "<div class='table-responsive'>" . $this->table->generate() . "</div>" . $pagination;
         }
       } else {
-        redirect('/Usuario_Rol/index/forbidden');
+        redirect('/Usuarios_rol/index/forbidden');
       }
     } else {
       redirect('login/index/error_no_autenticado');
@@ -115,7 +115,7 @@ class Usuario_Rol extends CI_Controller {
   * Actualiza o Registra al sistema
   */
   public function RecibirDatos(){
-    $modulo=$this->User_model->obtenerModulo('Usuario_Rol');
+    $modulo=$this->User_model->obtenerModulo('Usuarios_rol');
     $USER = $this->session->userdata('logged_in');
     if($USER){
       $data = array(
@@ -138,9 +138,9 @@ class Usuario_Rol extends CI_Controller {
           $rastrea['operacion']='ACTUALIZA';
           $rastrea['id_registro']=$this->input->post('id');
           $this->User_model->insertarRastreabilidad($rastrea);
-          redirect('/Usuario_Rol/index/update');
+          redirect('/Usuarios_rol/index/update');
         } else {
-          redirect('/Usuario_Rol/index/forbidden');
+          redirect('/Usuarios_rol/index/forbidden');
         }
       }
       if ($this->User_model->validarAccesoCrud($modulo, $USER['id'], 'insert')) {
@@ -148,9 +148,9 @@ class Usuario_Rol extends CI_Controller {
         $rastrea['operacion']='INSERTA';
         $rastrea['id_registro']=$this->User_model->obtenerSiguienteIdModuloIncrement('org_usuario_rol')-1;
         $this->User_model->insertarRastreabilidad($rastrea);
-        redirect('/Usuario_Rol/index/new');
+        redirect('/Usuarios_rol/index/new');
       } else {
-        redirect('/Usuario_Rol/index/forbidden');
+        redirect('/Usuarios_rol/index/forbidden');
       }
     } else {
       redirect('login/index/error_no_autenticado');
@@ -161,7 +161,7 @@ class Usuario_Rol extends CI_Controller {
   * elimina un registro cuando se le pasa por la url el id
   */
   public function EliminarDato(){
-    $modulo=$this->User_model->obtenerModulo('Usuario_Rol');
+    $modulo=$this->User_model->obtenerModulo('Usuarios_rol');
     $USER = $this->session->userdata('logged_in');
     date_default_timezone_set('America/El_Salvador');
     $anyo=20;
@@ -180,9 +180,9 @@ class Usuario_Rol extends CI_Controller {
         $id = $this->uri->segment(3);
         $this->User_model->eliminarUsuarioRol($id);
         $this->User_model->insertarRastreabilidad($rastrea);
-        redirect('/Usuario_Rol/index/delete');
+        redirect('/Usuarios_rol/index/delete');
       } else {
-        redirect('/Usuario_Rol/index/forbidden');
+        redirect('/Usuarios_rol/index/forbidden');
       }
     } else {
       redirect('login/index/error_no_autenticado');

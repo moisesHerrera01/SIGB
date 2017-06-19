@@ -15,7 +15,7 @@ $(document).ready(function() {
   //usuario
   $.autocomplete({
     elemet: $('input[name=autocomplete1]'),
-    url: 'index.php/Usuario_Rol/AutocompleteUsuario',
+    url: 'index.php/Usuarios_Rol/AutocompleteUsuario',
     name: 'usuario',
     siguiente: 'rol',
     content: 'suggestions1'
@@ -24,7 +24,7 @@ $(document).ready(function() {
   //rol
   $.autocomplete({
     elemet: $('input[name=autocomplete2]'),
-    url: 'index.php/Usuario_Rol/AutocompleteRol',
+    url: 'index.php/Usuarios_Rol/AutocompleteRol',
     name: 'rol',
     siguiente: 'button',
     content: 'suggestions2'

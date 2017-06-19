@@ -10,7 +10,7 @@
       echo "<span class='icono icon-paste icon-title'> Usuario</span>";
     echo "</div>";
     echo "<div class='limit-content'>";
-  echo form_open("/Usuario_Rol/RecibirDatos", $atributos);
+  echo form_open("/Usuarios_Rol/RecibirDatos", $atributos);
 
   $us = array(
       'name' => 'autocomplete1',
@@ -51,7 +51,7 @@
   echo form_hidden('id');
 
   echo form_submit('','Guardar', $button);
-  
+
   echo "<button class='btn btn-warning' type='reset' value='Reset'>Limpiar</button>";
 
   echo form_close();
@@ -65,7 +65,7 @@ echo "</div>";
     'class' => 'form-control',
     'autocomplete' => 'off',
     'id' => 'buscar',
-    'url' => 'index.php/Usuario_Rol/mostrarTabla'
+    'url' => 'index.php/Usuarios_Rol/mostrarTabla'
   );
 
   echo "<div class='content_buscar'>";
