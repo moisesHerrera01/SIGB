@@ -12,6 +12,7 @@
       $base=$query->row()->nombre;
       /*trunca los los registros de las tablas de la bd*/
       $this->vaciarBD();
+      $this->db->query("SET FOREIGN_KEY_CHECKS = 0");
       /*Extrae, transforma y carga los rgistros de las tablas contenidos en la bd transaccional a la bd gerencial
       tabla sic_unidad_medida en el orden padre a hijo*/
       $this->db->query("INSERT INTO $base.sic_unidad_medida (id_unidad_medida,nombre) select id_unidad_medida,
@@ -60,6 +61,7 @@
       $this->db->query("INSERT INTO $base.sic_detalle_solicitud_producto (id_detalle_solicitud_producto,cantidad,precio,total,
       id_detalleproducto,id_solicitud,estado_solicitud_producto,id_fuentes) select id_detalle_solicitud_producto,cantidad,precio,total,
       id_detalleproducto,id_solicitud,estado_solicitud_producto,id_fuentes from mtps.sic_detalle_solicitud_producto");
+      $this->db->query("SET FOREIGN_KEY_CHECKS = 0");
     }
 
     public function obtenerCantReg(){
@@ -117,7 +119,6 @@
       $this->db->truncate($base.'.sic_especifico');
       $this->db->truncate($base.'.sic_producto');
       $this->db->truncate($base.'.sic_proveedores');
-      //$this->db->truncate($base.'.sic_categoria_proveedor');
       $this->db->truncate($base.'.sic_fuentes_fondo');
       $this->db->truncate($base.'.sic_unidad_medida');
       $this->db->query("SET FOREIGN_KEY_CHECKS = 1");
