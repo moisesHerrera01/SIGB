@@ -51,7 +51,7 @@
         $this->table->set_template($template);
         $this->table->set_heading('Especifico','Nombre especifico', 'Cantidad', 'Saldo');
 
-        $num = '10';
+        $num = '15';
         $segmento = 8;
                 $seccion = ($this->uri->segment(6)==NULL) ? 0 : $this->uri->segment(6);
 

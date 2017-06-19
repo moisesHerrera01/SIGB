@@ -34,11 +34,6 @@
       /*tabla sic_fuentes_fondo*/
       $this->db->query("INSERT INTO $base.sic_fuentes_fondo (id_fuentes,nombre_fuente)
       select id_fuentes,nombre_fuente from mtps.sic_fuentes_fondo");
-
-      /*tabla sic_categoria_proveedor
-      $this->db->query("INSERT INTO $base.sic_categoria_proveedor (id_categoria_proveedor,nombre_categoria)
-      select id_categoria_proveedor,nombre_categoria from mtps.sic_categoria_proveedor");*/
-
       /*tabla sic_proveedor*/
       $this->db->query("INSERT INTO $base.sic_proveedores (id_proveedores,nombre_proveedor)
       select id_proveedores,nombre_proveedor from mtps.sic_proveedores");
@@ -127,11 +122,5 @@
       $this->db->truncate($base.'.sic_unidad_medida');
       $this->db->query("SET FOREIGN_KEY_CHECKS = 1");
     }
-
-    /*public function totalUM(){
-      $this->db->select('count(*) as total')
-               ->from('mtps.sic_producto');
-      return $this->db->get()->row()->total;
-    }*/
   }
 ?>

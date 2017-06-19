@@ -63,7 +63,6 @@
     public function buscarFuentes($busca){
       $this->db->order_by("id_fuentes", "asc");
       $this->db->like('nombre_fuente', $busca);
-      $this->db->or_like('codigo', $busca);
       $query = $this->db->get('sic_fuentes_fondo', 10);
       if ($query->num_rows() > 0) {
           return  $query->result();

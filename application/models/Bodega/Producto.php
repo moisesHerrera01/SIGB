@@ -476,7 +476,7 @@
                    ->join('sic_kardex_saldo ks ',' ks.id_kardex_saldo=kar.id_kardex_saldo')
                    ->join('sic_detalle_producto dp','dp.id_detalleproducto=kar.id_detalleproducto')
                    ->join('sic_especifico e','e.id_especifico=dp.id_especifico')
-                   ->group_by('e.id_especifico')                
+                   ->group_by('e.id_especifico')
                    ->where('kar.fecha_ingreso<=',$fecha_fin);
           $query=$this->db->get();
           return  $query->result();
