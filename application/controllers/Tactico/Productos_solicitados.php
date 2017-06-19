@@ -31,9 +31,6 @@ class Productos_solicitados extends CI_Controller {
        $this->load->model('Bodega/Producto');
        $this->load->library(array('table'));
        $USER = $this->session->userdata('logged_in');
-   // $fuente = $this->uri->segment(4);
-    //$especifico = $this->uri->segment(5);
-
 
       $data['title'] = "Productos mas Solicitados ";
       $data['menu'] = $this->menu_dinamico->menus($this->session->userdata('logged_in'),$this->uri->segment(1));
@@ -64,6 +61,7 @@ class Productos_solicitados extends CI_Controller {
         } else {
             $registros = $this->Producto->obtenerProductoMasSolicitado($this->uri->segment(4),$this->uri->segment(5),$this->uri->segment(6));
             $total = count($registros);
+            
         }
 
       
@@ -81,7 +79,7 @@ class Productos_solicitados extends CI_Controller {
           if ($next == FALSE) {
             if($registro['cant'] != $next['cant'] && $total != 0){
               $msg = array('data' => "Total :", 'colspan' => "4");
-              $this->table->add_row($msg,  number_format($total, 3));
+              $this->table->add_row($msg,  '$'.number_format($total, 3));
               $total = 0;
             }
           } 

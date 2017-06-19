@@ -11,7 +11,7 @@ class Lento_movimiento extends CI_Controller {
     $this->load->model('Bodega/Fuentefondos_model');
     $this->load->helper(array('form', 'paginacion'));
     $this->load->library('table');
-    $this->load->model(array('Bodega/Producto','Bodega/Detalle_solicitud_producto_model', 'Bodega/Fuentefondos_model', 'Bodega/Solicitud_Model'));
+    $this->load->model(array('Bodega/Producto','Bodega/Detalle_solicitud_producto_model', 'Bodega/Fuentefondos_model', 'Bodega/Solicitud_Model', 'Bodega/Especifico'));
   }
 
    public function RecibirMovimiento() {
@@ -58,6 +58,7 @@ class Lento_movimiento extends CI_Controller {
             $registros = $this->Producto->obtenerProductosFuenteLimit($this->uri->segment(4),$this->uri->segment(5),$num,$this->uri->segment(6));
             $total = $this->Producto->obtenerProductosFuenteTotal($this->uri->segment(4),$this->uri->segment(5));
             $cant=$total->numero;
+           
         }
 
         $pagination = paginacion('index.php/Tactico/Lento_movimiento/Reporte/'.$this->uri->segment(4).'/'.$this->uri->segment(5),$cant,$num, $segmento);
@@ -73,15 +74,12 @@ class Lento_movimiento extends CI_Controller {
             $salidas=0;
             $kardex=$this->Detalle_solicitud_producto_model->obtenerKardexProducto($pro->id_detalleproducto);
             foreach ($kardex as $kar) {
-              //if($pro->id_fuentes==$fuente && $pro->id_fuentes==$kar->id_fuentes){
                 if($kar->movimiento=='SALIDA'){
                   $salidas=$salidas+$kar->cantidad;
                 }else{
                   $entradas=$entradas+$kar->cantidad;
                 }
-            //}
                $entradas=$entradas-$salidas;
-
               date_default_timezone_set('America/El_Salvador');
               $anyo=20;
               $fecha_actual=date($anyo."y-m-d");
@@ -97,9 +95,11 @@ class Lento_movimiento extends CI_Controller {
               }elseif ($dif>60) {
                 $alerta='Muy Lento';
               }
-
             }
+
+            
               $this->table->add_row($pro->nombre_producto,$pro->numero_producto,$pro->nombre,$pro->existencia,$pro->nombre_fuente,$pro->fecha_ingreso,$alerta,$pro->nombre_seccion);
+          
 
               $i++;
           }
@@ -134,8 +134,8 @@ class Lento_movimiento extends CI_Controller {
         if ($segaux > $pag) {
           $pag++;
         }
-        $fuente = ($this->uri->segment(4) != 0) ?   $this->Fuentefondos_model->obtenerFuente($this->uri->segment(4)) : 'N/E' ;
-                         $fuente = ($this->uri->segment(4) != 0) ?   $this->Fuentefondos_model->obtenerFuente($this->uri->segment(4)) : 'N/E' ;
+            $fuente = ($this->uri->segment(4) != 0) ?   $this->Fuentefondos_model->obtenerFuente($this->uri->segment(4)) : 'N/E' ;
+            $especifico = ($this->uri->segment(5) != 0) ?   $this->Especifico->obtenerEspecifico($this->uri->segment(5)) : 'N/E' ;
 
                   $buscar = array(
                     'name' => 'buscar',

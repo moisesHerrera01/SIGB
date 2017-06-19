@@ -73,6 +73,7 @@ class Proveedor_factura_especifico extends CI_Controller {
         } else {
              $registros = $this->Proveedor->ReporteProveedores($this->uri->segment(4), $this->uri->segment(5), $this->uri->segment(6), $num, $this->uri->segment(7));
              $total = $this->Proveedor->TotalReporteProveedores($this->uri->segment(4),$this->uri->segment(5), $this->uri->segment(6));
+             print_r($registros);
         }
         $pagination = paginacion('index.php/Tactico/Proveedor_factura_especifico/Reporte/' .$this->uri->segment(4). '/' .$this->uri->segment(5). '/' . $this->uri->segment(6),
                     $total, $num, '8');
