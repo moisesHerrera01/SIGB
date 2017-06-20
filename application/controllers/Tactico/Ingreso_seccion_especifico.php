@@ -44,14 +44,10 @@ class Ingreso_seccion_especifico extends CI_Controller {
       $this->table->set_heading('Número Especifico','Nombre Especifico', 'Cantidad de Facturas', 'Cantidad de productos','Total');
 
       $num = 10;
-      $segmento = 7;
-      //var_dump($this->input->post('busca'));
-      //var_dump($registros = $this->Factura_Model->buscaIngresoSeccionEspecifico($this->uri->segment(4),$this->uri->segment(5),$this->uri->segment(6),'ALIMENTOS'));
-      if ($this->input->is_ajax_request()) {
+      $segmento = 7;if ($this->input->is_ajax_request()) {
         if (!($this->input->post('busca') == "")) {
           $registros = $this->Factura_Model->buscaIngresoSeccionEspecifico($this->uri->segment(4),$this->uri->segment(5),$this->uri->segment(6),$this->input->post('busca'));
           $count=count($registros);
-          //var_dump($this->input->post('busca'));
         } else {
           $count = $this->Factura_Model->totalIngresoSeccionEspecifico($this->uri->segment(4),$this->uri->segment(5),$this->uri->segment(6));
           $registros = $this->Factura_Model->ingresoSeccionEspecifico($this->uri->segment(4),$this->uri->segment(5),$this->uri->segment(6),$num, $this->uri->segment(7));
@@ -61,8 +57,6 @@ class Ingreso_seccion_especifico extends CI_Controller {
         $count = $this->Factura_Model->totalIngresoSeccionEspecifico($this->uri->segment(4),$this->uri->segment(5),$this->uri->segment(6));
         $registros = $this->Factura_Model->ingresoSeccionEspecifico($this->uri->segment(4),$this->uri->segment(5),$this->uri->segment(6),$num, $this->uri->segment(7));
       }
-    //  $count = $this->Factura_Model->totalIngresoSeccionEspecifico($this->uri->segment(4),$this->uri->segment(5),$this->uri->segment(6));
-    //  $registros = $this->Factura_Model->ingresoSeccionEspecifico($this->uri->segment(4),$this->uri->segment(5),$this->uri->segment(6),$num, $this->uri->segment(7));
       $sumtotal= $this->Factura_Model->SumaTotalIngresoSeccionEspecifico($this->uri->segment(4),$this->uri->segment(5),$this->uri->segment(6));
 
       $pagination = paginacion('index.php/Tactico/Ingreso_seccion_especifico/reporte/'.$this->uri->segment(4).'/'.$this->uri->segment(5).'/'.$this->uri->segment(6),

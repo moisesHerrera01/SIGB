@@ -370,7 +370,7 @@
                 join sic_detalle_factura df on df.id_factura=f.id_factura
                 join sic_detalle_producto dp on df.id_detalleproducto = dp.id_detalleproducto
                 join sic_especifico es on dp.id_especifico = es.id_especifico
-                join org_seccion sec on f.id_seccion=sec.id_seccion
+                join mtps.org_seccion sec on f.id_seccion=sec.id_seccion
                 where f.estado = 'LIQUIDADA' and f.fecha_ingreso between '$fecha_inicio' and '$fecha_fin' and f.id_seccion = $seccion
                 group by df.id_detalleproducto) x")
                 ->group_by('id_especifico')
@@ -395,7 +395,7 @@
                 join sic_detalle_factura df on df.id_factura=f.id_factura
                 join sic_detalle_producto dp on df.id_detalleproducto = dp.id_detalleproducto
                 join sic_especifico es on dp.id_especifico = es.id_especifico
-                join org_seccion sec on f.id_seccion=sec.id_seccion
+                join mtps.org_seccion sec on f.id_seccion=sec.id_seccion
                 where f.estado = 'LIQUIDADA' AND f.fecha_ingreso between '$fecha_inicio' and '$fecha_fin' and f.id_seccion = $seccion
                 group by df.id_detalleproducto) x")
                 ->group_by('id_especifico')
@@ -419,7 +419,7 @@
                 join sic_detalle_factura df on df.id_factura=f.id_factura
                 join sic_detalle_producto dp on df.id_detalleproducto = dp.id_detalleproducto
                 join sic_especifico es on dp.id_especifico = es.id_especifico
-                join org_seccion sec on f.id_seccion=sec.id_seccion
+                join mtps.org_seccion sec on f.id_seccion=sec.id_seccion
                 where f.estado = 'LIQUIDADA' AND f.fecha_ingreso between '$fecha_inicio' and '$fecha_fin' and f.id_seccion = $seccion
                 group by df.id_detalleproducto) x")
                 ->group_by('id_especifico')
@@ -444,7 +444,7 @@
                 join sic_detalle_factura df on df.id_factura=f.id_factura
                 join sic_detalle_producto dp on df.id_detalleproducto = dp.id_detalleproducto
                 join sic_especifico es on dp.id_especifico = es.id_especifico
-                join org_seccion sec on f.id_seccion=sec.id_seccion
+                join mtps.org_seccion sec on f.id_seccion=sec.id_seccion
                 where f.estado = 'LIQUIDADA' AND f.fecha_ingreso between '$fecha_inicio' and '$fecha_fin' and f.id_seccion = $seccion
                 group by df.id_detalleproducto) x group by id_especifico order by id_especifico) y");
                 $query = $this->db->get();
@@ -466,7 +466,7 @@
                 join sic_detalle_factura df on df.id_factura=f.id_factura
                 join sic_detalle_producto dp on df.id_detalleproducto = dp.id_detalleproducto
                 join sic_especifico es on dp.id_especifico = es.id_especifico
-                join org_seccion sec on f.id_seccion=sec.id_seccion
+                join mtps.org_seccion sec on f.id_seccion=sec.id_seccion
                 where f.estado = 'LIQUIDADA' AND f.fecha_ingreso between '$fecha_inicio' and '$fecha_fin' and f.id_seccion = $seccion
                 group by df.id_detalleproducto) x")
                 ->like('nombre_especifico',$busca)
@@ -483,7 +483,7 @@
 
     public function obtenerSeccion($id){
         $this->db->where('id_seccion',$id);
-        $query = $this->db->get('org_seccion');
+        $query = $this->db->get('mtps.org_seccion');
         if ($query->num_rows() > 0) {
           $nombre;
           foreach ($query->result() as $sec) {
