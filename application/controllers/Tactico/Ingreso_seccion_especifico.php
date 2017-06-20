@@ -17,7 +17,18 @@ class Ingreso_seccion_especifico extends CI_Controller {
     date_default_timezone_set('America/El_Salvador');
     $anyo=20;
     $fecha_actual=date($anyo."y-m-d");
-    if ($this->input->post('fecha_inicio')!=NULL && $this->input->post('seccion')!=NULL) {
+    if ($this->input->post('fecha_inicio')!=NULL) {
+        $USER = $this->session->userdata('logged_in');
+        $modulo=$this->User_model->obtenerModulo('Tactico/Gasto_global/reporteGastoSeccion');
+        $hora=date("H:i:s");
+        $rastrea = array(
+          'id_usuario' =>$USER['id'],
+          'id_modulo' =>$modulo,
+          'fecha' =>$fecha_actual,
+          'hora' =>$hora,
+          'operacion'=> 'CONSULTA'
+        );
+        $this->User_model->insertarRastreabilidad($rastrea);
       if($this->input->post('fecha_fin')==NULL){
         redirect('Tactico/Ingreso_seccion_especifico/reporte/'.$this->input->post('fecha_inicio').'/'
         .$fecha_actual.'/'.$this->input->post('seccion'));
@@ -25,7 +36,7 @@ class Ingreso_seccion_especifico extends CI_Controller {
         redirect('Tactico/Ingreso_seccion_especifico/reporte/'.$this->input->post('fecha_inicio').'/'
         .$this->input->post('fecha_fin').'/'.$this->input->post('seccion'));
       }} else {
-        redirect('Tactico/Ingreso_seccion_especifico/');
+        redirect('Tactico/Ingreso_seccion_especifico/reporte/');
     }
   }
 

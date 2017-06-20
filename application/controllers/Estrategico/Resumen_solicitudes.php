@@ -23,7 +23,7 @@ class Resumen_solicitudes extends CI_Controller {
       }else{
         redirect('Estrategico/Resumen_solicitudes/reporte/'.$this->input->post('minFecha').'/'.$this->input->post('maxFecha'));
       }} else {
-        redirect('Estrategico/Resumen_solicitudes/');
+        redirect('Estrategico/Resumen_solicitudes/reporte');
     }
   }
 
@@ -32,7 +32,7 @@ class Resumen_solicitudes extends CI_Controller {
     $USER = $this->session->userdata('logged_in');
     $data['title'] = "Reporte Resumen de Solicitudes de Bodega";
     $data['menu'] = $this->menu_dinamico->menus($this->session->userdata('logged_in'),$this->uri->segment(1));
-    //$data['js'] = 'assets/js/validate/reporte/bodega/salida.js';
+    $data['js'] = 'assets/js/validate/reporte/bodega/resumen_solicitud.js';
     $table = '';
     if (($this->uri->segment(4))!=NULL && ($this->uri->segment(5))!=NULL) {
       $template = array(
