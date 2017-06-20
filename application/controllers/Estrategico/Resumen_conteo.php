@@ -57,21 +57,18 @@ class Resumen_conteo extends CI_Controller {
 
         $num = '15';
         $segmento = '5';
+        $count = 0;
 
         if ($this->input->is_ajax_request()) {
           if (!($this->input->post('busca') == "")) {
               $registros = $this->DetalleConteoFisico_model->obtenerDetalleConteosBusca($nom_conteo, $this->input->post('busca'));
-              $count = count($registros);
           } else {
             $registros = $this->DetalleConteoFisico_model->obtenerDetalleConteosTotal($nom_conteo);
-            $count = $this->DetalleConteoFisico_model->totalDetalleConteo($nom_conteo);
           }
         } else {
             $registros = $this->DetalleConteoFisico_model->obtenerDetalleConteosTotal($nom_conteo);
-            $count = $this->DetalleConteoFisico_model->totalDetalleConteo($nom_conteo);
         }
 
-        $pagination = paginacion('index.php/Estrategico/Resumen_conteo/Reporte/'.$nom_conteo, $count , $num, $segmento);
         $resumen = array();
 
         $fecha = $this->Conteofisico_model->obtenerFechaConteo($nom_conteo);
@@ -88,12 +85,15 @@ class Resumen_conteo extends CI_Controller {
             }
           }
 
+          $count = $i;
           $resumen = array_slice($resumen, $this->uri->segment(5), $num);
 
         } else {
           $msg = array('data' => "No se encontraron resultados", 'colspan' => "9");
           $this->table->add_row($msg);
         }
+
+        $pagination = paginacion('index.php/Estrategico/Resumen_conteo/Reporte/'.$nom_conteo, $count , $num, $segmento);
 
         if ($this->input->is_ajax_request()) {
           echo "<div class='table-responsive'>" . $this->table->generate($resumen) . "</div>" . $pagination;
