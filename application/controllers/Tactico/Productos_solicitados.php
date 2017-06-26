@@ -43,7 +43,7 @@ class Productos_solicitados extends CI_Controller {
             'table_open' => '<table class="table table-striped table-bordered">'
         );
         $this->table->set_template($template);
-        $this->table->set_heading('Nombre del Producto','Detalle Producto','Unidad de Medida', 'Especifico','cantidad');
+        $this->table->set_heading('Nombre del Producto','Detalle Producto','Unidad de Medida', 'Especifico','Cantidad');
 
         $num = 10;
 
@@ -70,7 +70,7 @@ class Productos_solicitados extends CI_Controller {
 
         while ($registro = current($registros)) {
           $this->table->add_row($registro['nombre_producto'], $registro['id_detalleproducto'],
-                                $registro['nombre_unidad_medida'], $registro['id_especifico'], $registro['cant']);
+                                $registro['nombre_unidad_medida'], $registro['id_especifico'], '$'.number_format($registro['cant'], 3));
 
           $total += $registro['cant'];
           $cant=$num;
