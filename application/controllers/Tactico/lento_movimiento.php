@@ -53,6 +53,8 @@ class Lento_movimiento extends CI_Controller {
           } else {
             $registros = $this->Producto->obtenerProductosFuenteLimit($this->uri->segment(4),$this->uri->segment(5),$num,$this->uri->segment(6));
             $total = $this->Producto->obtenerProductosFuenteTotal($this->uri->segment(4),$this->uri->segment(5));
+            $cant=$total->numero;
+
           }
         } else {
             $registros = $this->Producto->obtenerProductosFuenteLimit($this->uri->segment(4),$this->uri->segment(5),$num,$this->uri->segment(6));
@@ -156,7 +158,6 @@ class Lento_movimiento extends CI_Controller {
                                  <li>Fecha emisión: ".date('d/m/Y')."</li>
                                  <li>Nombre la compañia: MTPS</li>
                                  <li>N° pagina: ". $pag .'/'. $pags ."</li>
-                                 <li>Nombre pantalla:</li>
                                  <li>Usuario: ".$USER['nombre_completo']."</li>
                                  <br />
                                  <li>Parametros: ".$fuente." ".$especifico." ". $this->uri->segment(4) . " - " . $this->uri->segment(5)."</li>

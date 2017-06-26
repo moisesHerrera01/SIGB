@@ -30,7 +30,7 @@ jQuery.validator.addMethod("minordate", function(value, element) {
     return true;
   }
 
-}, "Fecha seleccionada no valida.");
+}, "La fecha no puede ser mayor al día de ahora.");
 
 //valida una fecha inicial y una final
 //param es nombre del input
