@@ -63,20 +63,21 @@ class Proveedor_factura_especifico extends CI_Controller {
         if ($this->input->is_ajax_request()) {
           if (!($this->input->post('busca') == "")) {
               $registros = $this->Proveedor->ReporteProveedoresBuscar($this->uri->segment(4), $this->uri->segment(5), $this->uri->segment(6), $num, $this->uri->segment(7), $this->input->post('busca'));
-              $total = count($registros);
+              $count = count($registros);
 
           } else {
              $registros = $this->Proveedor->ReporteProveedores($this->uri->segment(4), $this->uri->segment(5), $this->uri->segment(6), $num, $this->uri->segment(7));
              $total = $this->Proveedor->TotalReporteProveedores($this->uri->segment(4),$this->uri->segment(5), $this->uri->segment(6));
+             $count = count($registros);
 
             }
         } else {
              $registros = $this->Proveedor->ReporteProveedores($this->uri->segment(4), $this->uri->segment(5), $this->uri->segment(6), $num, $this->uri->segment(7));
              $total = $this->Proveedor->TotalReporteProveedores($this->uri->segment(4),$this->uri->segment(5), $this->uri->segment(6));
-             print_r($registros);
+             $count = count($registros);
         }
         $pagination = paginacion('index.php/Tactico/Proveedor_factura_especifico/Reporte/' .$this->uri->segment(4). '/' .$this->uri->segment(5). '/' . $this->uri->segment(6),
-                    $total, $num, '8');
+                    $count, $num, '8');
 
         $total = 0;
         while ($registro = current($registros)) {
@@ -152,7 +153,6 @@ class Proveedor_factura_especifico extends CI_Controller {
                                  <li>Fecha emisión: ".date('d/m/Y')."</li>
                                  <li>Nombre la compañia: MTPS</li>
                                  <li>N° pagina: ". $pag .'/'. $pags ."</li>
-                                 <li>Nombre pantalla:</li>
                                  <li>Usuario: ".$USER['nombre_completo']."</li>
                                  <br />
                                  <li>Parametros: ".$fuente." ". $this->uri->segment(5) ." - ". $this->uri->segment(6). "</li>

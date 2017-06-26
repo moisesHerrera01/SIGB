@@ -53,7 +53,7 @@ class Productos_solicitados extends CI_Controller {
           if (!($this->input->post('busca') == "")) {
               $registros = $this->Producto->obtenerProductoMasSolicitadoBuscar($this->uri->segment(4),$this->uri->segment(5),$this->uri->segment(6), $this->input->post('busca'));
               $total = count($registros);
-              
+
           } else {
             $registros = $this->Producto->obtenerProductoMasSolicitado($this->uri->segment(4),$this->uri->segment(5),$this->uri->segment(6));
             $total = count($registros);
@@ -61,13 +61,13 @@ class Productos_solicitados extends CI_Controller {
         } else {
             $registros = $this->Producto->obtenerProductoMasSolicitado($this->uri->segment(4),$this->uri->segment(5),$this->uri->segment(6));
             $total = count($registros);
-            
+
         }
 
-      
+
       if ($registros != 0) {
         $total = 0;
-        
+
         while ($registro = current($registros)) {
           $this->table->add_row($registro['nombre_producto'], $registro['id_detalleproducto'],
                                 $registro['nombre_unidad_medida'], $registro['id_especifico'], $registro['cant']);
@@ -75,14 +75,14 @@ class Productos_solicitados extends CI_Controller {
           $total += $registro['cant'];
           $cant=$num;
           $next = next($registros);
-          
+
           if ($next == FALSE) {
             if($registro['cant'] != $next['cant'] && $total != 0){
               $msg = array('data' => "Total :", 'colspan' => "4");
               $this->table->add_row($msg,  '$'.number_format($total, 3));
               $total = 0;
             }
-          } 
+          }
         }
       } else {
         $msg = array('data' => "No se encontraron resultados", 'colspan' => "6");
@@ -139,7 +139,6 @@ class Productos_solicitados extends CI_Controller {
                                  <li>Fecha emisión: ".date('d/m/Y')."</li>
                                  <li>Nombre la compañia: MTPS</li>
                                  <li>N° pagina: ". $pag .'/'. $pags ."</li>
-                                 <li>Nombre pantalla:</li>
                                  <li>Usuario: ".$USER['nombre_completo']."</li>
                                  <br />
                                  <li>Parametros: ".$this->uri->segment(4)." - ". $this->uri->segment(5) ." - ". $this->uri->segment(6). "</li>
@@ -156,7 +155,7 @@ class Productos_solicitados extends CI_Controller {
       }
       $this->load->view('base', $data);
     }
-  
+
 
   public function ReporteExcel(){
     $USER = $this->session->userdata('logged_in');
@@ -229,10 +228,10 @@ class Productos_solicitados extends CI_Controller {
       $cantidad=$this->uri->segment(4);
       $fecha_inicio=$this->uri->segment(5);
       $fecha_fin=$this->uri->segment(6);
-      
+
       $i = 2;
       foreach($registros as $salida) {
-        
+
 
         $objPHPExcel->setActiveSheetIndex(0)
                     ->setCellValue('A'.$i, $salida['nombre_producto'])
