@@ -53,6 +53,7 @@ class Lento_movimiento extends CI_Controller {
           } else {
             $registros = $this->Producto->obtenerProductosFuenteLimit($this->uri->segment(4),$this->uri->segment(5),$num,$this->uri->segment(6));
             $total = $this->Producto->obtenerProductosFuenteTotal($this->uri->segment(4),$this->uri->segment(5));
+            $cant=$total->numero;
 
           }
         } else {
