@@ -7,14 +7,16 @@ $fechaInicial = array(
     'name' => 'fechaMin',
     'type' => "date",
     'placeholder' => 'Escribe Fecha de Inicial',
-    'class' => "form-control"
+    'class' => "form-control",
+    'minordate'=>"true"
 );
 
 $fechaFinal = array(
     'name' => 'fechaMax',
     'type' => "date",
     'placeholder' => 'Escribe Fecha de Final',
-    'class' => "form-control"
+    'class' => "form-control",
+    'minordate'=>"true"
 );
 
 $Cantidad = array(
@@ -46,7 +48,6 @@ echo "<div class='content-form'>";
         <li>Fecha emisión: ".date('d/m/Y')."</li>
         <li>Nombre la compañia: MTPS</li>
         <li>N° pagina: 1/1</li>
-        <li>Nombre pantalla:</li>
         <li>Usuario: ".$user['nombre_completo']."</li>
       </ul>
     </div>";

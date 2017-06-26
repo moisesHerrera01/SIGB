@@ -42,7 +42,7 @@ class Lento_movimiento extends CI_Controller {
         );
         $this->table->set_template($template);
         $this->table->set_heading('Nombre de Producto','Numero de  Producto','Unidad de medida', 'Existencia', 'Fuente de Fondos','Fecha de Ingreso','Alerta','Seccion Solicitante');
-        $num = 10;
+        $num = 15;
         $segmento=6;
 
          if ($this->input->is_ajax_request()) {
@@ -58,7 +58,7 @@ class Lento_movimiento extends CI_Controller {
             $registros = $this->Producto->obtenerProductosFuenteLimit($this->uri->segment(4),$this->uri->segment(5),$num,$this->uri->segment(6));
             $total = $this->Producto->obtenerProductosFuenteTotal($this->uri->segment(4),$this->uri->segment(5));
             $cant=$total->numero;
-           
+
         }
 
         $pagination = paginacion('index.php/Tactico/Lento_movimiento/Reporte/'.$this->uri->segment(4).'/'.$this->uri->segment(5),$cant,$num, $segmento);
@@ -97,9 +97,9 @@ class Lento_movimiento extends CI_Controller {
               }
             }
 
-            
+
               $this->table->add_row($pro->nombre_producto,$pro->numero_producto,$pro->nombre,$pro->existencia,$pro->nombre_fuente,$pro->fecha_ingreso,$alerta,$pro->nombre_seccion);
-          
+
 
               $i++;
           }
