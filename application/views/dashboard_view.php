@@ -38,15 +38,7 @@
     </div>
     <div class="content">
       <div class="dashboard-box">
-        <span class="dashboard-title-box">BIENVENIDO AL SISTEMA INFORMATICO GERENCIAL PARA GESTIÓN DE BODEGA INSTITUCIONAL</span>
-        <br>
-        <br>
-        <br>
-        <span class="dashboard-user">
-          <b>USUARIO:</b> <?= $usuario ?>
-          &emsp;
-          <b>ROL:</b> <?= $rol ?>
-        </span>
+        
       </div>
     </div>
     <div class="footer">

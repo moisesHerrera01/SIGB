@@ -14,7 +14,7 @@ class Login extends CI_Controller {
     $USER = $this->session->userdata('logged_in');
     if (!$USER) {
       $data['title'] = "Login";
-      $data['msg'] = $this->load->view('mensajes', array('alert' => $this->uri->segment(3), 'controller' => 'login'), TRUE);
+      $data['msg'] = $this->load->view('mensajes', array('alert' => $this->uri->segment(4), 'controller' => 'login'), TRUE);
       $this->load->view('login_view', $data);
     } else {
       redirect('dashboard'.'/');
@@ -49,10 +49,10 @@ class Login extends CI_Controller {
           if (!preg_match('`[0-9]`',$password)){
                 $segura=FALSE;
           }
-          if($segura=TRUE){
+          if($segura){
             redirect('dashboard/index/');
           }else{
-              redirect('dashboard/index/inseguro');
+            redirect('dashboard/index/inseguro');
           }
        }
     }

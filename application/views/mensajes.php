@@ -408,6 +408,7 @@ if (isset($alert)) {
                 switch ($alert) {
                   case 'inseguro':
                     $mensaje = "Su contraseña es insegura.";
+                    $tipo = 'warning';
                     break;
                   default:
                     break;
