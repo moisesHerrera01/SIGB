@@ -128,6 +128,9 @@
                    'id' => 'buscar',
                    'url' => 'index.php/Tactico/Gasto_global/reporteGastoSeccion/'.$this->uri->segment(4).'/'.$this->uri->segment(5).'/'.$seccion.'/'
                  );
+                 date_default_timezone_set('America/El_Salvador');
+                 $anyo=20;
+                 $fecha_actual=date("d-m-".$anyo."y");
 
                  $seccion = ($this->uri->segment(6) != 0) ?   $this->Solicitud_Model->obtenerSeccion($this->uri->segment(6)) : 'N/E' ;
                  $especifico = ($this->uri->segment(7) != 0) ?   $this->Especifico->obtenerEspecifico($this->uri->segment(7)) : 'N/E' ;
@@ -138,7 +141,7 @@
                              "</div>".
                              "<div class='title-header'>
                                <ul>
-                                 <li>Fecha emisión: ".date('d/m/Y')."</li>
+                                 <li>Fecha emisión: ".$fecha_actual."</li>
                                  <li>Nombre la compañia: MTPS</li>
                                  <li>N° pagina: ". $pag .'/'. $pags ."</li>
                                  <li>Usuario: ".$USER['nombre_completo']."</li>

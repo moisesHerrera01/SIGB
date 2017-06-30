@@ -1,4 +1,7 @@
 <?php
+date_default_timezone_set('America/El_Salvador');
+$anyo=20;
+$fecha_actual=date("d-m-".$anyo."y");
 $user = $this->session->userdata('logged_in');
 echo $this->breadcrumb->build_breadcrump(implode('/', array_slice($this->uri->segment_array(), 0, 3)));
 
@@ -39,9 +42,9 @@ echo "<div class='content-form'>";
     echo
     "<div class='title-header'>
       <ul>
-        <li>Fecha emisión: ".date('d/m/Y')."</li>
+        <li>Fecha emisión: ".$fecha_actual."</li>
         <li>Nombre la compañia: MTPS</li>
-        <li>N° pagina: 1/1</li>      
+        <li>N° pagina: 1/1</li>
         <li>Usuario: ".$user['nombre_completo']."</li>
       </ul>
     </div>";
