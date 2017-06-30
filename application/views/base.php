@@ -33,7 +33,7 @@
             SIGB
           </p>
           <p>
-            Copyright (c) 2016 Copyright Holder All Rights Reserved.
+            Copyright (c) 2017 Copyright Holder All Rights Reserved.
           </p>
         </div>
         <div class="conten-info-min">

@@ -32,7 +32,7 @@
       if ($msg) {
         echo $msg;
       }
-    ?> 
+    ?>
     <div class="">
       <?php
       if (isset($menu)) {
@@ -48,15 +48,15 @@
       <div class="content_footer">
         <div class="content-info-sis">
           <p class="name-sis">
-            SICBAF
+            SIGB
           </p>
           <p>
-            Copyright (c) 2016 Copyright Holder All Rights Reserved.
+            Copyright (c) 2017 Copyright Holder All Rights Reserved.
           </p>
         </div>
         <div class="conten-info-min">
           <img id="ues" src="<?= base_url("assets/image/minerva.gif")?>" alt="" width="50px"/>
-          <span style="font-size:0.5px">PAM</span>
+          <span style="font-size:0.5px">WAMP</span>
           <img id="escudo" src="<?= base_url("assets/image/escudo.png")?>" alt="" />
           &nbsp; MINISTERIO DE TRABAJO Y PREVISIÓN SOCIAL
         </div>
