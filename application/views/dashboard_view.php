@@ -24,6 +24,11 @@
     ?>
   </head>
   <body>
+    <?php
+      if ($msg) {
+        echo $msg;
+      }
+    ?>
     <div class="">
       <?php
       if (isset($menu)) {

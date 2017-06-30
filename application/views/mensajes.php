@@ -404,6 +404,14 @@ if (isset($alert)) {
                 default:
                   break;
               }
+              case 'dashboard':
+                switch ($alert) {
+                  case 'inseguro':
+                    $mensaje = "Su contraseña es insegura.";
+                    break;
+                  default:
+                    break;
+                }
               case 'Solicitud_movimiento':
                 switch ($alert) {
                   case 'existeSol':

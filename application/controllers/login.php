@@ -32,7 +32,28 @@ class Login extends CI_Controller {
     } else {
        if ($this->session->userdata('logged_in')) {
          $user = $this->session->userdata('logged_in');
-         redirect('dashboard'.'/');
+          $segura=TRUE;
+          $password = $this->input->post('password');
+          if(strlen($password) < 6){
+                $segura=FALSE;
+          }
+          if(strlen($password) > 16){
+               $segura=FALSE;
+          }
+          if (!preg_match('`[a-z]`',$password)){
+                $segura=FALSE;
+          }
+          if (!preg_match('`[A-Z]`',$password)){
+                $segura=FALSE;
+          }
+          if (!preg_match('`[0-9]`',$password)){
+                $segura=FALSE;
+          }
+          if($segura=TRUE){
+            redirect('dashboard/index/');
+          }else{
+              redirect('dashboard/index/inseguro');
+          }
        }
     }
 
@@ -41,6 +62,7 @@ class Login extends CI_Controller {
   public function check_database($password) {
     if ($password != '') {
       $username = $this->input->post('username');
+
       $user = $this->User_model->login(array('username' => $username, 'password' => $password));
 
       if (!$user) {
