@@ -407,7 +407,8 @@ if (isset($alert)) {
               case 'dashboard':
                 switch ($alert) {
                   case 'inseguro':
-                    $mensaje = "Su contraseña es insegura.";
+                    $mensaje = "<b>Su contraseña es insegura. </b><br> Recomendamos que su contraseña debe tener al menos:
+                    <br> Una letra mayuscula, una letra minuscula, un numero y contener entre 6 y 16 caracteres.";
                     $tipo = 'warning';
                     break;
                   default:
