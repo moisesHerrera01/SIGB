@@ -8,6 +8,7 @@
     <link href=<?= base_url("vendor/twbs/bootstrap/dist/css/bootstrap.min.css")?> rel="stylesheet" media="screen">
     <link href=<?= base_url("assets/css/main.css")?> rel="stylesheet" media="screen">
     <link href=<?= base_url("assets/css/menu.css")?> rel="stylesheet" media="screen">
+    <link href=<?= base_url("assets/css/sweetalert.css")?> rel="stylesheet" media="screen">
     <link href=<?= base_url("assets/css/iconos.css")?> rel="stylesheet" media="screen">
     <script type="text/javascript">
       var baseurl = "<?= base_url(); ?>";
@@ -17,6 +18,9 @@
     <script src=<?= base_url("vendor/twbs/bootstrap/dist/js/bootstrap.min.js")?>></script>
     <script src="<?= base_url('assets/js/jquery.validate.min.js')?>"></script>
     <script src=<?= base_url("assets/js/main.js")?>></script>
+    <script src=<?= base_url("assets/js/notice.js")?>></script>
+    <script src=<?= base_url("assets/js/jQueryRotate.js")?>></script>
+    <script src=<?= base_url("assets/js/dashboard.js")?> type="text/javascript"></script>
     <?php
       if (isset($js)) {
         echo "<script src=".base_url($js)." type=\"text/javascript\"></script>";
@@ -28,7 +32,7 @@
       if ($msg) {
         echo $msg;
       }
-    ?>
+    ?> 
     <div class="">
       <?php
       if (isset($menu)) {
@@ -37,15 +41,14 @@
       ?>
     </div>
     <div class="content">
-      <div class="dashboard-box">
-        
-      </div>
+      <?= $dhb ?>
     </div>
+    <!-- div class="content-notice"></div-->
     <div class="footer">
       <div class="content_footer">
         <div class="content-info-sis">
           <p class="name-sis">
-            SIGB
+            SICBAF
           </p>
           <p>
             Copyright (c) 2016 Copyright Holder All Rights Reserved.
@@ -53,7 +56,7 @@
         </div>
         <div class="conten-info-min">
           <img id="ues" src="<?= base_url("assets/image/minerva.gif")?>" alt="" width="50px"/>
-          <span style="font-size:0.5px">WAMP</span>
+          <span style="font-size:0.5px">PAM</span>
           <img id="escudo" src="<?= base_url("assets/image/escudo.png")?>" alt="" />
           &nbsp; MINISTERIO DE TRABAJO Y PREVISIÓN SOCIAL
         </div>

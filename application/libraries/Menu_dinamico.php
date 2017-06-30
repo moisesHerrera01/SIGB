@@ -10,6 +10,7 @@ class Menu_dinamico {
 
   function __construct() {
     $this->ci =& get_instance();
+    date_default_timezone_set('America/El_Salvador');
   }
 
   public function build_menu_vertical($user, $segment) {
@@ -110,9 +111,9 @@ class Menu_dinamico {
           // $html_out .= "<li>";
           //   $html_out .= "<span class='icono icon-user'></span><span id='usuario_sistema'>&nbsp;" . $user['nombre_completo'] . "</span>";
           // $html_out .= "</li>";
-          // $html_out .= "<li>";
-          //   $html_out .= "<a id='notice' class='icono icon-bell'><span class='badge'>0</span></a>";
-          // $html_out .= "</li>";
+          $html_out .= "<li>";
+            $html_out .= date('Y/m/d');
+          $html_out .= "</li>";
           $html_out .= "<li>";
             $html_out .= "<a href=".base_url("index.php/login/logout")." class='icono icon-exit'></a>";
           $html_out .= "</li>";

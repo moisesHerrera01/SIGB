@@ -420,3 +420,15 @@
 .icon-magic-wand:before {
  content: "\e997";
 }
+
+.icon-user-check:before {
+  content: "\e975";
+}
+
+.icon-accessibility:before {
+  content: "\e9b2";
+}
+
+.icon-profile:before {
+  content: "\e923";
+}

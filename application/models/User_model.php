@@ -250,6 +250,19 @@
       }
    }
 
+   public function obteneFecharUltimaRastreabilidad($usuario) {
+     $this->db->select('*')
+              ->from('sic_rastreabilidad')
+              ->where('id_usuario', $usuario)
+              ->order_by('id_sic_rastreabilidad', 'DESC');
+      $query=$this->db->get();
+      if ($query->num_rows()>0) {
+        return $query->row()->fecha;
+      }else{
+        return FALSE;
+      }
+   }
+
    public function obtenerRastreabilidadFiltro($fecha_inicio,$fecha_fin,$segmento,$porpagina){
      $this->db->select('r.id_registro,u.nombre_completo,m.nombre_modulo,r.fecha,r.hora,r.operacion,r.nombre_rol')
               ->from('sic_rastreabilidad r')
