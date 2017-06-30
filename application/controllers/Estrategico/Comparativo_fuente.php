@@ -11,6 +11,7 @@ class Comparativo_fuente extends CI_Controller {
     $this->load->helper(array('form', 'paginacion'));
     $this->load->library('table');
     $this->load->model(array('Bodega/Kardex_model'));
+    date_default_timezone_set('America/El_Salvador');
   }
 
   public function RecibirDato() {

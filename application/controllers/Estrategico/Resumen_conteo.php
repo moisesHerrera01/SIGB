@@ -12,6 +12,7 @@ class Resumen_conteo extends CI_Controller {
     $this->load->library(array('table'));
     $this->load->model(array('Bodega/Conteofisico_model', 'Bodega/Producto', 'Bodega/DetalleConteoFisico_model',
                       'Bodega/Especifico', 'Bodega/DetalleProducto_model', 'Bodega/Kardex_model', 'Bodega/UnidadMedida'));
+    date_default_timezone_set('America/El_Salvador');
   }
 
   public function RecibirConteo() {
