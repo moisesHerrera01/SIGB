@@ -42,9 +42,15 @@ body {
 .content-login-footer {
   background-color: #272D33;
   padding: 0.2em 0.5em;
-  height: 6em;
+  height: 10em;
   text-align: center;
   line-height: 5em;
+}
+
+.content-login-footer > div {
+	position: relative;
+	color: #fff;
+	text-align: center;
 }
 
 .footer-login {

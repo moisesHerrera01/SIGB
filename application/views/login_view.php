@@ -17,7 +17,7 @@
     ?>
     <div class="content">
       <div class="content-login-title">
-        <span class="title-login"><span class="icono icon-home3"> SIGB</span></span>
+        <span class="title-login">MTPS SIGB</span>
       </div>
       <div class="content-login">
       <?php
@@ -55,11 +55,14 @@
               echo form_submit('','Ingresar', $button);
 
             echo form_close();
+
+        		$now = gmt_to_local(now(), 'UM6', FALSE);
       ?>
       </div>
       <div class="content-login-footer">
         <img src="<?= base_url("assets/image/Logo_UES_blanco.png")?>" alt="" height="65px"/>
         <img id="escudo" src="<?= base_url("assets/image/escudo.png")?>" alt="" height="65px"/>
+        <div><?php $now = gmt_to_local(now(), 'UM6', FALSE); echo fecha(mdate('%Y/%m/%d', $now)); ?></div>
       </div>
     </div>
   </body>
