@@ -28,7 +28,9 @@ class Resumen_solicitudes extends CI_Controller {
   }
 
   public function reporte(){
-
+    date_default_timezone_set('America/El_Salvador');
+    $anyo=20;
+    $fecha_actual=date("d-m-".$anyo."y");
     $USER = $this->session->userdata('logged_in');
     $data['title'] = "Reporte Resumen de Solicitudes de Bodega";
     $data['menu'] = $this->menu_dinamico->menus($this->session->userdata('logged_in'),$this->uri->segment(1));
@@ -41,15 +43,8 @@ class Resumen_solicitudes extends CI_Controller {
       $this->table->set_template($template);
       $this->table->set_heading('#','Nivel de Solicitud', 'Cantidad de Solicitudes');
 
-      //$num = 10;
-      //$segmento = 7;
-      //$count = $this->Detalle_solicitud_producto_model->totalEspecifico($this->uri->segment(4),$this->uri->segment(5),$this->uri->segment(6));
-      //$registros = $this->Detalle_solicitud_producto_model->obtenerEspecificosLimit($this->uri->segment(4),
-      //$this->uri->segment(5),$this->uri->segment(6),$num, $this->uri->segment(7));
-      $registros = $this->Solicitud_Model->totalSolicitudesBodega($this->uri->segment(4),$this->uri->segment(5));
+    $registros = $this->Solicitud_Model->totalSolicitudesBodega($this->uri->segment(4),$this->uri->segment(5));
 
-      //pagination = paginacion('index.php/Estrategico/Salidas_saldos/reporte/'.$this->uri->segment(4).'/'.$this->uri->segment(5).'/'.$this->uri->segment(6),
-        //            $count, $num, $segmento);
 
       if (!($registros == FALSE)) {
         $this->table->add_row(1,'<strong>Ingresadas',$registros->nivel0);
@@ -65,25 +60,6 @@ class Resumen_solicitudes extends CI_Controller {
       }
 
 
-      // paginacion del header
-      /*$pagaux = $count / $num;
-
-      $pags = intval($pagaux);
-
-      if ($pagaux > $pags || $pags == 0) {
-        $pags++;
-      }
-
-      $seg = intval($this->uri->segment($segmento)) + 1;
-
-      $segaux = $seg / $num;
-
-      $pag = intval($segaux);
-
-      if ($segaux > $pag) {
-        $pag++;
-      }*/
-
 
       $table =  "<div class='content_table '>" .
                 "<div class='limit-content-title'>".
@@ -92,7 +68,7 @@ class Resumen_solicitudes extends CI_Controller {
                   "</div>".
                   "<div class='title-header'>
                     <ul>
-                      <li>Fecha emisión: ".date('d/m/Y')."</li>
+                      <li>Fecha emisión: ".$fecha_actual."</li>
                       <li>Nombre la compañia: MTPS</li>
                       <li>N° pagina: ". 1 .'/'. 1 ."</li>
                       <li>Usuario: ".$USER['nombre_completo']."</li>

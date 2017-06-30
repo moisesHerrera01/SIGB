@@ -30,7 +30,9 @@ class Salidas_saldos extends CI_Controller {
   }
 
   public function reporte(){
-
+    date_default_timezone_set('America/El_Salvador');
+    $anyo=20;
+    $fecha_actual=date("d-m-".$anyo."y");
     $USER = $this->session->userdata('logged_in');
     $data['title'] = "Reporte Salidas y Saldos";
     $data['menu'] = $this->menu_dinamico->menus($this->session->userdata('logged_in'),$this->uri->segment(1));
@@ -121,7 +123,7 @@ class Salidas_saldos extends CI_Controller {
                   "</div>".
                   "<div class='title-header'>
                     <ul>
-                      <li>Fecha emisión: ".date('d/m/Y')."</li>
+                      <li>Fecha emisión: ".$fecha_actual."</li>
                       <li>Nombre la compañia: MTPS</li>
                       <li>N° pagina: ". $pag .'/'. $pags ."</li>
                       <li>Usuario: ".$USER['nombre_completo']."</li>
