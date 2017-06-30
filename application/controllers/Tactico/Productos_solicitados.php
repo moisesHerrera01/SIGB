@@ -27,7 +27,9 @@ class Productos_solicitados extends CI_Controller {
     }
   }
    public function Reporte(){
-
+       date_default_timezone_set('America/El_Salvador');
+       $anyo=20;
+       $fecha_actual=date("d-m-".$anyo."y");
        $this->load->model('Bodega/Producto');
        $this->load->library(array('table'));
        $USER = $this->session->userdata('logged_in');
@@ -136,7 +138,7 @@ class Productos_solicitados extends CI_Controller {
                              "</div>".
                              "<div class='title-header'>
                                <ul>
-                                 <li>Fecha emisión: ".date('d/m/Y')."</li>
+                                 <li>Fecha emisión: ".$fecha_actual."</li>
                                  <li>Nombre la compañia: MTPS</li>
                                  <li>N° pagina: ". $pag .'/'. $pags ."</li>
                                  <li>Usuario: ".$USER['nombre_completo']."</li>

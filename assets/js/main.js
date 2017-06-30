@@ -208,7 +208,7 @@ $(document).ready(function(){
 
     setInterval(function() {
         $("#myAlert").slideUp();
-    }, 5000);
+    }, 55000);
 
     $('.icon-eliminar').click(confirmar);
 
