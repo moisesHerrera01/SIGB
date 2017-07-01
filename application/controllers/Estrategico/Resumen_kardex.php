@@ -79,12 +79,14 @@ class Resumen_kardex extends CI_Controller {
           } else {
             $kardex = $this->Kardex_model->obtenerKardexResumido($this->uri->segment(6), $this->uri->segment(7), $this->uri->segment(4),
              $this->uri->segment(5), $num, $this->uri->segment(8));
-          $cant = count($kardex);
+            $cant = $this->Kardex_model->totalKardexResumido($this->uri->segment(6), $this->uri->segment(7), $this->uri->segment(4),
+            $this->uri->segment(5));
           }
         } else {
           $kardex = $this->Kardex_model->obtenerKardexResumido($this->uri->segment(6), $this->uri->segment(7), $this->uri->segment(4),
            $this->uri->segment(5), $num, $this->uri->segment(8));
-          $cant = count($kardex);
+          $cant = $this->Kardex_model->totalKardexResumido($this->uri->segment(6), $this->uri->segment(7), $this->uri->segment(4),
+           $this->uri->segment(5));
         }
 
         $pagination = paginacion('index.php/Estrategico/Resumen_kardex/kardexResumido/'.$this->uri->segment(4).
@@ -200,8 +202,7 @@ class Resumen_kardex extends CI_Controller {
                     );
 
                     $titulo = ($this->uri->segment(6) != 0) ?   $this->Especifico->obtenerEspecifico($this->uri->segment(6)) : 'TODOS' ;
-                    $table =  $this->breadcrumb->build_breadcrump(implode('/', array_slice($this->uri->segment_array(), 0, 3))) .
-                              "<div class='content_table '>" .
+                    $table =  $this->breadcrumb->build_breadcrump(implode('/', array_slice($this->uri->segment_array(), 0, 3)))."<div class='content_table '>".
                               "<div class='limit-content-title'>".
                                 "<div class='title-reporte'>".
                                   "Reporte de resumen de kardex.".
