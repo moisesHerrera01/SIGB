@@ -7,7 +7,14 @@ class Etl extends CI_Controller {
     parent::__construct();
     if($this->session->userdata('logged_in') == FALSE){
       redirect('login');
+    } else {
+      $USER = $this->session->userdata('logged_in');
+      $modulo = $this->User_model->obtenerModulo('Etl');
+      if (!$this->User_model->validarAccesoCrud($modulo, $USER['id'], 'select')) {
+        redirect('dashboard/index/forbidden');
+      }
     }
+
     $this->load->helper(array('form', 'paginacion'));
     $this->load->library('table');
     $this->load->model(array('Etl_model'));

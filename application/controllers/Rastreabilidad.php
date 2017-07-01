@@ -8,6 +8,12 @@ class Rastreabilidad extends CI_Controller {
 
     if($this->session->userdata('logged_in') == FALSE){
       redirect('login/index/error_no_autenticado');
+    }  else {
+      $USER = $this->session->userdata('logged_in');
+      $modulo = $this->User_model->obtenerModulo('Rastreabilidad/reporte');
+      if (!$this->User_model->validarAccesoCrud($modulo, $USER['id'], 'select')) {
+        redirect('dashboard/index/forbidden');
+      }
     }
 
     $this->load->helper(array('form', 'paginacion'));
