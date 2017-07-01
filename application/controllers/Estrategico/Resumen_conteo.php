@@ -130,7 +130,8 @@ class Resumen_conteo extends CI_Controller {
           'url' => 'index.php/Estrategico/Resumen_conteo/Reporte/'.str_replace(" ", "_", $nom_conteo)
         );
 
-        $table = "<div class='content_table '>" .
+        $table = $this->breadcrumb->build_breadcrump(implode('/', array_slice($this->uri->segment_array(), 0, 3))) .
+                  "<div class='content_table '>" .
                   "<div class='limit-content-title'>".
                     "<div class='title-reporte'>".
                       "Reporte resumen conteo fisico.".

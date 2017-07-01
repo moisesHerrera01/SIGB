@@ -156,7 +156,8 @@ class Proveedor_factura_especifico extends CI_Controller {
                     'id' => 'buscar',
                     'url' => 'index.php/Tactico/Proveedor_factura_especifico/Reporte/'.$this->uri->segment(4).'/'.$this->uri->segment(5).'/'.$this->uri->segment(6).'/');
 
-                 $table =  "<div class='content_table '>" .
+                 $table =  $this->breadcrumb->build_breadcrump(implode('/', array_slice($this->uri->segment_array(), 0, 3))) .
+                           "<div class='content_table '>" .
                            "<div class='limit-content-title'>".
                              "<div class='title-reporte'>".
                                "Reporte por Proveedor, factura y especifico.".

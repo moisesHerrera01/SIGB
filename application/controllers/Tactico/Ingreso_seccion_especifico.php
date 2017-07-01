@@ -126,7 +126,8 @@ class Ingreso_seccion_especifico extends CI_Controller {
       );
 
 
-      $table =  "<div class='content_table '>" .
+      $table =  $this->breadcrumb->build_breadcrump(implode('/', array_slice($this->uri->segment_array(), 0, 3))) .
+                "<div class='content_table '>" .
                 "<div class='limit-content-title'>".
                   "<div class='title-reporte'>".
                     "Reporte de ingresos por sección y especifico.".
