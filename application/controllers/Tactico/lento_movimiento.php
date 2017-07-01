@@ -15,9 +15,22 @@ class Lento_movimiento extends CI_Controller {
   }
 
    public function RecibirMovimiento() {
+     date_default_timezone_set('America/El_Salvador');
+     $anyo=20;
+     $fecha_actual=date($anyo."y-m-d");
     $USER = $this->session->userdata('logged_in');
     if($USER){
       if ($this->input->post('fuente')!=NULL && $this->input->post('especifico')!=NULL) {
+        $modulo=$this->User_model->obtenerModulo('Tactico/Lento_movimiento/Reporte');
+        $hora=date("H:i:s");
+        $rastrea = array(
+          'id_usuario' =>$USER['id'],
+          'id_modulo' =>$modulo,
+          'fecha' =>$fecha_actual,
+          'hora' =>$hora,
+          'operacion'=>'CONSULTA'
+        );
+        $this->User_model->insertarRastreabilidad($rastrea);
           redirect('Tactico/Lento_movimiento/Reporte/'.$this->input->post('fuente').'/'.$this->input->post('especifico'));
         } else {
           redirect('Tactico/Lento_movimiento/');

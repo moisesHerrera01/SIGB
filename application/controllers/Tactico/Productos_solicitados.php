@@ -15,9 +15,22 @@ class Productos_solicitados extends CI_Controller {
   }
 
    public function RecibirFiltro() {
+     date_default_timezone_set('America/El_Salvador');
+     $anyo=20;
+     $fecha_actual=date($anyo."y-m-d");
     $USER = $this->session->userdata('logged_in');
     if($USER){
       if ($this->input->post('fechaMin')!=NULL && $this->input->post('fechaMax')!=NULL && $this->input->post('cantidad')!=NULL) {
+          $modulo=$this->User_model->obtenerModulo('Tactico/Productos_solicitados/Reporte');
+          $hora=date("H:i:s");
+          $rastrea = array(
+            'id_usuario' =>$USER['id'],
+            'id_modulo' =>$modulo,
+            'fecha' =>$fecha_actual,
+            'hora' =>$hora,
+            'operacion'=>'CONSULTA'
+          );
+          $this->User_model->insertarRastreabilidad($rastrea);
           redirect('Tactico/Productos_solicitados/Reporte/'.$this->input->post('cantidad').'/'.$this->input->post('fechaMin').'/'.$this->input->post('fechaMax'));
         } else {
           redirect('Tactico/Productos_solicitados/Reporte');

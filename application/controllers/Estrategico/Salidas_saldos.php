@@ -18,6 +18,17 @@ class Salidas_saldos extends CI_Controller {
     $anyo=20;
     $fecha_actual=date($anyo."y-m-d");
     if ($this->input->post('fecha_inicio')!=NULL && $this->input->post('fuente')!=NULL) {
+      $USER = $this->session->userdata('logged_in');
+      $modulo=$this->User_model->obtenerModulo('Estrategico/Salidas_saldos/reporte');
+      $hora=date("H:i:s");
+      $rastrea = array(
+        'id_usuario' =>$USER['id'],
+        'id_modulo' =>$modulo,
+        'fecha' =>$fecha_actual,
+        'hora' =>$hora,
+        'operacion'=>'CONSULTA'
+      );
+      $this->User_model->insertarRastreabilidad($rastrea);
       if($this->input->post('fecha_fin')==NULL){
         redirect('Estrategico/Salidas_saldos/reporte/'.$this->input->post('fecha_inicio').'/'
         .$fecha_actual.'/'.$this->input->post('fuente'));

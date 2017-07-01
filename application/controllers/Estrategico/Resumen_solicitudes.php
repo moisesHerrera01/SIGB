@@ -18,6 +18,17 @@ class Resumen_solicitudes extends CI_Controller {
     $anyo=20;
     $fecha_actual=date($anyo."y-m-d");
     if ($this->input->post('minFecha')) {
+      $USER = $this->session->userdata('logged_in');
+      $modulo=$this->User_model->obtenerModulo('Estrategico/Resumen_solicitudes/reporte');
+      $hora=date("H:i:s");
+      $rastrea = array(
+        'id_usuario' =>$USER['id'],
+        'id_modulo' =>$modulo,
+        'fecha' =>$fecha_actual,
+        'hora' =>$hora,
+        'operacion'=>'CONSULTA'
+      );
+      $this->User_model->insertarRastreabilidad($rastrea);
       if($this->input->post('maxFecha')==NULL){
         redirect('Estrategico/Resumen_solicitudes/reporte/'.$this->input->post('minFecha').'/'.$fecha_actual);
       }else{

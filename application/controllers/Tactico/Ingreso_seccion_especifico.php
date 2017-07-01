@@ -19,14 +19,14 @@ class Ingreso_seccion_especifico extends CI_Controller {
     $fecha_actual=date($anyo."y-m-d");
     if ($this->input->post('fecha_inicio')!=NULL) {
         $USER = $this->session->userdata('logged_in');
-        $modulo=$this->User_model->obtenerModulo('Tactico/Gasto_global/reporteGastoSeccion');
+        $modulo=$this->User_model->obtenerModulo('Tactico/Ingreso_seccion_especifico/reporte');
         $hora=date("H:i:s");
         $rastrea = array(
           'id_usuario' =>$USER['id'],
           'id_modulo' =>$modulo,
           'fecha' =>$fecha_actual,
           'hora' =>$hora,
-          'operacion'=> 'CONSULTA'
+          'operacion'=>'CONSULTA'
         );
         $this->User_model->insertarRastreabilidad($rastrea);
       if($this->input->post('fecha_fin')==NULL){

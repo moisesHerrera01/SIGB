@@ -20,6 +20,17 @@ class Proveedor_factura_especifico extends CI_Controller {
     $anyo=20;
     $fecha_actual=date($anyo."y-m-d");
     if ($this->input->post('fechaMin')!=NULL && $this->input->post('fuente')!=NULL) {
+      $USER = $this->session->userdata('logged_in');
+      $modulo=$this->User_model->obtenerModulo('Tactico/Proveedor_factura_especifico/Reporte');
+      $hora=date("H:i:s");
+      $rastrea = array(
+        'id_usuario' =>$USER['id'],
+        'id_modulo' =>$modulo,
+        'fecha' =>$fecha_actual,
+        'hora' =>$hora,
+        'operacion'=>'CONSULTA'
+      );
+      $this->User_model->insertarRastreabilidad($rastrea);
       if($this->input->post('fechaMax')==NULL){
         redirect('Tactico/Proveedor_factura_especifico/Reporte/'.$this->input->post('fuente').'/'
         .post('fechaMin').'/'.$this->input->post('fechaMax'));
