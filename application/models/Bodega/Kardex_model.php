@@ -509,6 +509,7 @@
                ->join("sic_detalle_producto b", "a.id_detalleproducto = b.id_detalleproducto")
                ->join("sic_producto c", "b.id_producto = c.id_producto")
                ->where("a.fecha_ingreso BETWEEN '$fecha_inicio' AND '$fecha_fin'")
+               ->where('a.id_fuentes', $id_fuentes)
                ->group_by("c.id_producto")
                ->like('c.nombre',$busca);
 

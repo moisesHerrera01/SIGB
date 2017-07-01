@@ -72,14 +72,12 @@ class Resumen_kardex extends CI_Controller {
           } else {
             $kardex = $this->Kardex_model->obtenerKardexResumido($this->uri->segment(6), $this->uri->segment(7), $this->uri->segment(4),
              $this->uri->segment(5), $num, $this->uri->segment(8));
-            $cant = $this->Kardex_model->totalKardexResumido($this->uri->segment(6), $this->uri->segment(7), $this->uri->segment(4),
-            $this->uri->segment(5));
+          $cant = count($kardex);
           }
         } else {
           $kardex = $this->Kardex_model->obtenerKardexResumido($this->uri->segment(6), $this->uri->segment(7), $this->uri->segment(4),
            $this->uri->segment(5), $num, $this->uri->segment(8));
-          $cant = $this->Kardex_model->totalKardexResumido($this->uri->segment(6), $this->uri->segment(7), $this->uri->segment(4),
-           $this->uri->segment(5));
+          $cant = count($kardex);
         }
 
         $pagination = paginacion('index.php/Estrategico/Resumen_kardex/kardexResumido/'.$this->uri->segment(4).
