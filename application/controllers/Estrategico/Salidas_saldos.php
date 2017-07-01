@@ -9,7 +9,7 @@ class Salidas_saldos extends CI_Controller {
       redirect('login/index/error_no_autenticado');
     } else {
       $USER = $this->session->userdata('logged_in');
-      $modulo = $this->User_model->obtenerModulo('Estrategico/Salidas_saldos/reporte/');
+      $modulo = $this->User_model->obtenerModulo('Estrategico/Salidas_saldos/reporte');
       if (!$this->User_model->validarAccesoCrud($modulo, $USER['id'], 'select')) {
         redirect('dashboard/index/forbidden');
       }
