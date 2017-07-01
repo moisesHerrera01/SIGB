@@ -193,7 +193,8 @@ class Resumen_kardex extends CI_Controller {
                     );
 
                     $titulo = ($this->uri->segment(6) != 0) ?   $this->Especifico->obtenerEspecifico($this->uri->segment(6)) : 'TODOS' ;
-                    $table =  "<div class='content_table '>" .
+                    $table =  $this->breadcrumb->build_breadcrump(implode('/', array_slice($this->uri->segment_array(), 0, 3))) .
+                              "<div class='content_table '>" .
                               "<div class='limit-content-title'>".
                                 "<div class='title-reporte'>".
                                   "Reporte de resumen de kardex.".
