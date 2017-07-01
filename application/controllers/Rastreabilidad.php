@@ -66,6 +66,7 @@ class Rastreabilidad extends CI_Controller {
           $msg = array('data' => "No se encontraron resultados", 'colspan' => "6");
           $this->table->add_row($msg);
         }
+        date_default_timezone_set('America/El_Salvador');
         $table =  "<div class='content_table '>" .
                   "<div class='limit-content-title'>".
                     "<div class='title-reporte'>".

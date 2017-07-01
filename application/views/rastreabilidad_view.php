@@ -1,5 +1,5 @@
 <?php
-
+date_default_timezone_set('America/El_Salvador');
 echo $this->breadcrumb->build_breadcrump($this->uri->uri_string());
 
 $inicio= array(
