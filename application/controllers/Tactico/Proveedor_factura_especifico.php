@@ -12,6 +12,8 @@ class Proveedor_factura_especifico extends CI_Controller {
     $this->load->helper(array('form', 'paginacion'));
     $this->load->library('table');
     $this->load->model(array('Bodega/Proveedor','Bodega/Fuentefondos_model', 'Bodega/Fuentefondos_model', 'Bodega/Solicitud_Model'));
+    date_default_timezone_set('America/El_Salvador');
+
   }
 
   public function RecibirFiltro() {
@@ -43,9 +45,7 @@ class Proveedor_factura_especifico extends CI_Controller {
   }
 
   public function Reporte(){
-    date_default_timezone_set('America/El_Salvador');
-    $anyo=20;
-    $fecha_actual=date("d-m-".$anyo."y");
+
     $USER = $this->session->userdata('logged_in');
     if($USER){
       $this->load->model('Bodega/Fuentefondos_model');
@@ -163,7 +163,7 @@ class Proveedor_factura_especifico extends CI_Controller {
                              "</div>".
                              "<div class='title-header'>
                                <ul>
-                                 <li>Fecha emisión: ".$fecha_actual."</li>
+                               <li>Fecha emisión: ".date('d/m/Y')."</li>
                                  <li>Nombre la compañia: MTPS</li>
                                  <li>N° pagina: ". $pag .'/'. $pags ."</li>
                                  <li>Usuario: ".$USER['nombre_completo']."</li>

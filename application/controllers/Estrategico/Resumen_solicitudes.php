@@ -11,6 +11,7 @@ class Resumen_solicitudes extends CI_Controller {
     $this->load->helper(array('form', 'paginacion'));
     $this->load->library('table');
     $this->load->model(array('Bodega/Solicitud_Model'));
+    date_default_timezone_set('America/El_Salvador');
   }
 
   public function Recibirfechas() {
@@ -39,9 +40,7 @@ class Resumen_solicitudes extends CI_Controller {
   }
 
   public function reporte(){
-    date_default_timezone_set('America/El_Salvador');
-    $anyo=20;
-    $fecha_actual=date("d-m-".$anyo."y");
+
     $USER = $this->session->userdata('logged_in');
     $data['title'] = "Reporte Resumen de Solicitudes de Bodega";
     $data['menu'] = $this->menu_dinamico->menus($this->session->userdata('logged_in'),$this->uri->segment(1));
@@ -79,7 +78,7 @@ class Resumen_solicitudes extends CI_Controller {
                   "</div>".
                   "<div class='title-header'>
                     <ul>
-                      <li>Fecha emisión: ".$fecha_actual."</li>
+                      <li>Fecha emisión: ".date('d/m/Y')."</li>
                       <li>Nombre la compañia: MTPS</li>
                       <li>N° pagina: ". 1 .'/'. 1 ."</li>
                       <li>Usuario: ".$USER['nombre_completo']."</li>

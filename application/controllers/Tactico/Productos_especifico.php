@@ -12,6 +12,7 @@
       $this->load->helper(array('form','paginacion'));
       $this->load->model(array('Bodega/Producto','Bodega/Solicitud_Model',
       'Bodega/Fuentefondos_model','Bodega/UnidadMedida', 'Bodega/Kardex_model','Bodega/Especifico'));
+      date_default_timezone_set('America/El_Salvador');
     }
 
   public function recibirProductos() {
@@ -120,9 +121,7 @@
                    'id' => 'buscar',
                    'url' => 'index.php/Tactico/Productos_especifico/reporteProductosEspecifico/'.$this->uri->segment(4).'/'
                  );
-                 date_default_timezone_set('America/El_Salvador');
-                 $anyo=20;
-                 $fecha_actual=date("d-m-".$anyo."y");
+
                  $table =  "<div class='content_table '>" .
                            "<div class='limit-content-title'>".
                              "<div class='title-reporte'>".
@@ -130,7 +129,7 @@
                              "</div>".
                              "<div class='title-header'>
                                <ul>
-                                 <li>Fecha emisión: ".$fecha_actual."</li>
+                               <li>Fecha emisión: ".date('d/m/Y')."</li>
                                  <li>Nombre la compañia: MTPS</li>
                                  <li>N° pagina: ". $pag .'/'. $pags ."</li>
                                  <li>Usuario: ".$USER['nombre_completo']."</li>

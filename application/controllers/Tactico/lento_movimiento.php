@@ -12,6 +12,8 @@ class Lento_movimiento extends CI_Controller {
     $this->load->helper(array('form', 'paginacion'));
     $this->load->library('table');
     $this->load->model(array('Bodega/Producto','Bodega/Detalle_solicitud_producto_model', 'Bodega/Fuentefondos_model', 'Bodega/Solicitud_Model', 'Bodega/Especifico'));
+    date_default_timezone_set('America/El_Salvador');
+
   }
 
    public function RecibirMovimiento() {
@@ -41,9 +43,6 @@ class Lento_movimiento extends CI_Controller {
   }
    public function Reporte(){
     $USER = $this->session->userdata('logged_in');
-      date_default_timezone_set('America/El_Salvador');
-      $anyo=20;
-      $fecha_actual=date("d-m-".$anyo."y");
       $data['title'] = "Lento movimiento";
       $data['menu'] = $this->menu_dinamico->menus($this->session->userdata('logged_in'),$this->uri->segment(1));
       $data['js'] = "assets/js/validate/reporte/bodega/lento_movimiento.js";
@@ -170,7 +169,7 @@ class Lento_movimiento extends CI_Controller {
                              "</div>".
                              "<div class='title-header'>
                                <ul>
-                                 <li>Fecha emisión: ".$fecha_actual."</li>
+                               <li>Fecha emisión: ".date('d/m/Y')."</li>
                                  <li>Nombre la compañia: MTPS</li>
                                  <li>N° pagina: ". $pag .'/'. $pags ."</li>
                                  <li>Usuario: ".$USER['nombre_completo']."</li>
