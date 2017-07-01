@@ -116,7 +116,6 @@ class Comparativo_fuente extends CI_Controller {
                       <li>Fecha emisión: ".date('d/m/Y')."</li>
                       <li>Nombre la compañia: MTPS</li>
                       <li>N° pagina: 1/1</li>
-                      <li>Nombre pantalla:</li>
                       <li>Usuario: ".$USER['nombre_completo']."</li>
                       <br />
                       <li>Parametros: ".$this->uri->segment(4)." años</li>

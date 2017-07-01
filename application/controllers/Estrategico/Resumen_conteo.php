@@ -140,7 +140,6 @@ class Resumen_conteo extends CI_Controller {
                         <li>Fecha emisión: ".date('d/m/Y')."</li>
                         <li>Nombre la compañia: MTPS</li>
                         <li>N° pagina: ". $pag .'/'. $pags ."</li>
-                        <li>Nombre pantalla: XXXXXXXXXX</li>
                         <li>Usuario: ".$USER['nombre_completo']."</li>
                         <br />
                         <li>Parametros: ".$nom_conteo."</li>
